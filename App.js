@@ -5,7 +5,7 @@
  * @format
  * @flow
  */
-
+/*
 import React, {Fragment} from 'react';
 import {
   SafeAreaView,
@@ -110,5 +110,29 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+*/
+import URLS from './MVC/Tools/InterfaceApi'
+import React from 'react';
+import {createAppContainer, createStackNavigator} from 'react-navigation'
 
-export default App;
+import Login from './MVC/Controller/Login'
+import Home from './MVC/Controller/Home'
+const AppNavigator = createStackNavigator({
+  Login: {screen: Login},
+  Home: {screen: Home},
+},{
+  initialRouteName: 'Login',
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: '#38ADFF',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerBackTitle: '返回',
+  },
+});
+
+export default createAppContainer(AppNavigator);
+
