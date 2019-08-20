@@ -1,5 +1,6 @@
 import React from 'react';
 import {InteractionManager, AsyncStorage} from 'react-native';
+import {RRCLoading} from 'react-native-overlayer';
 
 //延时函数 30秒
 const delay = (timeOut = 30*1000) => {
@@ -12,6 +13,11 @@ const delay = (timeOut = 30*1000) => {
 
 //不带附件
 const fetchPromise = (method, url, obj, msg) =>{
+
+    const options = {text: '正在加载...'};
+    RRCLoading.setLoadingOptions(options);
+    RRCLoading.show();
+
     let formData = new FormData();
     formData.append('clientType','1');
     for (let key in obj) {
@@ -25,7 +31,6 @@ const fetchPromise = (method, url, obj, msg) =>{
             method: method,
             headers: {
                 Accept: 'application/json',
-                //'Content-Type': 'multipart/form-data',
                 'Content-Type': 'application/json',
             },
             body: formData,
@@ -39,6 +44,8 @@ const fetchPromise = (method, url, obj, msg) =>{
             resolve(responseJson);
         }).catch((err) => {
             reject(new Error(err));
+        }).finally(()=>{
+            RRCLoading.hide();
         })
     })
 };

@@ -1,16 +1,154 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
+import {createMaterialTopTabNavigator, createStackNavigator} from 'react-navigation';
 
-export default class Home extends React.Component {
-    static navigationOptions = {
-        title: '主页',
-        headerLeft: null,
-    };
-    render() {
-        return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Home</Text>
-            </View>
-        );
+import HomePage from '../Controller/HomePage'
+import MailList from '../Controller/MailList'
+import Function from '../Controller/Function'
+import Mine from '../Controller/Mine'
+import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
+
+const RootTabs = createMaterialTopTabNavigator({
+    HomePage:{
+        screen: createStackNavigator({
+            HomePage: HomePage,
+        },{
+            initialRouteName: 'HomePage',
+            defaultNavigationOptions: {
+                headerStyle: {
+                    backgroundColor: '#38ADFF',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                headerBackTitle: '返回',
+            },
+        }),
+        navigationOptions:{
+            title:'首页',
+            tabBarIcon:({tintColor, focused}) => (
+                focused ?
+                    <Image
+                    source={require('../Images/main_home1.png')}
+                    style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
+                    <Image
+                    source={require('../Images/main-home0.png')}
+                    style={{width: 25*unitWidth, height: 25*unitWidth}}/>
+                    )
+        }
+    },
+    MailList:{
+        screen: createStackNavigator({
+            MailList: MailList,
+        },{
+            initialRouteName: 'MailList',
+            defaultNavigationOptions: {
+                headerStyle: {
+                    backgroundColor: '#38ADFF',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                headerBackTitle: '返回',
+            },
+        }),
+        navigationOptions:{
+            title:'通讯录',
+            tabBarIcon:({tintColor, focused}) => (
+                focused ?
+                    <Image
+                        source={require('../Images/main_contacts_1.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
+                    <Image
+                        source={require('../Images/main_contacts_0.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/>
+            )
+        }
+    },
+    Function:{
+        screen: createStackNavigator({
+            Function: Function,
+        },{
+            initialRouteName: 'Function',
+            defaultNavigationOptions: {
+                headerStyle: {
+                    backgroundColor: '#38ADFF',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                headerBackTitle: '返回',
+            },
+        }),
+        navigationOptions:{
+            title:'功能',
+            tabBarIcon:({tintColor, focused}) => (
+                focused ?
+                    <Image
+                        source={require('../Images/main_function1.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
+                    <Image
+                        source={require('../Images/main_function0.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/>
+            )
+        }
+    },
+    Mine:{
+        screen: createStackNavigator({
+            Mine: Mine,
+        },{
+            initialRouteName: 'Mine',
+            defaultNavigationOptions: {
+                headerStyle: {
+                    backgroundColor: '#38ADFF',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                headerBackTitle: '返回',
+            },
+        }),
+        navigationOptions:{
+            title:'我的',
+            tabBarIcon:({tintColor, focused}) => (
+                focused ?
+                    <Image
+                        source={require('../Images/main_me1.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
+                    <Image
+                        source={require('../Images/main_me0.png')}
+                        style={{width: 25*unitWidth, height: 25*unitWidth}}/>
+            )
+        }
     }
-}
+},{
+    initialRouteName: 'HomePage',
+    animationEnabled: false,
+    lazy: true,
+    tabBarPosition: 'bottom',
+    backBehavior:"none",
+    tabBarOptions:{
+        activeTintColor:'#38ADFF',
+        inactiveTintColor: '#646464',
+        showIcon: true,
+        tabStyle:{//定义tab bar中tab的样式
+            backgroundColor:"transparent",
+        },
+        indicatorStyle:{//指示器的样式(下图中的红条)
+            backgroundColor:"transparent",
+        },
+        labelStyle:{//控制tab label的样式
+
+        },
+        iconStyle:{//定义icon的样式
+        },
+        style:{//定义tab bar的样式
+            backgroundColor:"transparent",
+        }
+    }
+});
+export default RootTabs;

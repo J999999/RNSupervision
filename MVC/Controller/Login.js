@@ -4,6 +4,9 @@ import {View, StyleSheet, Image, TextInput, Text, TouchableOpacity, Keyboard, To
 import {width, unitWidth, unitHeight} from '../Tools/ScreenAdaptation';
 import {HttpPost} from '../Tools/JQFetch';
 import URLS from '../Tools/InterfaceApi';
+import {RRCToast} from "react-native-overlayer/src";
+import * as Keychain from 'react-native-keychain'
+import {getGuid} from "../Tools/JQGuid";
 
 export default class Login extends React.Component {
 
@@ -13,10 +16,12 @@ export default class Login extends React.Component {
             userName: '',
             password: '',
             keyboardShown: false,
+            imsi: '',
         };
         //隐藏键盘
         this.keyboardDidShowListener = null;
         this.keyboardDidHideListener = null;
+        this.load();
     }
     componentDidMount(): void {
         this.keyboardDidShowListener = Keyboard.addListener(
@@ -50,6 +55,7 @@ export default class Login extends React.Component {
     static navigationOptions = {
         header: null,
     };
+
     render(): React.ReactNode {
         return(
             <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
@@ -59,7 +65,7 @@ export default class Login extends React.Component {
                     <View style={styles.userName}>
                         <Image source={require('../Images/userName.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 50, height: unitWidth * 50}}/>
+                               style={{width: unitWidth * 25, height: unitWidth * 25}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入用户名'}
                                    onChangeText={(text)=>{this.setState({userName:text})}}
@@ -71,7 +77,7 @@ export default class Login extends React.Component {
                     <View style={styles.password}>
                         <Image source={require('../Images/password.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 50, height: unitWidth * 50}}/>
+                               style={{width: unitWidth * 25, height: unitWidth * 25}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入密码'}
                                    onChangeText={(text)=>{this.setState({password:text})}}
@@ -86,23 +92,57 @@ export default class Login extends React.Component {
                     </TouchableOpacity>
                     <View style={styles.forget}>
                         <TouchableOpacity onPress={()=>{this.forgetAction()}}>
-                            <Text style={{fontSize: unitWidth * 26, color: '#696969'}}>忘记密码?</Text>
+                            <Text style={{fontSize: unitWidth * 13, color: '#696969'}}>忘记密码?</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
         )
     }
-    loginAction = () => {
+    //获取 imsi
+    async load(){
+        try {
+            const credentials = await Keychain.getGenericPassword();
+            if (credentials) {
+                this.setState({imsi: credentials.username});
+            } else {
+                RRCToast.show(getGuid());
+                await Keychain.setGenericPassword(getGuid(), '', {});
+                const xx = await Keychain.getGenericPassword();
+                this.setState({imsi: xx.userName});
+            }
+        } catch (err) {
+
+        }
+    }
+    loginAction () {
+        this.props.navigation.navigate('Home');
+        /*
+        if (!this.state.userName){
+            RRCToast.show('请输入用户名');
+            return
+        }
+        if (!this.state.password){
+            RRCToast.show('请输入密码');
+            return
+        }
+        if (!this.state.imsi) {
+            RRCToast.show('获取imsi失败，请重试...');
+            return
+        }
         HttpPost(URLS.Login,{
             'username': this.state.userName,
             'password': this.state.password,
-            'imsi': '',
+            'imsi': this.state.imsi,
         }).then((response)=>{
-            alert(JSON.stringify(response));
+            RRCToast.show(response.msg);
+            if (response.result === 1){
+                this.props.navigation.navigate('Home');
+                alert(response.data);
+            }
         }).catch((err)=>{
-            alert(err);
-        });
+            RRCToast.show(err);
+        });*/
     };
     forgetAction = () => {
 
@@ -117,19 +157,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logo: {
-        width: unitWidth * 150,
-        height: unitWidth * 150,
-        top: unitHeight *200,
+        width: unitWidth * 75,
+        height: unitWidth * 75,
+        top: unitHeight *100,
     },
     userName: {
         backgroundColor: '#fff',
         flexDirection: 'row',
         alignItems: 'center',
-        top: unitHeight * 400,
-        width: unitWidth * 500,
-        height :unitHeight * 74,
-        borderTopRightRadius: unitWidth * 10,
-        borderTopLeftRadius: unitWidth * 10,
+        top: unitHeight * 200,
+        width: unitWidth * 250,
+        height :unitHeight * 37,
+        borderTopRightRadius: unitWidth * 5,
+        borderTopLeftRadius: unitWidth * 5,
         borderBottomWidth: unitHeight,
         borderBottomColor:'#DCDCDC',
     },
@@ -137,37 +177,37 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flexDirection: 'row',
         alignItems: 'center',
-        top: unitHeight * 400,
-        width: unitWidth * 500,
-        height :unitHeight * 74,
-        borderBottomLeftRadius: unitWidth * 10,
-        borderBottomRightRadius: unitWidth * 10,
+        top: unitHeight * 200,
+        width: unitWidth * 250,
+        height :unitHeight * 37,
+        borderBottomLeftRadius: unitWidth * 5,
+        borderBottomRightRadius: unitWidth * 5,
     },
     loginBtn: {
         backgroundColor: '#38ADFF',
         alignItems: 'center',
         justifyContent: 'center',
-        top: unitHeight * 444,
-        width: unitWidth * 500,
-        height :unitHeight * 88,
+        top: unitHeight * 222,
+        width: unitWidth * 250,
+        height :unitHeight * 44,
         borderRadius: unitWidth * 10,
     },
     loginText: {
         color: '#fff',
-        fontSize: unitWidth * 35,
+        fontSize: unitWidth * 17,
         fontWeight: 'bold',
     },
     forget:{
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        top: unitHeight * 454,
-        width: unitWidth * 500,
-        height :unitHeight * 44,
+        top: unitHeight * 227,
+        width: unitWidth * 250,
+        height :unitHeight * 22,
     },
     TInput: {
-        width: unitWidth * 400,
-        height: unitHeight * 44,
-        left: unitWidth * 10,
+        width: unitWidth * 200,
+        height: unitHeight * 22,
+        left: unitWidth * 5,
     },
 });

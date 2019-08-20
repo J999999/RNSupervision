@@ -111,7 +111,9 @@ const styles = StyleSheet.create({
   },
 });
 */
-import URLS from './MVC/Tools/InterfaceApi'
+import URLS from './MVC/Tools/InterfaceApi';
+import {RRCLoading, RRCAlert, RRCToast} from 'react-native-overlayer';
+import {getGuid} from './MVC/Tools/JQGuid';
 import React from 'react';
 import {createAppContainer, createStackNavigator} from 'react-navigation'
 
@@ -123,6 +125,7 @@ const AppNavigator = createStackNavigator({
 },{
   initialRouteName: 'Login',
   defaultNavigationOptions: {
+    gesturesEnabled: false,
     headerStyle: {
       backgroundColor: '#38ADFF',
     },
@@ -131,6 +134,7 @@ const AppNavigator = createStackNavigator({
       fontWeight: 'bold',
     },
     headerBackTitle: '返回',
+    header:null,
   },
 });
 

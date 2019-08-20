@@ -1535,6 +1535,13 @@ commander@^2.19.0, commander@~2.20.0:
   version "2.20.0"
   resolved "https://registry.npm.taobao.org/commander/download/commander-2.20.0.tgz?cache=0&sync_timestamp=1565311628696&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcommander%2Fdownload%2Fcommander-2.20.0.tgz#d58bb2b5c1ee8f87b0d340027e9e94e222c5a422"
 
+commander@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npm.taobao.org/commander/download/commander-1.1.1.tgz?cache=0&sync_timestamp=1565398176321&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcommander%2Fdownload%2Fcommander-1.1.1.tgz#50d1651868ae60eccff0a2d9f34595376bc6b041"
+  integrity sha1-UNFlGGiuYOzP8KLZ80WVN2vGsEE=
+  dependencies:
+    keypress "0.1.x"
+
 commander@~2.14.1:
   version "2.14.1"
   resolved "https://registry.npm.taobao.org/commander/download/commander-2.14.1.tgz?cache=0&sync_timestamp=1565311628696&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcommander%2Fdownload%2Fcommander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
@@ -3359,6 +3366,11 @@ jsx-ast-utils@^2.0.1:
     array-includes "^3.0.3"
     object.assign "^4.1.0"
 
+keypress@0.1.x:
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/keypress/download/keypress-0.1.0.tgz#4a3188d4291b66b4f65edb99f806aa9ae293592a"
+  integrity sha1-SjGI1CkbZrT2XtuZ+AaqmuKTWSo=
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/kind-of/download/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -3936,7 +3948,7 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.npm.taobao.org/mute-stream/download/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-nan@^2.12.1:
+nan@^2.12.1, nan@^2.14.0:
   version "2.14.0"
   resolved "https://registry.npm.taobao.org/nan/download/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
 
@@ -4023,6 +4035,13 @@ node-pre-gyp@^0.12.0:
     rimraf "^2.6.1"
     semver "^5.3.0"
     tar "^4"
+
+nodejieba@^2.2.1:
+  version "2.3.1"
+  resolved "https://registry.npm.taobao.org/nodejieba/download/nodejieba-2.3.1.tgz#8e67ff9fcd8c6b9cb15beb2d8ea0310225ea47e2"
+  integrity sha1-jmf/n82Ma5yxW+stjqAxAiXqR+I=
+  dependencies:
+    nan "^2.14.0"
 
 nopt@^4.0.1:
   version "4.0.1"
@@ -4377,6 +4396,16 @@ pify@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/pify/download/pify-4.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpify%2Fdownload%2Fpify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
 
+pinyin@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.npm.taobao.org/pinyin/download/pinyin-2.9.0.tgz#1e77025bf4fafdad4ea410022837b5f97e53aab1"
+  integrity sha1-HncCW/T6/a1OpBACKDe1+X5TqrE=
+  dependencies:
+    commander "~1.1.1"
+    object-assign "^4.0.1"
+  optionalDependencies:
+    nodejieba "^2.2.1"
+
 pirates@^4.0.0, pirates@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/pirates/download/pirates-4.0.1.tgz#643a92caf894566f91b2b986d2c66950a8e2fb87"
@@ -4461,7 +4490,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.5.10, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/prop-types/download/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   dependencies:
@@ -4538,6 +4567,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
+react-native-expandable-section-flatlist@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npm.taobao.org/react-native-expandable-section-flatlist/download/react-native-expandable-section-flatlist-1.2.2.tgz#4dd1b3d50cec58a0d5f189c197512b0db4e54b02"
+  integrity sha1-TdGz1QzsWKDV8YnBl1ErDbTlSwI=
+  dependencies:
+    prop-types "^15.6.0"
+
 react-native-gesture-handler@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.3.0.tgz#d0386f565928ccc1849537f03f2e37fd5f6ad43f"
@@ -4546,6 +4582,16 @@ react-native-gesture-handler@^1.3.0:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"
     prop-types "^15.5.10"
+
+react-native-keychain@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npm.taobao.org/react-native-keychain/download/react-native-keychain-3.1.3.tgz#fce176e7b95243cecda1896a7e6bdfe0335d778a"
+  integrity sha1-/OF257lSQ87NoYlqfmvf4DNdd4o=
+
+react-native-overlayer@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/react-native-overlayer/download/react-native-overlayer-0.1.1.tgz#95ae8cfb248ba9c453ee1d495ef58b3130b3eb3d"
+  integrity sha1-la6M+ySLqcRT7h1JXvWLMTCz6z0=
 
 react-native-reanimated@^1.2.0:
   version "1.2.0"
