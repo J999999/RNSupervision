@@ -60,7 +60,7 @@ let testData = [
 export default class MailList extends Component {
 
     static navigationOptions = {
-        title: '通讯录',
+        headerTitle: '通讯录',
         headerLeft: null,
     };
 

@@ -1,12 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Image, TextInput, Text, TouchableOpacity, Keyboard, TouchableWithoutFeedback} from 'react-native';
+import {View, StyleSheet, Image, TextInput, Text, TouchableOpacity, Keyboard,
+    TouchableWithoutFeedback} from 'react-native';
 
 import {width, unitWidth, unitHeight} from '../Tools/ScreenAdaptation';
 import {HttpPost} from '../Tools/JQFetch';
 import URLS from '../Tools/InterfaceApi';
-import {RRCToast} from "react-native-overlayer/src";
+import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import * as Keychain from 'react-native-keychain'
 import {getGuid} from "../Tools/JQGuid";
+import AsyncStorage from '@react-native-community/async-storage'
 
 export default class Login extends React.Component {
 
@@ -116,8 +118,8 @@ export default class Login extends React.Component {
         }
     }
     loginAction () {
-        this.props.navigation.navigate('Home');
-        /*
+        //this.props.navigation.navigate('Home');
+
         if (!this.state.userName){
             RRCToast.show('请输入用户名');
             return
@@ -134,15 +136,17 @@ export default class Login extends React.Component {
             'username': this.state.userName,
             'password': this.state.password,
             'imsi': this.state.imsi,
-        }).then((response)=>{
+        },'正在登录...',).then((response)=>{
             RRCToast.show(response.msg);
             if (response.result === 1){
                 this.props.navigation.navigate('Home');
-                alert(response.data);
+                AsyncStorage.setItem('token', response.data.token);
+            }else {
+                this.props.navigation.popToTop();
             }
         }).catch((err)=>{
             RRCToast.show(err);
-        });*/
+        });
     };
     forgetAction = () => {
 

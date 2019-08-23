@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, Image} from 'react-native';
-import {createMaterialTopTabNavigator, createStackNavigator} from 'react-navigation';
+import {createMaterialTopTabNavigator} from 'react-navigation';
 
 import HomePage from '../Controller/HomePage'
 import MailList from '../Controller/MailList'
@@ -10,21 +10,7 @@ import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 
 const RootTabs = createMaterialTopTabNavigator({
     HomePage:{
-        screen: createStackNavigator({
-            HomePage: HomePage,
-        },{
-            initialRouteName: 'HomePage',
-            defaultNavigationOptions: {
-                headerStyle: {
-                    backgroundColor: '#38ADFF',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-                headerBackTitle: '返回',
-            },
-        }),
+        screen: HomePage,
         navigationOptions:{
             title:'首页',
             tabBarIcon:({tintColor, focused}) => (
@@ -39,21 +25,7 @@ const RootTabs = createMaterialTopTabNavigator({
         }
     },
     MailList:{
-        screen: createStackNavigator({
-            MailList: MailList,
-        },{
-            initialRouteName: 'MailList',
-            defaultNavigationOptions: {
-                headerStyle: {
-                    backgroundColor: '#38ADFF',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-                headerBackTitle: '返回',
-            },
-        }),
+        screen: MailList,
         navigationOptions:{
             title:'通讯录',
             tabBarIcon:({tintColor, focused}) => (
@@ -68,21 +40,7 @@ const RootTabs = createMaterialTopTabNavigator({
         }
     },
     Function:{
-        screen: createStackNavigator({
-            Function: Function,
-        },{
-            initialRouteName: 'Function',
-            defaultNavigationOptions: {
-                headerStyle: {
-                    backgroundColor: '#38ADFF',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-                headerBackTitle: '返回',
-            },
-        }),
+        screen: Function,
         navigationOptions:{
             title:'功能',
             tabBarIcon:({tintColor, focused}) => (
@@ -97,21 +55,7 @@ const RootTabs = createMaterialTopTabNavigator({
         }
     },
     Mine:{
-        screen: createStackNavigator({
-            Mine: Mine,
-        },{
-            initialRouteName: 'Mine',
-            defaultNavigationOptions: {
-                headerStyle: {
-                    backgroundColor: '#38ADFF',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-                headerBackTitle: '返回',
-            },
-        }),
+        screen: Mine,
         navigationOptions:{
             title:'我的',
             tabBarIcon:({tintColor, focused}) => (

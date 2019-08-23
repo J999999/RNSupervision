@@ -115,13 +115,31 @@ import URLS from './MVC/Tools/InterfaceApi';
 import {RRCLoading, RRCAlert, RRCToast} from 'react-native-overlayer';
 import {getGuid} from './MVC/Tools/JQGuid';
 import React from 'react';
-import {createAppContainer, createStackNavigator} from 'react-navigation'
+import {createAppContainer, createStackNavigator} from 'react-navigation';
 
 import Login from './MVC/Controller/Login'
 import Home from './MVC/Controller/Home'
+import {unitWidth} from "./MVC/Tools/ScreenAdaptation";
+import Mine from './MVC/Controller/Mine'
+import AddFunction from './MVC/Controller/AddFunction'
+
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
-  Home: {screen: Home},
+  Home: {
+    screen: Home,
+    navigationOptions: ()=>({
+      headerTitle: '云督考',
+      headerLeft: null,
+    })
+  },
+  Mine: {
+    screen: Mine,
+    navigationOptions: ()=>({
+      headerTitle: '我的',
+      headerLeft: null,
+    })
+  },
+  AddFunction: {screen: AddFunction},
 },{
   initialRouteName: 'Login',
   defaultNavigationOptions: {
@@ -131,10 +149,11 @@ const AppNavigator = createStackNavigator({
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
+      fontSize: 20 * unitWidth,
       fontWeight: 'bold',
     },
     headerBackTitle: '返回',
-    header:null,
+    //header:null,
   },
 });
 

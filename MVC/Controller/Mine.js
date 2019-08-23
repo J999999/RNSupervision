@@ -4,7 +4,7 @@ import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 
 export default class Mine extends React.Component {
     static navigationOptions = {
-        title: '我的',
+        headerTitle: '我的',
         headerLeft: null,
     };
 
