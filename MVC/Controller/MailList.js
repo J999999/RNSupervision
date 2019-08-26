@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {View, Text, Dimensions, SectionList, FlatList, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import pinyin from 'pinyin';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
-import {RRCToast} from "react-native-overlayer/src";
+import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 
 let testData = [
     {name: '盖伦'},
@@ -108,7 +108,6 @@ export default class MailList extends Component {
             })
         });
         this.setState({sections: sections})
-
     }
 
     // 字母关联分组跳转

@@ -55,15 +55,7 @@ async function fetchPromise (url, obj, msg) {
         RRCLoading.setLoadingOptions(options);
         RRCLoading.show();
     }
-
-    let formData = new FormData();
-    formData.append('clientType','1');
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)){
-            let value = obj[key];
-            formData.append(key, value);
-        }
-    }
+    obj['clientType'] = 1;
     const token = await AsyncStorage.getItem('token');
     return new Promise((resolve, reject) => {
         fetch(url,{
@@ -73,7 +65,7 @@ async function fetchPromise (url, obj, msg) {
                 'Content-Type': 'application/json',
                 'token': token,
             },
-            body: formData,
+            body: JSON.stringify(obj),
         }).then((response) => {
             if (response.ok) {
                 return response.json();

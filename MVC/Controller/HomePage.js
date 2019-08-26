@@ -14,13 +14,23 @@ const hMargin = 25;
 
 export default class HomePage extends React.Component {
 
-    componentDidMount(): void {
-        HttpGet(URLS.UserMenu, '正在加载...').then((response)=>{
+    async componentDidMount(): void {
+        const xx = await AsyncStorage.getItem('homePageFunc');
+        if (xx) {
+            this.setState({
+                data: JSON.parse(xx),
+            })
+        } else {
+            this._getFunctionAction();
+        }
+    }
+    _getFunctionAction(){
+        let functions = [];
+        HttpPost(URLS.UserMenu, {},'正在加载...').then((response)=>{
             if (response.result !== 1) {
                 RRCToast.show(response.msg);
             }else {
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
-                let functions = [];
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
                     for (let j = 0; j < oneLevel.children.length; j++){
@@ -28,14 +38,15 @@ export default class HomePage extends React.Component {
                         functions.push(twoLevel);
                     }
                 }
+                //展示在首页的功能数组,获取之后保存在本地(添加删除功能对 homePageFunc 进行操作)
                 functions.push({'name':'添加功能'});
+                AsyncStorage.setItem('homePageFunc', JSON.stringify(functions));
                 this.setState({
                     data: functions,
                 })
             }
-        })
+        });
     }
-
     constructor(props){
         super(props);
         this.state = {
@@ -50,7 +61,7 @@ export default class HomePage extends React.Component {
                     data={this.state.data}
                     renderItem={this.renderItem.bind(this)}
                     keyExtractor={(item, index) => index}
-                    contentContainerStyle={styles.list_container}
+                    //contentContainerStyle={styles.list_container}
                     numColumns={cols}
                 />
             </View>
