@@ -141,7 +141,7 @@ const AppNavigator = createStackNavigator({
   },
   AddFunction: {screen: AddFunction},
 },{
-  initialRouteName: 'Login',
+  initialRouteName: 'Home',
   defaultNavigationOptions: {
     gesturesEnabled: false,
     headerStyle: {

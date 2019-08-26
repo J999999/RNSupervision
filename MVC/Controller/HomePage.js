@@ -50,7 +50,8 @@ export default class HomePage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            data:[]
+            data:[],
+            deleteBtnHidden: false,
         };
     }
 
@@ -58,6 +59,7 @@ export default class HomePage extends React.Component {
         return (
             <View style={styles.container}>
                 <FlatList
+                    extraData={this.state}
                     data={this.state.data}
                     renderItem={this.renderItem.bind(this)}
                     keyExtractor={(item, index) => index}
@@ -69,18 +71,39 @@ export default class HomePage extends React.Component {
     }
     renderItem({item, index})  {
         return (
-            <TouchableOpacity activeOpacity={.75} onPress={()=>{this._ClickItemAction(item)}}>
+            <TouchableOpacity activeOpacity={.75}
+                              onPress={()=>{this._ClickItemAction(item)}}
+                              onLongPress={()=>{this.setState({deleteBtnHidden: !this.state.deleteBtnHidden})}}>
                 {index===this.state.data.length-1?<View style={styles.item}>
                     <Image source={require('../Images/addIcon.png')}
-                           style={{width: 80*unitWidth, height: 80*unitWidth, borderRadius: 5}}/>
+                           style={{width: 70*unitWidth, height: 70*unitWidth, borderRadius: 5,
+                               marginTop: 15*unitWidth, marginLeft: 15*unitWidth}}/>
                 </View>:<View style={styles.item}>
+                    <TouchableOpacity activeOpacity={.75}
+                                      onPress={()=>{this._deleteFuncAction(item)}}>
+                        {this.state.deleteBtnHidden === true?<Image source={require('../Images/deleteicon.png')}
+                                                                    style={{width: 20*unitWidth, height: 20*unitWidth, marginLeft: 85*unitWidth}}/>:null}
+                    </TouchableOpacity>
                     <Image source={require('../Images/testIcon/xxfk.png')}
-                           style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5}}/>
+                           style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}/>
                     <Text style={{marginTop: 15, textAlign: 'center'}}
-                          numberOfLines={1}>{item.name}</Text>
+                          numberOfLines={0}>{item.name}</Text>
                 </View>}
             </TouchableOpacity>
         )
+    }
+    _deleteFuncAction(item){
+        let homeFuncs = [];
+        homeFuncs = homeFuncs.concat(this.state.data);
+        for (let i=0; i<homeFuncs.length; i++){
+            if (homeFuncs[i].id === item.id){
+                homeFuncs.splice(i,1);
+            }
+        }
+        AsyncStorage.setItem('homePageFunc', JSON.stringify(homeFuncs));
+        this.setState({
+            data: homeFuncs,
+        })
     }
     _ClickItemAction(item){
         switch (item.id) {
@@ -92,7 +115,13 @@ export default class HomePage extends React.Component {
                 break;
 
             default:
-                this.props.navigation.navigate('AddFunction');
+                this.props.navigation.navigate('AddFunction',{
+                    refresh: (homeFuncs) => {
+                        this.setState({
+                            data: homeFuncs,
+                        })
+            },
+                });
         }
     }
 }
@@ -114,9 +143,8 @@ const styles = StyleSheet.create({
         width: 105*unitWidth,
         height: 105*unitWidth,
         marginTop: hMargin,
-        justifyContent: 'center',
-        alignItems: 'center',
-        //backgroundColor: 'red',
+        //justifyContent: 'center',
+        //alignItems: 'center',
         marginLeft: 15*unitWidth,
     },
 });
