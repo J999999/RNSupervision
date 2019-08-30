@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
@@ -33,20 +33,24 @@ export default class AddFunction extends React.Component{
             });
         }
         const HomePageArr = await AsyncStorage.getItem('homePageFunc');
-        let homeFuncArr = JSON.parse(HomePageArr);
+        let homeFuncArr = [];
+        homeFuncArr = homeFuncArr.concat(JSON.parse(HomePageArr));
 
-        for (let j=0; j<homeFuncArr.length; j++){
-            let homeFunc = homeFuncArr[j];
-            for (let k=0; k<sectionsArr.length; k++){
-                let allFunc = sectionsArr[k].data;
-                for (let l=0; l<allFunc.length; l++){
-                    if (homeFunc.id === allFunc.id){
-                        allFunc[l]['isXianShi'] = true;
+        for (let j=0; j<sectionsArr.length; j++){
+            let cellFuncs = sectionsArr[j].data;
+            for (let k=0; k<cellFuncs.length; k++){
+                for (let l=0; l<homeFuncArr.length; l++){
+                    if (cellFuncs[k].id === homeFuncArr[l].id){
+                        cellFuncs[k]['isXianShi'] = true;
                     }
-
                 }
             }
         }
+
+
+        console.log('sectionsArr:'+JSON.stringify(homeFuncArr));
+
+
         this.setState({
             sections: sectionsArr, //列表数据（登录人全部功能）
             HomePageArr: homeFuncArr, //展示在首页的功能（增加，删除操作此数组）
@@ -55,8 +59,7 @@ export default class AddFunction extends React.Component{
 
     render(): React.ReactNode {
         return (
-            <View style={{flex: 1}}>
-
+            <ScrollView style={{flex: 1}}>
                 {this.state.sections.map((i) => {
                     return (
                         <View>
@@ -65,13 +68,14 @@ export default class AddFunction extends React.Component{
                                     fontWeight: 'bold'}}>{i.title}</Text>
                             </View>
                             <FlatList
+                                scrollEnabled={false}
                                 extraData={this.state}
                                 renderItem={({item})=>
                                     <TouchableOpacity activeOpacity={.5} onPress={()=>{this._itemOnPressAction(item)}}>
                                         <View style={{width: 375*unitWidth/3.6, margin: 10*unitWidth, height: 40*unitWidth, borderRadius: 3*unitWidth,
                                             justifyContent: 'center', alignItems: 'center',
                                             backgroundColor: item.isXianShi === true?'#38ADFF':'#F4F4F4'}}>
-                                            <Text style={{fontSize: 14*unitWidth, color: '#fff'}}>{item.name}</Text>
+                                            <Text style={{fontSize: 14*unitWidth, color: item.isXianShi === true?'#fff':'black'}}>{item.name}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 }
@@ -81,8 +85,33 @@ export default class AddFunction extends React.Component{
                         </View>
                     )
                 })}
-            </View>
+            </ScrollView>
         )
+    }
+    _addHomeFunc(item){
+        let funArr = [];
+        funArr = funArr.concat(this.state.HomePageArr);
+        for (let i=0; i<funArr.length; i++){
+            if (funArr[i].name === '添加功能'){
+                funArr.splice(i,1);
+            }
+        }
+        funArr.push(item);
+        funArr.push({'name':'添加功能'});
+        this.setState({
+            HomePageArr: funArr,
+        })
+    }
+    _deleteHomeFunc(item){
+        let funcArr = this.state.HomePageArr;
+        for (let i=0; i<funcArr.length; i++){
+            if (funcArr[i].id === item.id){
+                funcArr.splice(i,1);
+            }
+        }
+        this.setState({
+            HomePageArr: funcArr,
+        })
     }
     _itemOnPressAction(item){
         let sectionArr = [];
@@ -93,8 +122,10 @@ export default class AddFunction extends React.Component{
                 if (item.id === func.id){
                     if (func.isXianShi){
                         sectionArr[i]['data'][j].isXianShi = !sectionArr[i]['data'][j].isXianShi;
+                        this._deleteHomeFunc(item);
                     }else {
                         sectionArr[i]['data'][j]['isXianShi'] = true;
+                        this._addHomeFunc(item);
                     }
                 }
             }
@@ -105,6 +136,8 @@ export default class AddFunction extends React.Component{
 
     }
    _ClickHeaderRightAction = () => {
+        AsyncStorage.setItem('homePageFunc', JSON.stringify(this.state.HomePageArr));
+        this.props.navigation.state.params.refresh(this.state.HomePageArr);
         this.props.navigation.goBack();
    }
 }
