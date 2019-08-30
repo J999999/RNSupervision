@@ -111,8 +111,11 @@ const styles = StyleSheet.create({
   },
 });
 */
-
+import URLS from './MVC/Tools/InterfaceApi';
+import {RRCLoading, RRCAlert, RRCToast} from 'react-native-overlayer';
+import {getGuid} from './MVC/Tools/JQGuid';
 import React from 'react';
+import NavigationService from './MVC/Tools/NavigationService'
 import {createAppContainer, createStackNavigator} from 'react-navigation';
 
 import Login from './MVC/Controller/Login'
@@ -120,11 +123,13 @@ import Home from './MVC/Controller/Home'
 import {unitWidth} from "./MVC/Tools/ScreenAdaptation";
 import Mine from './MVC/Controller/Mine'
 import AddFunction from './MVC/Controller/AddFunction'
+import AddIInterview from './MVC/Controller/EffectivenessAccountability/InspectorInterview/AddIInterview'//新增督查约谈
+import IInterviewList from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewList'//督查约谈
+import CheckList from './MVC/View/CheckList'
 import NoticeList from './MVC/Controller/NoticeList';
 import NoticeAdd  from './MVC/Controller/NoticeAdd';
 import NoticeDetail  from './MVC/Controller/NoticeDetail';
 import AttachDetail  from './MVC/Controller/AttachDetail';
-
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -142,14 +147,17 @@ const AppNavigator = createStackNavigator({
       headerLeft: null,
     })
   },
-  AddFunction: {screen: AddFunction},
-  NoticeList:  {screen: NoticeList},
-  NoticeAdd:   {screen: NoticeAdd},
-  NoticeDetail:   {screen: NoticeDetail},
-  AttachDetail:   {screen: AttachDetail},
+    AddFunction: {screen: AddFunction},
+    IInterviewList: {screen: IInterviewList},
+    CheckList: {screen: CheckList},
+    AddIInterview: {screen: AddIInterview},
+    NoticeList:  {screen: NoticeList},
+    NoticeAdd:   {screen: NoticeAdd},
+    NoticeDetail:   {screen: NoticeDetail},
+    AttachDetail:   {screen: AttachDetail},
 
 },{
-  initialRouteName: 'Home',
+  initialRouteName: 'Login',
   defaultNavigationOptions: {
     gesturesEnabled: false,
     headerStyle: {
@@ -164,5 +172,14 @@ const AppNavigator = createStackNavigator({
   },
 });
 
-export default createAppContainer(AppNavigator);
-
+export default class App extends React.Component{
+  render(): React.ReactNode {
+    const Tab = createAppContainer(AppNavigator);
+    return (
+        <Tab
+            ref={navigatorRef => {
+              NavigationService.setTopLevelNavigator(navigatorRef)
+            }}/>
+    )
+  }
+}

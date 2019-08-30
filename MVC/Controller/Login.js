@@ -141,8 +141,8 @@ export default class Login extends React.Component {
             console.log(response.data)
             RRCToast.show(response.msg);
             if (response.result === 1){
-                this.props.navigation.navigate('Home');
                 AsyncStorage.setItem('token', response.data.token);
+                this.props.navigation.navigate('Home');
             }else {
                 this.props.navigation.popToTop();
             }
@@ -151,7 +151,7 @@ export default class Login extends React.Component {
         });
     };
     forgetAction = () => {
-
+        //忘记密码
     };
 }
 

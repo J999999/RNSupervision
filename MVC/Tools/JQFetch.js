@@ -33,7 +33,6 @@ async function fetchGET (url,obj,msg) {
                 'token': token,
             },
         }).then((response) => {
-            console.log(response.json())
             if (response.ok) {
                 return response.json();
             } else {
@@ -56,8 +55,13 @@ async function fetchPromise (url, obj, msg) {
         RRCLoading.setLoadingOptions(options);
         RRCLoading.show();
     }
-    obj['clientType'] = 1;
-console.log("requestJson::::  " +url + JSON.stringify(obj)  )
+    let objBody = '';
+    if (obj === {} || !obj){
+        objBody = JSON.stringify(1);
+    } else {
+        obj['clientType'] = 1;
+        objBody = JSON.stringify(obj);
+    }
     const token = await AsyncStorage.getItem('token');
     return new Promise((resolve, reject) => {
         fetch(url,{
@@ -67,7 +71,7 @@ console.log("requestJson::::  " +url + JSON.stringify(obj)  )
                 'Content-Type': 'application/json',
                 'token': token,
             },
-             body: JSON.stringify(obj)  ,
+            body: objBody,
         }).then((response) => {
             if (response.ok) {
                 return response.json();

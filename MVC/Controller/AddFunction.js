@@ -12,7 +12,6 @@ export default class AddFunction extends React.Component{
             <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{'确定'}</Text>
         </TouchableOpacity>)
     });
-
     constructor (){
         super ();
         this.state = {

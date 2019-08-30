@@ -16,6 +16,7 @@ export default class HomePage extends React.Component {
 
     async componentDidMount(): void {
         const xx = await AsyncStorage.getItem('homePageFunc');
+        console.log(JSON.stringify(xx));
         if (xx) {
             this.setState({
                 data: JSON.parse(xx),
@@ -105,15 +106,23 @@ export default class HomePage extends React.Component {
             data: homeFuncs,
         })
     }
+    /**
+     * 8.通知公告 9.短信群发 12.意见审批 15.督查统计 23.考核成绩展示 27.效能审核 31.经验交流 82.主题责任清单
+     * 83.主体责任落实情况 84.巡查整改完成情况 45.资料云盘...............
+     */
     _ClickItemAction(item){
         switch (item.id) {
             case 8:
-                RRCToast.show(item.name);
                 break;
             case 9:
-                RRCToast.show(item.name);
                 break;
+            case 25:
 
+                break;
+            case 27:
+                //督查约谈
+                this.props.navigation.navigate('IInterviewList');
+                break;
             default:
                 this.props.navigation.navigate('AddFunction',{
                     refresh: (homeFuncs) => {

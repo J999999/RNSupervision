@@ -1,12 +1,32 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
+import {HttpPost} from "../Tools/JQFetch";
+import URLS from "../Tools/InterfaceApi";
+import {RRCToast} from "react-native-overlayer/src";
 
 export default class Mine extends React.Component {
     static navigationOptions = {
         headerTitle: '我的',
         headerLeft: null,
     };
+    constructor (){
+        super ();
+        this.state = {
+            data: {},
+        }
+    }
+    componentDidMount(): void {
+        HttpPost(URLS.LoginUser,{},'正在加载...').then((response)=>{
+            if (response.result !== 1){
+                RRCToast.show(response.msg);
+            } else {
+                this.setState({
+                    data: response.data,
+                })
+            }
+        })
+    }
 
     render() {
         return (
@@ -16,8 +36,8 @@ export default class Mine extends React.Component {
                         <Image source={require('../Images/main_me0.png')}
                                style={{width: 60*unitWidth, height: 60*unitWidth, marginLeft: 20*unitWidth}}/>
                         <View style={{height: 60 * unitWidth, width: 240 * unitWidth, marginLeft: 20 * unitWidth}}>
-                            <Text style={{fontSize: 14*unitWidth}}>miss jiu</Text>
-                            <Text style={{marginTop: 10*unitHeight,fontSize: 14*unitWidth}}>新郑督查项目组</Text>
+                            <Text style={{fontSize: 14*unitWidth}}>{this.state.data.name?this.state.data.name:''}</Text>
+                            <Text style={{marginTop: 10*unitHeight,fontSize: 14*unitWidth}}>{this.state.data.telephone?this.state.data.telephone:''}</Text>
                         </View>
                     </View>
                     <Image source={require('../Images/goRight.png')}
