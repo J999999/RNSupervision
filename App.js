@@ -111,9 +111,7 @@ const styles = StyleSheet.create({
   },
 });
 */
-import URLS from './MVC/Tools/InterfaceApi';
-import {RRCLoading, RRCAlert, RRCToast} from 'react-native-overlayer';
-import {getGuid} from './MVC/Tools/JQGuid';
+
 import React from 'react';
 import {createAppContainer, createStackNavigator} from 'react-navigation';
 
@@ -122,6 +120,11 @@ import Home from './MVC/Controller/Home'
 import {unitWidth} from "./MVC/Tools/ScreenAdaptation";
 import Mine from './MVC/Controller/Mine'
 import AddFunction from './MVC/Controller/AddFunction'
+import NoticeList from './MVC/Controller/NoticeList';
+import NoticeAdd  from './MVC/Controller/NoticeAdd';
+import NoticeDetail  from './MVC/Controller/NoticeDetail';
+import AttachDetail  from './MVC/Controller/AttachDetail';
+
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -140,8 +143,13 @@ const AppNavigator = createStackNavigator({
     })
   },
   AddFunction: {screen: AddFunction},
+  NoticeList:  {screen: NoticeList},
+  NoticeAdd:   {screen: NoticeAdd},
+  NoticeDetail:   {screen: NoticeDetail},
+  AttachDetail:   {screen: AttachDetail},
+
 },{
-  initialRouteName: 'Login',
+  initialRouteName: 'Home',
   defaultNavigationOptions: {
     gesturesEnabled: false,
     headerStyle: {
@@ -153,7 +161,6 @@ const AppNavigator = createStackNavigator({
       fontWeight: 'bold',
     },
     headerBackTitle: '返回',
-    //header:null,
   },
 });
 

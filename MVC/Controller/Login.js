@@ -15,8 +15,8 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            userName: '',
-            password: '',
+            userName: 'cb',
+            password: '123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -72,7 +72,8 @@ export default class Login extends React.Component {
                                    placeholder={'请输入用户名'}
                                    onChangeText={(text)=>{this.setState({userName:text})}}
                                    value={this.state.userName}
-                                   keyboardType={'numeric'}
+                                   autoCapitalize="none"
+                                   // keyboardType={'numeric'}
                                    maxLength={11}>
                         </TextInput>
                     </View>
@@ -137,6 +138,7 @@ export default class Login extends React.Component {
             'password': this.state.password,
             'imsi': this.state.imsi,
         },'正在登录...',).then((response)=>{
+            console.log(response.data)
             RRCToast.show(response.msg);
             if (response.result === 1){
                 this.props.navigation.navigate('Home');

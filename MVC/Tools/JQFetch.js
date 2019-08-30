@@ -33,6 +33,7 @@ async function fetchGET (url,obj,msg) {
                 'token': token,
             },
         }).then((response) => {
+            console.log(response.json())
             if (response.ok) {
                 return response.json();
             } else {
@@ -56,6 +57,7 @@ async function fetchPromise (url, obj, msg) {
         RRCLoading.show();
     }
     obj['clientType'] = 1;
+console.log("requestJson::::  " +url + JSON.stringify(obj)  )
     const token = await AsyncStorage.getItem('token');
     return new Promise((resolve, reject) => {
         fetch(url,{
@@ -65,7 +67,7 @@ async function fetchPromise (url, obj, msg) {
                 'Content-Type': 'application/json',
                 'token': token,
             },
-            body: JSON.stringify(obj),
+             body: JSON.stringify(obj)  ,
         }).then((response) => {
             if (response.ok) {
                 return response.json();
@@ -82,7 +84,40 @@ async function fetchPromise (url, obj, msg) {
     })
 }
 
-//带附件
+//仅附件
+
+async function fetchPromiseFile (url, files, msg) {
+    if (msg){
+        const options = {text: msg};
+        RRCLoading.setLoadingOptions(options);
+        RRCLoading.show();
+    }
+    obj['clientType'] = 1;
+    const token = await AsyncStorage.getItem('token');
+    return new Promise((resolve, reject) => {
+        fetch(url,{
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data;charset=utf-8',
+                'token': token,
+            },
+            body:  files ,
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                reject(new Error('服务器异常'));
+            }
+        }).then((responseJson) => {
+            resolve(responseJson);
+        }).catch((err) => {
+            reject(new Error(err));
+        }).finally(()=>{
+            RRCLoading.hide();
+        })
+    })
+}
 
 //race任务
 const _fetch = (fetchPromise, timeout) => {
