@@ -17,6 +17,8 @@ export default class Login extends React.Component {
         this.state = {
             userName: 'cb',
             password: '123456',
+            // userName: 'dcdb1',
+            // password: '123456',
             keyboardShown: false,
             imsi: '',
         };

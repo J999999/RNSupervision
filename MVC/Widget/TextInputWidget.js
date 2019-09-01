@@ -34,6 +34,7 @@ class TextInputWidget extends Component{
                                 underlineColorAndroid='transparent'
                                 placeholder = { this.props.placeholder }
                                 onChangeText={this.props.onChangeText}
+                                   defaultValue={this.props.defaultValue}
                                    value = {this.props.value}
                       />
                     </View>

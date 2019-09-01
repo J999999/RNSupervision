@@ -18,7 +18,7 @@ export default class Function extends React.Component {
 
     componentDidMount(): void {
         AsyncStorage.getItem('userMenu').then((value) => {
-            console.log(value)
+            // console.log(value)
             this.setState({
                 data: JSON.parse(value),
             })

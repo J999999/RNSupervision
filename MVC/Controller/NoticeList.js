@@ -1,6 +1,6 @@
 import React from 'react';
 import URLS from '../Tools/InterfaceApi';
-import {RRCToast} from 'react-native-overlayer/src';
+import {RRCAlert, RRCToast} from 'react-native-overlayer/src';
 import {View, StyleSheet, Text, FlatList, TouchableHighlight, DeviceEventEmitter, TouchableOpacity,Image} from 'react-native';
 import { HttpPost} from '../Tools/JQFetch';
 import {unitWidth} from '../Tools/ScreenAdaptation';
@@ -35,7 +35,7 @@ export default class NoticeList extends React.Component {
     }
     fetchData(){
         HttpPost(URLS.QueryNoticeList,{},"获取公告通知").then((response)=>{
-            console.log(response)
+            // console.log(response)
             console.log(response.data)
 
             if(!response || !response.data && response.data.result != 1){
@@ -58,7 +58,22 @@ export default class NoticeList extends React.Component {
         });
     }
 
+    callbackRecall = (item, index) =>{
+        if(index===0){
+            this.fetchRecall(item)
+        }
+    }
+
+    callbackDelete = (item, index) =>{
+        if(index===0){
+            this.fetchDelete(item)
+        }
+    }
+
+
     fetchRecall(item){
+
+
         HttpPost(URLS.NoticeRecall,{id:item.id},"正在撤销").then((response)=>{
             console.log(response)
 
@@ -91,7 +106,7 @@ export default class NoticeList extends React.Component {
 
     // 自定义分割线
     _renderItemSeparatorComponent = ({highlighted}) => (
-        <View style={{ height:0.2, backgroundColor:'#000' }}></View>
+        <View style={{ height:1, backgroundColor:'#F4F4' }}></View>
     );
 
     // 下拉刷新
@@ -159,44 +174,25 @@ class FlatListItem extends React.PureComponent {
         super(props);
     }
 
-    /**
-     * buttons: Array(1)
-         0:
-         code: "RECALL"
-         title: "撤回"
-     content: "后天周日后天周日"
-     createTime: "2019-08-23T09:25:27.000+0000"
-     creatorId: 30
-     creatorName: "王彦亮"
-     creatorUnit: 4
-     files: null
-     id: 8
-     publishTime: "2019-08-23T09:25:27.000+0000"
-     publishTimeStr: "2019-08-23 17:25:27"
-     queryEndTime: null
-     queryStartTime: null
-     queryStr: null
-     readList: null
-     readState: 0
-     showState: "未读"
-     state: 1
-     title: "后天周日"
-     * @returns {*}
-     *
-     * // this.props.detail.buttons && <Image style={styles.unread} source={require("../Images/sc_delete.png") }/>
-     */
-
     render() {
 
         var images = [];
         if(this.props.detail.buttons){
             for(let item in this.props.detail.buttons){
-                switch (this.props.detail.buttons[item].code) {
+                switch (this.props.detail.buttons[item].name) {
                     case 'RECALL':
                         images.push(
                             <TouchableOpacity
                                 onPress={()=>{
-                                     context.fetchRecall(this.props.detail)
+                                    // context.fetchRecall(this.props.detail)
+
+                                    RRCAlert.alert("提示","是否确定要进行撤销操作？",[{
+                                        text: '是' ,style:{color:'#38ADFF', fontWeight: 'bold'}}
+                                        ,{
+                                            text: '否',style:{color:'#38ADFF', fontWeight: 'bold'}
+                                        }
+                                    ],context.callbackRecall.bind(this,this.props.detail))
+
                                 }}   >
                                 <Image style={styles.image}  source={require("../Images/icon_recall.png") }  />
                             </TouchableOpacity> )
@@ -214,7 +210,13 @@ class FlatListItem extends React.PureComponent {
                         images.push(
                             <TouchableOpacity
                                  onPress={()=>{
-                                    context.fetchDelete(this.props.detail)
+                                    // context.fetchDelete(this.props.detail)
+                                     RRCAlert.alert("提示","是否确定要进行删除操作？",[{
+                                         text: '是' ,style:{color:'#38ADFF', fontWeight: 'bold'}}
+                                         ,{
+                                             text: '否',style:{color:'#38ADFF', fontWeight: 'bold'}
+                                         }
+                                     ],context.callbackDelete.bind(this,this.props.detail))
                                 }}   >
                                 <Image style={styles.image} source={require("../Images/icon_delete.png") }  />
                             </TouchableOpacity> )
@@ -295,8 +297,8 @@ var styles = StyleSheet.create({
         },
         image : {
             marginBottom:8,
-            width: 25,
-            height: 25
+            width: 20,
+            height: 20
         },
     }
 )

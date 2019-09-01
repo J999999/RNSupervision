@@ -5,7 +5,7 @@ import {
     View,
     Button,
     Alert,
-    Image, ScrollView, TouchableHighlight, TouchableOpacity, Dimensions, DeviceEventEmitter,
+    Image, ScrollView, TouchableOpacity, Dimensions,
 } from 'react-native';
 
 var screenWidth = Dimensions.get('window').width;
@@ -19,46 +19,13 @@ class NoticeDetail extends Component {
         }
     };
 
-    componentWillUnmount() {
-        DeviceEventEmitter.emit('refresh');
-    }
-
-    componentDidMount(){
-        let {params} = this.props.navigation.state;
-        // if(params.new && params.new.staffChildNotice && params.new.staffChildNotice.isread == 0 )
-        //     this._updateNoticeState(params.new.id);
-     }
-
-    _updateNoticeState = async (id) => {
-        // let formData = new FormData();
-        // formData.append("id",id);
-        // formData.append("memberId",'7756');
-        //
-        // fetch(this.REQUEST_URL_GET,{
-        //     method:'POST',
-        //     headers:{
-        //         'Accept':'application/json',
-        //         'Content-Type': 'multipart/form-data;charset=utf-8',
-        //     },
-        //     body:formData,
-        // }).then((response)=>{
-        //     return response.json() ;
-        // }).then((responseData)=>{
-        //     // console.warn(responseData);
-        //     Toast.show(responseData.msg);
-        //  }).catch((error)=>{
-        //     console.log(error)
-        // })
-    }
-
-
     render(){
         const  {params} = this.props.navigation.state;
 
         var buttons = [] ;
         var images = [];
 
-        for(let i in params.new.attachmentList){
+        for(let i in params.new.fileList){
             var button = (
                 <TouchableOpacity  key = {i}  style= {styles.down}
                     onPress={() =>
@@ -67,8 +34,7 @@ class NoticeDetail extends Component {
                     })}>
 
                     <Text   numberOfLines = {1}
-                            // style={styles.downText}> {'下载附件:'+ params.new.attachmentList[i].fileName} </Text>
-                            style={styles.downText}> {'下载附件:'} </Text>
+                            style={styles.downText}> {'下载附件:'+ params.new.fileList[i].name} </Text>
                 </TouchableOpacity>
             );
 
@@ -76,9 +42,8 @@ class NoticeDetail extends Component {
                 <Image
                     key ={i+1}
                     style={styles.img}
-                    // source={{ uri: params.new.attachmentList[i].fileUrl }} />
-                    source={{ uri:  '' }} />
-            );
+                    source={{ uri: params.new.fileList[i].url }} />
+             );
 
             buttons.push(button);
             images.push(image)

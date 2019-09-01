@@ -62,6 +62,7 @@ async function fetchPromise (url, obj, msg) {
         obj['clientType'] = 1;
         objBody = JSON.stringify(obj);
     }
+    console.log(url+'---------'+objBody)
     const token = await AsyncStorage.getItem('token');
     return new Promise((resolve, reject) => {
         fetch(url,{
@@ -96,7 +97,7 @@ async function fetchPromiseFile (url, files, msg) {
         RRCLoading.setLoadingOptions(options);
         RRCLoading.show();
     }
-    obj['clientType'] = 1;
+    files.append('clientType',1)
     const token = await AsyncStorage.getItem('token');
     return new Promise((resolve, reject) => {
         fetch(url,{
@@ -130,6 +131,9 @@ const _fetch = (fetchPromise, timeout) => {
 const _fetchGet = (fetchGET, timeout) => {
     return Promise.race([fetchGET, delay(timeout)]);
 };
+const _fetchFile = (fetchPromiseFile, timeout) => {
+    return Promise.race([fetchPromiseFile, delay(timeout)]);
+};
 //post
 const HttpPost = (url, formData, msg, timeout = 30*1000)  =>{
     return _fetch(fetchPromise(url, formData, msg), timeout);
@@ -140,4 +144,10 @@ const HttpGet = (url, formData, msg, timeout = 30*1000)  =>{
     return _fetchGet(fetchGET(url, formData, msg), timeout);
 };
 
-export {HttpPost ,HttpGet}
+//file
+const HttpPostFile = (url, formData, msg, timeout = 30*1000)  =>{
+    return _fetchFile(fetchPromiseFile(url, formData, msg), timeout);
+};
+
+
+export {HttpPost ,HttpGet,HttpPostFile}

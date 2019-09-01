@@ -16,7 +16,7 @@ export default class HomePage extends React.Component {
 
     async componentDidMount(): void {
         const xx = await AsyncStorage.getItem('homePageFunc');
-        console.log(JSON.stringify(xx));
+        // console.log(JSON.stringify(xx));
         if (xx) {
             this.setState({
                 data: JSON.parse(xx),

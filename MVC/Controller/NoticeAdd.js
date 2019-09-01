@@ -4,18 +4,17 @@ import {
     Text,
     View,
     Button,
-    Image, TouchableNativeFeedback, Dimensions, PixelRatio, TouchableOpacity,DeviceEventEmitter
+    Image, Dimensions, PixelRatio, TouchableOpacity
 } from 'react-native';
 import TextInputWidget from "../Widget/TextInputWidget";
 import TextInputMultWidget from "../Widget/TextInputMultWidget";
 import TextFileSelectWidget from "../Widget/TextFileSelectWidget";
-
+import {height} from '../Tools/ScreenAdaptation'
 import ImagePicker from 'react-native-image-picker' ;
-import {Spin,Toast} from 'react-smart';
 import URLS from '../Tools/InterfaceApi';
-import {HttpPost} from '../Tools/JQFetch';
+import {HttpPost, HttpPostFile} from '../Tools/JQFetch';
 import {RRCToast} from 'react-native-overlayer/src';
-
+import {KeyboardAwareScrollView} from  'react-native-keyboard-aware-scroll-view';
 
 var options = {
     title: '选择文件',
@@ -31,7 +30,7 @@ var options = {
 var screenWidth = Dimensions.get('window').width;
 var navigation = null;
 var attachItem = null;
-
+var bean = null;
 class NewsAdd  extends React.Component {
 
     constructor(props){
@@ -40,30 +39,39 @@ class NewsAdd  extends React.Component {
         this.content = "";
         this.fileList = [];
         navigation = this.props.navigation;
-
         this.state = {
             hasAttach:false,
         }
      }
 
-    componentWillUnmount() {
-        DeviceEventEmitter.emit('refresh');
+    uploadNoticeInfo=(files)=> {
+        let requestData = {"title":this.title,"content":this.content,"fileList":files};
+        HttpPost(URLS.AddNotice,requestData,"正在保存..").then((response)=>{
+            RRCToast.show(response.msg);
+            if(response.result == 1){
+                navigation.goBack();
+            }else{
+                alert(response.msg);
+            }
+
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
     }
 
-    _pressSumbit=()=>{
+    _pressSumbit =()=> {
 
         if(this.title==""){
-            alert("请输入标题");
+            RRCToast.show("请输入标题");
             return;
         }
 
         if(this.content==""){
-            alert("请输入内容");
+            RRCToast.show("请输入内容");
             return ;
         }
 
-        var files = ''
-        var fileIsSuccess = false
+        var files = []
 
         if(this.fileList &&  this.fileList.length>0){
             var formData = new FormData();
@@ -72,13 +80,11 @@ class NewsAdd  extends React.Component {
                 formData.append('files',file);
             }
 
-
-            HttpPost(URLS.FileUpload,formData,"正在上传文件..").then((response)=>{
-                console.log(response)
+             HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
                 if(response.result == 1){
-                    files = response.result.data
-                    fileIsSuccess = true
-                }else{
+                    files = response.data
+                    this.uploadNoticeInfo(files)
+                 }else{
                     alert(response.msg);
                 }
 
@@ -86,34 +92,17 @@ class NewsAdd  extends React.Component {
                 RRCToast.show(err);
             });
         }else{
-            fileIsSuccess = true
+            this.uploadNoticeInfo([])
         }
 
 
-        if(fileIsSuccess){
-            let requestData = {"title":this.title,"content":this.content,"files":files};
-
-            HttpPost(URLS.AddNotice,requestData,"正在保存..").then((response)=>{
-                console.log(response)
-
-                RRCToast.show(response.msg);
-                if(response.result == 1){
-                    // Toast.show("数据提交成功");
-                    navigation.goBack();
-                }else{
-                    alert(response.msg);
-                }
-
-            }).catch((err)=>{
-                RRCToast.show(err);
-            });
-        }
     };
+
+
 
     takePicture = async function() {
 
         ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
 
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -128,7 +117,7 @@ class NewsAdd  extends React.Component {
                 let source = { uri: response.uri };
 
                 for(let i in this.fileList){
-                    if(this.fileList[i].path == response.path){
+                    if(this.fileList[i].uri == response.uri){
                         alert('不能重复添加');
                         return;
                     }
@@ -164,9 +153,6 @@ class NewsAdd  extends React.Component {
         }
     }
 
-    // _pressReceiver = () =>{
-    //     navigation.navigate('Receiver');
-    // }
 
     static  _pressDetail = ()=> {
         navigation.navigate('AttachDetail',{item : attachItem});
@@ -186,6 +172,7 @@ class NewsAdd  extends React.Component {
     });
 
     render(){
+        const  {params} = this.props.navigation.state;
 
         var fileButtons = [] ;
 
@@ -214,16 +201,19 @@ class NewsAdd  extends React.Component {
             fileButtons.push(button);
         } ;
 
+
+
         return (
             <View style = {styles.all}>
+            <KeyboardAwareScrollView style = {styles.all}>
 
                 <View style={styles.edit}>
 
-                    <TextInputWidget    title='标    题：'  placeholder='请输入' onChangeText={(text)=>{
-                        this.title = text;
+                    <TextInputWidget  defaultValue={params && params.bean!== undefined ? params.bean.title :''}  title='标    题：'  placeholder='请输入' onChangeText={(text)=>{
+                            this.title = text;
                     }}/>
-                    <TextInputMultWidget  title='内    容：'  placeholder='请输入' onChangeText={(text)=>{
-                        this.content = text;
+                    <TextInputMultWidget defaultValue={params && params.bean!== undefined ? params.bean.content :''}  title='内    容：'  placeholder='请输入' onChangeText={(text)=>{
+                            this.content = text;
                     }}/>
 
                     {
@@ -235,12 +225,14 @@ class NewsAdd  extends React.Component {
                 </View>
 
 
+
+            </KeyboardAwareScrollView>
+
                 <TouchableOpacity style={styles.button}    onPress={this._pressSumbit} >
-                        <Text style={styles.buttonText}>提交</Text>
+                    <Text style={styles.buttonText}>提交</Text>
                 </TouchableOpacity>
 
             </View>
-
         );
     }
 }
