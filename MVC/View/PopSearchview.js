@@ -35,27 +35,26 @@ export default class PopSearchview extends React.Component{
         super (props);
         this.state = {
             searchInfo: [],
+            jumpToArr: [],  // 跳转类型的值
         }
     }
     _show(){
         this.popSearch.show();
     }
     _addSearchInfo(info){
-
+        console.log(info);
         let map = [];
         map = map.concat(this.state.searchInfo);
 
         if (this._isInclude(info, map)){
-            for (let i=0; i<map.length; i++){
-                if (map[i].title === info.title){
-                    if (info.type === 1){
-                        info.data.start ? map[i].data.start = info.data.start : map[i].data.end = info.data.end;
-                    } else {
-                        map[i].data = info.data;
-                    }
+            map.map((i)=>{
+                if (i.title === info.title){
+                    RRCToast.show('22');
+                    i = info;
                 }
-            }
+            });
         } else {
+            RRCToast.show('11');
             map.push(info);
         }
 
@@ -63,6 +62,7 @@ export default class PopSearchview extends React.Component{
             searchInfo: map,
         })
     }
+
     _isInclude = (info, arr) => {
         let value= info.title;
         for (let i=0;i<arr.length;i++){
@@ -85,17 +85,20 @@ export default class PopSearchview extends React.Component{
                     if (i.type === 1){
                         return <JQDatePicker key={i.name}
                                              leftTitle={i.name}
+                                             postKeyName={i.postKeyName}
                                              callBack={this._addSearchInfo.bind(this)}/>
                     }
                     if (i.type === 2){
                         return <JQSingleInput key={i.name}
                                               leftTitle={i.name}
+                                              postKeyName={i.postKeyName}
                                               callBack={this._addSearchInfo.bind(this)}/>
                     }
                     if (i.type === 3){
                         return <JQJumpTo key={i.name}
                                          leftTitle={i.name}
                                          dataSource={i.dataSource}
+                                         postKeyName={i.postKeyName}
                                          callBack={this._addSearchInfo.bind(this)}/>
                     }
                     if (i.type === 4){
@@ -123,6 +126,6 @@ export default class PopSearchview extends React.Component{
         )
     }
     _screen(){
-        RRCAlert.alert(JSON.stringify(this.state.searchInfo));
+        console.log(this.state.searchInfo);
     }
 }

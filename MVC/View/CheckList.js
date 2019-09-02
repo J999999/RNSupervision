@@ -28,12 +28,12 @@ export default class CheckList extends React.Component{
         let dataArr = [];
         dataArr = dataArr.concat(this.state.data);
         for (let i=0; i<arr.length; i++){
-            dataArr.push({'code':i, 'name':arr[i], 'select': false});
+            dataArr.push({'code':i, 'name':arr[i].name, 'select': false, 'id': arr[i].id});
         }
         this.setState({data: dataArr});
     }
     _ClickHeaderRightAction = () => {
-        this.props.navigation.state.params.refresh(this.state.InputString);
+        this.props.navigation.state.params.refresh(this.state.data);
         this.props.navigation.goBack();
     };
 
@@ -81,11 +81,6 @@ export default class CheckList extends React.Component{
         arr.map((i)=>{
             if (i.name === item.name){
                 i.select = !item.select;
-                if (i.select){
-                    this.setState({InputString: this.state.InputString + i.name + ','})
-                }else {
-                    this.setState({InputString: this.state.InputString.replace(i.name + ',','')})
-                }
             }
         });
         this.setState({data: arr});

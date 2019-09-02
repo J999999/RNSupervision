@@ -20,7 +20,7 @@ export default class NoticeList extends React.Component {
             sourceData : []
             ,selected: (new Map(): Map<String, boolean>)
             ,refreshing: false
-        }
+        };
         this.fetchData = this.fetchData.bind(this);
     }
 

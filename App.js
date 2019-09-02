@@ -157,7 +157,7 @@ const AppNavigator = createStackNavigator({
     AttachDetail:   {screen: AttachDetail},
 
 },{
-  initialRouteName: 'Login',
+  initialRouteName: 'Home',
   defaultNavigationOptions: {
     gesturesEnabled: false,
     headerStyle: {

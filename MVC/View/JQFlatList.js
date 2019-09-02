@@ -82,7 +82,7 @@ export default class JQFlatList extends React.Component{
                       ItemSeparatorComponent={ItemSeparatorComponent}
                       ListEmptyComponent={ListEmptyComponent}
                       ListFooterComponent={this._ListFooterComponent}
-                      onEndReachedThreshold={0.1}
+                      onEndReachedThreshold={20*unitWidth}
                       refreshControl={
                           <RefreshControl
                               refreshing={refreshing}

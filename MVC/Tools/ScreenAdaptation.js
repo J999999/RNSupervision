@@ -5,13 +5,13 @@ const designWidth = 375; //750
 const designHeight = 812; //1334
 
 //手机屏幕的宽度/高度
-export const width = Dimensions.get('window').width;
-export const height = Dimensions.get('window').height;
+export const screenWidth = Dimensions.get('window').width;
+export const screenHeight = Dimensions.get('window').height;
 
 //计算手机屏幕宽度对应设计图宽度的单位宽度(手机屏幕和设计图宽度比)
-export const unitWidth = width / designWidth;
+export const unitWidth = screenWidth / designWidth;
 //计算手机屏幕高度对应设计图高度的单位高度(手机屏幕和设计图高度比)
-export const unitHeight = height / designHeight;
+export const unitHeight = screenHeight / designHeight;
 
 export const statusBarHeight = getStatusBarHeight();
 export const safeAreaViewHeight = isIphoneX() ? 34 : 0;
@@ -30,7 +30,7 @@ export const fontScale = PixelRatio.getFontScale();
 export function isIphoneX() {
     const X_WIDTH = 375;
     const X_HEIGHT = 812;
-    return Platform.OS === 'ios' && (height === X_HEIGHT && width === X_WIDTH);
+    return Platform.OS === 'ios' && (screenHeight === X_HEIGHT && screenWidth === X_WIDTH);
 }
 //状态栏高度
 export function getStatusBarHeight() {

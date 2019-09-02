@@ -11,6 +11,7 @@ import {
     PixelRatio,
     Dimensions
 }from 'react-native';
+import {unitWidth} from "../Tools/ScreenAdaptation";
 
 var screenWidth = Dimensions.get('window').width;
 
@@ -52,21 +53,20 @@ const styles = StyleSheet.create({
 
     rowContainer: {
         backgroundColor: '#FFF',
-        width:screenWidth,
+        width: screenWidth,
     },
     row: {
         flexDirection: 'row',
-        height: 55,
+        height: 54*unitWidth,
         alignItems: 'center',
-        borderBottomWidth: 0.5 / PixelRatio.get(),
-        borderColor:'gray',//需要标色
-
+        borderBottomWidth: unitWidth ,
+        borderColor: '#F4F4F4',//需要标色
     },
     textInputTitle: {
-        width: 80,
-        fontSize: 15,
+        width: 80*unitWidth,
+        fontSize: 15*unitWidth,
         color: '#333',
-        marginLeft: 15,
+        marginLeft: 15*unitWidth,
     },
 
     textInputEdit:{
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     },
 
     rightArrow:{
-        paddingLeft:10,
-        marginRight: 15,
+        paddingLeft: 10*unitWidth,
+        marginRight: 15*unitWidth,
     }
 
 });
 
-module.exports = TextInputWidget
+module.exports = TextInputWidget;

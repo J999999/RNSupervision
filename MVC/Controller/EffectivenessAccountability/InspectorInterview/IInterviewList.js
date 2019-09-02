@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, RefreshControl} from 'react-native';
 import {HttpPost} from "../../../Tools/JQFetch";
 import URLS from "../../../Tools/InterfaceApi";
 import {unitHeight, unitWidth} from "../../../Tools/ScreenAdaptation";
@@ -7,6 +7,10 @@ import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import PopSearchview from '../../../View/PopSearchview'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import JQFlatList from '../../../View/JQFlatList'
+
+var options = {
+    onEndReachedCalled: false,
+};
 
 export default class IInterviewList extends React.Component{
     static navigationOptions = ({navigation}) => ({
@@ -26,6 +30,7 @@ export default class IInterviewList extends React.Component{
             nomore: false,
             pageSize: 0,
             pageNumber: 1,
+            isRefreshing: false,
         }
     }
     componentDidMount(): void {
@@ -77,20 +82,54 @@ export default class IInterviewList extends React.Component{
                         })
                     }
                 }
+        }).catch((err)=>{
+
         });
+    };
+    _onScroll = (evt) => {
+        const event = evt['nativeEvent'];
+        const _num = event['contentSize']['height'] - event['layoutMeasurement']['height'] - event['contentOffset']['y'];
+
+        if (event['contentSize']['height'] > event['layoutMeasurement']['height'] && _num < -50) {
+            this._onEndReached();
+        }
     };
     render(): React.ReactNode {
         return (
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+                                     onScroll={this._onScroll.bind(this)}
+                                     refreshControl={
+                                         <RefreshControl
+                                             refreshing={this.state.isRefreshing}
+                                             onRefresh={this._onRefresh.bind(this)}
+                                         />
+                                     }
+            >
                 <PopSearchview dataSource={[
-                    {'name':'查询编号', 'type':2},
-                    {'name':'事项来源', 'type':3, 'dataSource': ['内部转办', '领导交办', '临时交办']},
-                    {'name':'约谈对象', 'type':2},
-                    {'name':'约谈事项', 'type':2},
-                    {'name':'状态查询', 'type':3, 'dataSource': ['待约谈','发布待审核','待发布','已保存','已发布','已撤回']},
-                    {'name':'发布时间', 'type':1},
-                    {'name':'提交时间', 'type':1},
-                    {'name':'约谈完成时间', 'type':1},
+                    {'name':'查询编号', 'type':2, 'postKeyName':'billCode'},
+                    {'name':'事项来源', 'type':3, 'postKeyName':'sourceTypes', 'dataSource':
+                            [
+                                {'name': '内部转办', 'id': '1'},
+                                {'name': '领导交办', 'id': '2'},
+                                {'name': '临时交办', 'id': '3'},
+                            ]
+                    },
+                    {'name':'约谈对象', 'type':2, 'postKeyName':'interviewName'},
+                    {'name':'约谈事项', 'type':2, 'postKeyName':'matter'},
+                    {'name':'状态查询', 'type':3, 'postKeyName':'states', 'dataSource':
+                            [
+                                {'name': '待约谈', 'id': '1'},
+                                {'name': '已保存', 'id': '2'},
+                                {'name': '发布待审核', 'id': '3'},
+                                {'name': '待发布', 'id': '4'},
+                                {'name': '已发布', 'id': '5'},
+                                {'name': '已撤回', 'id': '6'},
+                                {'name': '驳回', 'id': '7'},
+                            ]
+                    },
+                    {'name':'发布时间', 'type':1, 'postKeyName':'releaseTime'},
+                    {'name':'提交时间', 'type':1, 'postKeyName':'reportTime'},
+                    {'name':'约谈完成时间', 'type':1, 'postKeyName':'finishTime'},
                 ]}
                                ref={ref => this.popSearchview = ref}
                                callback={(c)=>{}}
@@ -99,8 +138,6 @@ export default class IInterviewList extends React.Component{
                     data={this.state.data}
                     keyExtractor={(item , index)=> index.toString()}
                     renderItem={this._renderItemAction.bind(this)}
-                    onEndReached={this._onEndReached}
-                    onRefresh={({item}) => {this._onRefresh()}}
                     nomore={this.state.nomore}
                     ItemSeparatorComponent={()=> <View style={{height: 1, backgroundColor: '#F4F4F4'}}/>}
                 />

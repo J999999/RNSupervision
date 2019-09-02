@@ -7,6 +7,7 @@ import {RRCToast} from "react-native-overlayer/src";
 export default class JQSingleInput extends React.Component{
     static propTypes = {
         leftTitle: PropTypes.string.isRequired,
+        postKeyName: PropTypes.string.isRequired,
         callBack: PropTypes.func,
     };
 
@@ -14,10 +15,17 @@ export default class JQSingleInput extends React.Component{
         super (props);
         this.state = {
             text:'',
+            data: {},
         }
     }
     _done(event){
-        this.props.callBack({'title':this.props.leftTitle, 'data':event.nativeEvent.text});
+        let xx = this.state.data;
+        xx['title'] = this.props.leftTitle;
+        let keyName = this.props.postKeyName;
+        xx[keyName] = event.nativeEvent.text;
+        this.setState({data: xx}, ()=>{
+            this.props.callBack(this.state.data);
+        });
     }
     render(): React.ReactNode {
         return (
