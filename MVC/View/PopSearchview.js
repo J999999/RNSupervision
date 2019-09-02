@@ -86,6 +86,7 @@ export default class PopSearchview extends React.Component{
                         return <JQDatePicker key={i.name}
                                              leftTitle={i.name}
                                              postKeyName={i.postKeyName}
+                                             postKeyNameEnd={i.postKeyNameEnd}
                                              callBack={this._addSearchInfo.bind(this)}/>
                     }
                     if (i.type === 2){

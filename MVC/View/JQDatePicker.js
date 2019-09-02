@@ -9,6 +9,7 @@ export default class JQDatePicker extends React.Component{
     static propTypes = {
         leftTitle: PropTypes.string.isRequired,
         postKeyName: PropTypes.string.isRequired,
+        postKeyNameEnd: PropTypes.string.isRequired,
         callBack: PropTypes.func,
     };
     constructor (props){
@@ -24,8 +25,8 @@ export default class JQDatePicker extends React.Component{
 
         type === 'start' ? this.setState({startTime: datetime}): this.setState({endTime: datetime});
 
-        let keyStart = this.props.postKeyName + 'Start';
-        let keyEnd = this.props.postKeyName + 'End';
+        let keyStart = this.props.postKeyName;
+        let keyEnd = this.props.postKeyNameEnd;
         let xx = this.state.data;
         xx['title'] = this.props.leftTitle;
         type === 'start' ? xx[keyStart] = datetime : xx[keyEnd] = datetime;
