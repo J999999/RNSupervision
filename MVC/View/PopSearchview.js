@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, KeyboardAvoidingView} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import PopSearch from '../View/PopSearch'
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import PropTypes from 'prop-types'
@@ -8,6 +8,7 @@ import JQSingleInput from '../View/JQSingleInput'
 import JQActionSheet from '../View/JQActionSheet'
 import JQJumpTo from '../View/JQJumpTo'
 import {unitWidth} from "../Tools/ScreenAdaptation";
+
 
 /**
  * @param type 组件类型，详情见下方123456789
@@ -42,24 +43,20 @@ export default class PopSearchview extends React.Component{
         this.popSearch.show();
     }
     _addSearchInfo(info){
-        console.log(info);
         let map = [];
         map = map.concat(this.state.searchInfo);
+        let stateArr = [];
+        stateArr = map;
+        map.map((i)=>{
+            if (i.title === info.title){
+                stateArr.splice(i,1);
+            }
+        });
+        stateArr.push(info);
 
-        if (this._isInclude(info, map)){
-            map.map((i)=>{
-                if (i.title === info.title){
-                    RRCToast.show('22');
-                    i = info;
-                }
-            });
-        } else {
-            RRCToast.show('11');
-            map.push(info);
-        }
-
+        console.log('map = ', stateArr );
         this.setState({
-            searchInfo: map,
+            searchInfo: stateArr,
         })
     }
 
@@ -80,7 +77,8 @@ export default class PopSearchview extends React.Component{
     render(): React.ReactNode {
         return (
             <PopSearch modalBoxHeight={54*this.props.dataSource.length+54}
-                ref={ref => this.popSearch = ref}>
+                       ref={ref => this.popSearch = ref}
+            >
                 {this.props.dataSource.map((i)=>{
                     if (i.type === 1){
                         return <JQDatePicker key={i.name}
@@ -102,18 +100,6 @@ export default class PopSearchview extends React.Component{
                                          postKeyName={i.postKeyName}
                                          callBack={this._addSearchInfo.bind(this)}/>
                     }
-                    if (i.type === 4){
-
-                    }
-                    if (i.type === 5){
-
-                    }
-                    if (i.type === 6){
-
-                    }
-                    if (i.type === 7){
-
-                    }
                 })}
                 <View style={{height: 54*unitWidth}}>
                     <TouchableOpacity activeOpacity={.5} onPress={this._screen.bind(this)}>
@@ -127,6 +113,9 @@ export default class PopSearchview extends React.Component{
         )
     }
     _screen(){
-        console.log(this.state.searchInfo);
+        this.props.callback(this.state.searchInfo);
+        this.setState({searchInfo: {}}, ()=>{
+            this.popSearch.hide();
+        });
     }
 }

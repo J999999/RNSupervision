@@ -1,133 +1,166 @@
-import React from 'react';
-import {View, StyleSheet, Text, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
-import PropTypes from 'prop-types';
-import {unitWidth} from "../Tools/ScreenAdaptation";
+import React, {PureComponent} from 'react'
+import {View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native'
 
-export default class JQFlatList extends React.Component{
+export const RefreshState = {
+    Idle: 0,
+    HeaderRefreshing: 1,
+    FooterRefreshing: 2,
+    NoMoreData: 3,
+    Failure: 4,
+};
+
+const DEBUG = false;
+const log = (text: string) => {DEBUG && console.log(text)};
+
+type Props = {
+    refreshState: number,
+    onHeaderRefresh: (refreshState: number) => void,
+    onFooterRefresh?: (refreshState: number) => void,
+    data: Array<any>,
+
+    footerContainerStyle?: any,
+    footerTextStyle?: any,
+
+    listRef?: any,
+
+    footerRefreshingText?: string,
+    footerFailureText?: string,
+    footerNoMoreDataText?: string,
+}
+
+class JQFlatList extends PureComponent {
+    props: Props;
+
     static defaultProps = {
-        data: [],
-        ItemSeparatorComponent: () => {
-            return <View style={styles.baseLine}/>
-        },
-        ListEmptyComponent: () => {
-            return (
-                <View style={styles.noListView}>
-                    <Text style={styles.NoListText}>这里空空如也~</Text>
-                </View>
-            );
-        },
-        refreshing: false,
-        animating: true,
-        ItemHeight: 50*unitWidth,
+        footerRefreshingText: '数据加载中…',
+        footerFailureText: '点击重新加载',
+        footerNoMoreDataText: '已加载全部数据',
     };
-    static propTypes = {
-        data: PropTypes.array,
-        keyExtractor: PropTypes.func,
-        onEndReached: PropTypes.func,
-        renderItem: PropTypes.func,
-        ItemSeparatorComponent: PropTypes.func,
-        ListEmptyComponent: PropTypes.func,
-        ListFooterComponent: PropTypes.func,
-        refreshing: PropTypes.bool,
-        colors: PropTypes.array,
-        progressBackgroundColor: PropTypes.string,
-        onRefresh: PropTypes.func,
-        animating: PropTypes.bool,
-        nomore: PropTypes.bool,
-        ItmeHeight: PropTypes.number,
-    };
-    constructor (props) {
-        super (props);
+
+    componentWillReceiveProps(nextProps: Props) {
+        log('[RefreshListView]  RefreshListView componentWillReceiveProps ' + nextProps.refreshState)
     }
-    _ListFooterComponent = () => {
-        const {data, nomore, animating} = this.props;
-        return (
-            <View style={styles.bottomfoot}>
-                {
-                    data.length !== 0 ?
-                        nomore ? (
-                            <Text style={styles.footText}>- 我是有底线的 -</Text>
-                        ) : (
-                            <View style={styles.activeLoad}>
-                                <ActivityIndicator size={'small'} animating={animating}/>
-                                <Text style={[styles.footText, styles.ml]}>加载更多...</Text>
-                            </View>
-                        ) :null
-                }
-            </View>
-        );
+
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        log('[RefreshListView]  RefreshListView componentDidUpdate ' + prevProps.refreshState)
+    }
+
+    onHeaderRefresh = () => {
+        log('[RefreshListView]  onHeaderRefresh');
+
+        if (this.shouldStartHeaderRefreshing()) {
+            log('[RefreshListView]  onHeaderRefresh');
+            this.props.onHeaderRefresh(RefreshState.HeaderRefreshing)
+        }
     };
-    _renderItem = (item) => {
-        return this.props.renderItem(item);
+
+    onEndReached = (info: any) => {
+        log('[RefreshListView]  onEndReached   ' + info.distanceFromEnd);
+
+        if (this.shouldStartFooterRefreshing()) {
+            log('[RefreshListView]  onFooterRefresh');
+            this.props.onFooterRefresh && this.props.onFooterRefresh(RefreshState.FooterRefreshing)
+        }
     };
-    render(): React.ReactNode {
-        const {
-            data,
-            keyExtractor,
-            onEndReached,
-            ItemSeparatorComponent,
-            ListEmptyComponent,
-            refreshing,
-            colors,
-            progressBackgroundColor,
-            onRefresh,
-        } = this.props;
+
+    shouldStartHeaderRefreshing = () => {
+        log('[RefreshListView]  shouldStartHeaderRefreshing');
+
+        if (this.props.refreshState === RefreshState.HeaderRefreshing ||
+            this.props.refreshState === RefreshState.FooterRefreshing) {
+            return false
+        }
+
+        return true
+    };
+
+    shouldStartFooterRefreshing = () => {
+        log('[RefreshListView]  shouldStartFooterRefreshing');
+
+        let {refreshState, data} = this.props;
+        if (data.length === 0) {
+            return false
+        }
+
+        return (refreshState === RefreshState.Idle)
+    };
+
+    render() {
+        log('[RefreshListView]  render');
+
         return (
-            <FlatList data={data}
-                      style={{height: (812-64)*unitWidth}}
-                      keyExtractor={keyExtractor}
-                      onEndReached={onEndReached}
-                      refreshing={true}
-                      renderItem={({item}) => this._renderItem(item)}
-                      ItemSeparatorComponent={ItemSeparatorComponent}
-                      ListEmptyComponent={ListEmptyComponent}
-                      ListFooterComponent={this._ListFooterComponent}
-                      onEndReachedThreshold={20*unitWidth}
-                      refreshControl={
-                          <RefreshControl
-                              refreshing={refreshing}
-                              colors={colors}
-                              progressBackgroundColor={progressBackgroundColor}
-                              onRefresh={onRefresh}
-                          />
-                      }
+            <FlatList
+                ref={this.props.listRef}
+                onEndReached={this.onEndReached}
+                onRefresh={this.onHeaderRefresh}
+                refreshing={this.props.refreshState === RefreshState.HeaderRefreshing}
+                ListFooterComponent={this.renderFooter}
+                onEndReachedThreshold={0.1}
+                {...this.props}
             />
-        );
+        )
+    }
+
+    renderFooter = () => {
+        let footer = null;
+
+        let footerContainerStyle = [styles.footerContainer, this.props.footerContainerStyle];
+        let footerTextStyle = [styles.footerText, this.props.footerTextStyle];
+        let {footerRefreshingText, footerFailureText, footerNoMoreDataText} = this.props;
+
+        switch (this.props.refreshState) {
+            case RefreshState.Idle:
+                footer = (<View style={footerContainerStyle} />);
+                break;
+            case RefreshState.Failure: {
+                footer = (
+                    <TouchableOpacity
+                        style={footerContainerStyle}
+                        onPress={() => {
+                            this.props.onFooterRefresh && this.props.onFooterRefresh(RefreshState.FooterRefreshing)
+                        }}
+                    >
+                        <Text style={footerTextStyle}>{footerFailureText}</Text>
+                    </TouchableOpacity>
+                );
+                break
+            }
+            case RefreshState.FooterRefreshing: {
+                footer = (
+                    <View style={footerContainerStyle} >
+                        <ActivityIndicator size="small" color="#888888" />
+                        <Text style={[footerTextStyle, {marginLeft: 7}]}>{footerRefreshingText}</Text>
+                    </View>
+                );
+                break
+            }
+            case RefreshState.NoMoreData: {
+                footer = (
+                    <View style={footerContainerStyle} >
+                        <Text style={footerTextStyle}>{footerNoMoreDataText}</Text>
+                    </View>
+                );
+                break
+            }
+        }
+
+        return footer
     }
 }
 
 const styles = StyleSheet.create({
-    baseLine: {
-        width: 100,
-        height: 1,
-        backgroundColor: '#eeeeee',
-    },
-    noListView: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    NoListText: {
-        marginTop: 15,
-        fontSize: 18,
-        color: '#999999',
-    },
-    bottomfoot: {
+    footerContainer: {
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
+        height: 44,
     },
-    footText: {
-        marginTop: 5,
-        fontSize: 12,
-        color: '#999999',
-    },
-    activeLoad: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    ml: {
-        marginLeft: 10,
-    },
+    footerText: {
+        fontSize: 14,
+        color: '#555555',
+    }
 });
+
+export default JQFlatList

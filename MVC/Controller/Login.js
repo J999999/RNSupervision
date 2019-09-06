@@ -75,7 +75,7 @@ export default class Login extends React.Component {
                                    onChangeText={(text)=>{this.setState({userName:text})}}
                                    value={this.state.userName}
                                    autoCapitalize="none"
-                                   // keyboardType={'numeric'}
+                                   underlineColorAndroid="transparent"
                                    maxLength={11}>
                         </TextInput>
                     </View>
@@ -111,16 +111,16 @@ export default class Login extends React.Component {
             if (credentials) {
                 this.setState({imsi: credentials.username});
             } else {
-                RRCToast.show(getGuid());
-                await Keychain.setGenericPassword(getGuid(), '', {});
+                await Keychain.setGenericPassword(getGuid(), '111', {});
                 const xx = await Keychain.getGenericPassword();
                 this.setState({imsi: xx.userName});
             }
         } catch (err) {
-
+            console.log('4 = ', err);
         }
     }
     loginAction () {
+        console.log(this.state.imsi);
         //this.props.navigation.navigate('Home');
 
         if (!this.state.userName){
@@ -140,7 +140,6 @@ export default class Login extends React.Component {
             'password': this.state.password,
             'imsi': this.state.imsi,
         },'正在登录...',).then((response)=>{
-            console.log(response.data)
             RRCToast.show(response.msg);
             if (response.result === 1){
                 AsyncStorage.setItem('token', response.data.token);
@@ -149,7 +148,7 @@ export default class Login extends React.Component {
                 this.props.navigation.popToTop();
             }
         }).catch((err)=>{
-            RRCToast.show(err);
+            RRCAlert.alert('服务器内部错误');
         });
     };
     forgetAction = () => {
@@ -214,6 +213,7 @@ const styles = StyleSheet.create({
         height :unitHeight * 22,
     },
     TInput: {
+        paddingVertical: 0,
         width: unitWidth * 200,
         height: unitHeight * 22,
         left: unitWidth * 5,

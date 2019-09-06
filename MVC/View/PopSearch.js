@@ -1,8 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity, Animated, Easing, Dimensions} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Animated, Easing, Dimensions, Platform} from 'react-native';
 import {unitWidth} from "../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {Header} from 'react-navigation'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+
 
 const {width, height} = Dimensions.get('window');
 export default class PopSearch extends React.Component{
@@ -54,26 +56,43 @@ export default class PopSearch extends React.Component{
 
     render(): React.ReactNode {
         let {transparentIsClick, modalBoxBg, modalBoxHeight} = this.props;
-        RRCAlert.alert('height='+height+'******'+height - modalBoxHeight*unitWidth - Header.HEIGHT - 20);
         if (this.state.show) {
             return (
-                <View style={[styles.container, { height: height }]}>
-                    <TouchableOpacity style={{ height: height - modalBoxHeight }}
-                                      onPress={transparentIsClick && this.defaultHide.bind(this)}>
-                    </TouchableOpacity>
-                    <Animated.View
-                        style={[styles.modalBox, {
-                            height: height, top: 0, backgroundColor: modalBoxBg,
-                            transform: [{
-                                translateY: this.state.offset.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [height, height - modalBoxHeight*unitWidth - Header.HEIGHT - 20]
-                                }),
-                            }]
-                        }]}>
-                        {this.props.children}
-                    </Animated.View>
-                </View>
+                Platform.OS === 'ios' ?
+                    <KeyboardAwareScrollView style={styles.container}>
+                        <TouchableOpacity style={{ height: height - modalBoxHeight }}
+                                          onPress={transparentIsClick && this.defaultHide.bind(this)}>
+                        </TouchableOpacity>
+                        <Animated.View
+                            style={[styles.modalBox, {
+                                height: height, top: 0, backgroundColor: modalBoxBg,
+                                transform: [{
+                                    translateY: this.state.offset.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [height, height - modalBoxHeight*unitWidth - Header.HEIGHT - 20]
+                                    }),
+                                }]
+                            }]}>
+                            {this.props.children}
+                        </Animated.View>
+                    </KeyboardAwareScrollView> :
+                    <View style={[styles.container, {height: height}]}>
+                        <TouchableOpacity style={{ height: height - modalBoxHeight }}
+                                          onPress={transparentIsClick && this.defaultHide.bind(this)}>
+                        </TouchableOpacity>
+                        <Animated.View
+                            style={[styles.modalBox, {
+                                height: height, top: 0, backgroundColor: modalBoxBg,
+                                transform: [{
+                                    translateY: this.state.offset.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [height, height - modalBoxHeight*unitWidth - Header.HEIGHT - 20]
+                                    }),
+                                }]
+                            }]}>
+                            {this.props.children}
+                        </Animated.View>
+                    </View>
             )
         }
         return <View />

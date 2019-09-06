@@ -6,11 +6,11 @@ import {unitHeight, unitWidth} from "../../../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import PopSearchview from '../../../View/PopSearchview'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import JQFlatList from '../../../View/JQFlatList'
+import JQFlatList, {RefreshState} from '../../../View/JQFlatList'
+import {forInStatement} from "@babel/types";
 
-var options = {
-    onEndReachedCalled: false,
-};
+var search = {}; //查询参数
+var drop = false;
 
 export default class IInterviewList extends React.Component{
     static navigationOptions = ({navigation}) => ({
@@ -26,122 +26,85 @@ export default class IInterviewList extends React.Component{
     constructor(props){
         super (props);
         this.state = {
-            data:[],
-            nomore: false,
-            pageSize: 0,
-            pageNumber: 1,
-            isRefreshing: false,
+            dataList:[],
+            pageSize: 10,
+            pageNo: 1,
+            refreshState: 0,
         }
     }
+    componentWillUnmount(): void {
+        search = {};
+        drop = false;
+    }
+
     componentDidMount(): void {
         this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
-        //获取列表数据
-        const ListNums = this._fullScreenJusting(54*unitWidth);
-        this.setState({
-            pageSize: ListNums,
-        });
-        this.onEndReachedCalled = false;
-        this._getListData(ListNums, 1, true);
+        drop = false;
+        this._onHeaderRefresh();
     }
-    //满屏页面判断
-    _fullScreenJusting = (itemHeight) => {
-        const listNum = (812-64)*unitWidth / itemHeight;
-        return Math.ceil(listNum);
-    };
-    _onEndReached = () => {
-        RRCToast.show('加载');
-        if (!this.state.nomore && this.onEndReachedCalled) {
-            this._getListData(this.state.pageSize, ++this.state.pageNumber, false);
-        }
-        this.onEndReachedCalled = true;
-    };
-    _onRefresh = () => {
-        RRCToast.show('刷新');
-        this.setState({nomore: false, pageNumber: 1}, ()=>{
-            this._getListData(this.state.pageSize, 1, true);
+    _onHeaderRefresh = () => {
+        this.setState({
+            refreshState: RefreshState.HeaderRefreshing,
+            pageSize: this.state.pageSize,
+            pageNo: 1,
+        }, ()=>{
+            this._getListData(true);
         })
     };
-    _getListData = (ListNums, pageNumber, fresh) => {
-        let nomore;
+    _onFooterRefresh = () => {
+        if (drop){
+            this.setState({
+                refreshState: RefreshState.FooterRefreshing,
+                pageSize: this.state.pageSize,
+                pageNo: ++this.state.pageNo,
+            }, ()=>{
+                this._getListData(false);
+            })
+        }
+        drop = true;
+    };
+    _getListData = (refresh) => {
+        search['pageNo'] = this.state.pageNo;
+        search['pageSize'] = this.state.pageSize;
         HttpPost(URLS.QueryListByInterview,
-            {
-            }).then((response)=>{
-                if (response.result === 1){
-                    console.log(JSON.stringify(response));
-                    const item = response.data.records;
-                    item.length < ListNums ? nomore = true : nomore = false;
-                    if (fresh){
-                        this.setState({
-                            data: item,
-                            nomore: nomore,
-                        })
+            search).then((response)=>{
+            RRCToast.show(response.msg);
+            console.log(response);
+            if (response.result === 1){
+                const item = response.data.records;
+                if (refresh){
+                    this.setState({dataList: item, refreshState: RefreshState.Idle});
+                } else {
+                    if (item < 10){
+                        this.setState({refreshState: RefreshState.NoMoreData})
                     } else {
                         this.setState({
-                            data: this.state.data.concat(item),
-                            nomore: nomore,
+                            dataList: this.state.dataList.concat(item),
+                            refreshState: RefreshState.Idle,
                         })
                     }
                 }
+            }else {
+                this.setState({refreshState: RefreshState.Failure});
+            }
         }).catch((err)=>{
-
-        });
-    };
-    _onScroll = (evt) => {
-        const event = evt['nativeEvent'];
-        const _num = event['contentSize']['height'] - event['layoutMeasurement']['height'] - event['contentOffset']['y'];
-
-        if (event['contentSize']['height'] > event['layoutMeasurement']['height'] && _num < -50) {
-            this._onEndReached();
-        }
+            RRCAlert.alert('服务器内部错误');
+        })
     };
     render(): React.ReactNode {
         return (
-            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
-                                     onScroll={this._onScroll.bind(this)}
-                                     refreshControl={
-                                         <RefreshControl
-                                             refreshing={this.state.isRefreshing}
-                                             onRefresh={this._onRefresh.bind(this)}
-                                         />
-                                     }
-            >
-                <PopSearchview dataSource={[
-                    {'name':'查询编号', 'type':2, 'postKeyName':'billCode'},
-                    {'name':'事项来源', 'type':3, 'postKeyName':'sourceTypes', 'dataSource':
-                            [
-                                {'name': '内部转办', 'id': '1'},
-                                {'name': '领导交办', 'id': '2'},
-                                {'name': '临时交办', 'id': '3'},
-                            ]
-                    },
-                    {'name':'约谈对象', 'type':2, 'postKeyName':'interviewName'},
-                    {'name':'约谈事项', 'type':2, 'postKeyName':'matter'},
-                    {'name':'状态查询', 'type':3, 'postKeyName':'states', 'dataSource':
-                            [
-                                {'name': '待约谈', 'id': '1'},
-                                {'name': '已保存', 'id': '2'},
-                                {'name': '发布待审核', 'id': '3'},
-                                {'name': '待发布', 'id': '4'},
-                                {'name': '已发布', 'id': '5'},
-                                {'name': '已撤回', 'id': '6'},
-                                {'name': '驳回', 'id': '7'},
-                            ]
-                    },
-                    {'name':'发布时间', 'type':1, 'postKeyName':'releaseTime'},
-                    {'name':'提交时间', 'type':1, 'postKeyName':'reportTime'},
-                    {'name':'约谈完成时间', 'type':1, 'postKeyName':'finishTime'},
-                ]}
-                               ref={ref => this.popSearchview = ref}
-                               callback={(c)=>{}}
-                />
+            <View style={{flex: 1}}>
                 <JQFlatList
-                    data={this.state.data}
-                    keyExtractor={(item , index)=> index.toString()}
-                    renderItem={this._renderItemAction.bind(this)}
-                    nomore={this.state.nomore}
-                    ItemSeparatorComponent={()=> <View style={{height: 1, backgroundColor: '#F4F4F4'}}/>}
+                    refreshState={this.state.refreshState}
+                    onHeaderRefresh={this._onHeaderRefresh}
+                    onFooterRefresh={this._onFooterRefresh}
+                    data={this.state.dataList}
+                    renderItem={this._renderItemAction}
+                    keyExtractor={(item, index) => index.toString()}
+                    removeClippedSubviews={false}
+                    ItemSeparatorComponent={() =>
+                        <View style={{height: 1, backgroundColor: '#F4F4F4', marginLeft: 54*unitWidth}}/>}
                 />
-
                 <View style={{position: 'absolute', right: 15*unitWidth, bottom: 50*unitWidth}}>
                     <TouchableOpacity activeOpacity={.5} onPress={()=>{this.popSearchview._show()}}>
                         <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'orange',
@@ -152,28 +115,111 @@ export default class IInterviewList extends React.Component{
                         </View>
                     </TouchableOpacity>
                 </View>
-            </KeyboardAwareScrollView>
+                <PopSearchview dataSource={[
+                    {'name':'查询编号', 'type':2, 'postKeyName':'billCode'},
+                    {'name':'事项来源', 'type':3, 'postKeyName':'sourceTypes', 'dataSource':
+                            [
+                                {'name': '内部转办', 'id': 1},
+                                {'name': '领导交办', 'id': 2},
+                                {'name': '临时交办', 'id': 3},
+                            ]
+                    },
+                    {'name':'约谈对象', 'type':2, 'postKeyName':'interviewName'},
+                    {'name':'约谈事项', 'type':2, 'postKeyName':'matter'},
+                    {'name':'状态查询', 'type':3, 'postKeyName':'states', 'dataSource':
+                            [
+                                {'name': '待约谈', 'id': '1'},
+                                {'name': '已保存', 'id': '2'},
+                                {'name': '发布待审核', 'id': '3'},
+                                {'name': '审核中', 'id': '4'},
+                                {'name': '已发布', 'id': '5'},
+                                {'name': '已撤回', 'id': '6'},
+                                {'name': '驳回', 'id': '7'},
+                            ]
+                    },
+                    {'name':'发布时间', 'type':1, 'postKeyName':'releaseTimeStart', 'postKeyNameEnd':'releaseTimeEnd'},
+                    {'name':'提交时间', 'type':1, 'postKeyName':'reportTimeStart', 'postKeyNameEnd':'reportTimeEnd'},
+                    {'name':'约谈完成时间', 'type':1, 'postKeyName':'finishTimeStart', 'postKeyNameEnd':'finishTimeEnd'},
+                ]}
+                               ref={ref => this.popSearchview = ref}
+                               callback={(c)=>{this._searchAction(c)}}
+                />
+            </View>
         )
     }
-    _renderItemAction = (item) =>{
+    _renderItemAction = ({item}) =>{
+        let recordState = '';
+        switch (item.recordState) {
+            case 1:
+                recordState = '待约谈';
+                break;
+            case 2:
+                recordState = '已保存';
+                break;
+            case 3:
+                recordState = '发布待审核';
+                break;
+            case 4:
+                recordState = '审核中';
+                break;
+            case 5:
+                recordState = '已发布';
+                break;
+            case 6:
+                recordState = '已撤回';
+                break;
+            case 7:
+                recordState = '驳回';
+                break
+        }
         return (
-            <TouchableOpacity activeOpacity={.5} onPress={()=>{this._clickCellAction(item)}}>
+            <TouchableOpacity activeOpacity={.5} onPress={this._clickCellAction.bind(this, item)}>
                 <View style={styles.itemStyle}>
                     <View style={styles.itemLeftStyle}>
-                        <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{'22'}</Text>
-                        <Text>{'33'}</Text>
+                        <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.sourceStr}</Text>
+                        <Text>{'提交人:'+item.userName}</Text>
                     </View>
                     <View style={styles.itemRightStyle}>
-                        <Text style={{textAlign: 'right'}}>{'44'}</Text>
-                        <Text>{'55'}</Text>
+                        <Text style={{textAlign: 'right'}}>{recordState}</Text>
+                        <Text>{'约谈对象:'+item.interviewName}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
         )
     };
-    _clickCellAction = (item) =>{
-
-    }
+    _clickCellAction = (item) => {
+        this.props.navigation.navigate('IInterviewDetail', {id: item.id, buttons: item.buttons});
+    };
+    _searchAction = (info) => {
+        search = {};
+        let searchArr = [];
+        searchArr = searchArr.concat(info);
+        searchArr.map((i)=>{
+            if (i.billCode)
+                search['billCode'] = i.billCode;
+            if (i.sourceTypes)
+                search['sourceTypes'] = i.sourceTypes;
+            if (i.interviewName)
+                search['interviewName'] = i.interviewName;
+            if (i.matter)
+                search['matter'] = i.matter;
+            if (i.states)
+                search['states'] = i.states;
+            if (i.releaseTimeStart)
+                search['releaseTimeStart'] = i.releaseTimeStart;
+            if (i.releaseTimeEnd)
+                search['releaseTimeEnd'] = i.releaseTimeEnd;
+            if (i.reportTimeStart)
+                search['reportTimeStart'] = i.reportTimeStart;
+            if (i.reportTimeEnd)
+                search['reportTimeEnd'] = i.reportTimeEnd;
+            if (i.finishTimeStart)
+                search['finishTimeStart'] = i.finishTimeStart;
+            if (i.finishTimeEnd)
+                search['finishTimeEnd'] = i.finishTimeEnd;
+        });
+        this._onHeaderRefresh();
+    };
 }
 
 const styles = StyleSheet.create({
@@ -184,7 +230,6 @@ const styles = StyleSheet.create({
     },
     itemLeftStyle:{
         justifyContent: 'space-between',
-        width: 270 * unitWidth,
         marginTop: 10 * unitWidth,
         marginLeft: 10 * unitWidth,
         marginBottom: 10 * unitWidth,

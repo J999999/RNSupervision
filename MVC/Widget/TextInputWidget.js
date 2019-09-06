@@ -37,6 +37,7 @@ class TextInputWidget extends Component{
                                 onChangeText={this.props.onChangeText}
                                    defaultValue={this.props.defaultValue}
                                    value = {this.props.value}
+                                   editable={this.props.editable}
                       />
                     </View>
                 </View>
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
         borderColor: '#F4F4F4',//需要标色
     },
     textInputTitle: {
-        width: 80*unitWidth,
+        width: 90*unitWidth,
         fontSize: 15*unitWidth,
         color: '#333',
         marginLeft: 15*unitWidth,

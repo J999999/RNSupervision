@@ -10,7 +10,9 @@ export default class JQAlertBottomView extends Component {
     static propTypes = {
         leftName: PropTypes.string.isRequired,
         dataSource: PropTypes.array.isRequired,
-        key: PropTypes.string.isRequired,
+        enabledEdit: PropTypes.bool,
+        key: PropTypes.string,
+        value: PropTypes.string,
         alertTitle: PropTypes.string,
         callBack: PropTypes.func,
 
@@ -26,7 +28,9 @@ export default class JQAlertBottomView extends Component {
     }
 
     _openTypeDialog() {
-        this.setState({showTypePop: !this.state.showTypePop})
+        if (this.props.enabledEdit === true){
+            this.setState({showTypePop: !this.state.showTypePop})
+        }
     }
 
     render() {
@@ -53,7 +57,7 @@ export default class JQAlertBottomView extends Component {
                     <TouchableOpacity onPress={() => this._openTypeDialog()}>
                         <View style={{width: 260*unitWidth, height: 54*unitWidth, justifyContent: 'center',
                             marginLeft: 5*unitWidth}}>
-                            <Text>{this.state.typeName}</Text>
+                            <Text>{this.state.typeName ? this.state.typeName : this.props.alertTitle}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

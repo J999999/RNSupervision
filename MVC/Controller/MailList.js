@@ -117,8 +117,11 @@ export default class MailList extends Component {
                     this.setState({
                         showIndex: item.name,
                     });
-                    RRCAlert.alert('请选择','', [{text:'打电话', style:{color:'#38ADFF', fontWeight: 'bold'}},
-                        {text:'发信息', style:{color:'#38ADFF', fontWeight: 'bold'}}], this._callback.bind(this, item));
+                    RRCAlert.alert('请选择','', [
+                        {text:'打电话', style:{color:'#38ADFF', fontWeight: 'bold'}},
+                        {text:'发信息', style:{color:'#38ADFF', fontWeight: 'bold'}},
+                        {text: '取消', style: {color: '#38ADFF', fontWeight: 'bold'}},
+                    ], this._callback.bind(this, item));
                 }}
             >
                 <View style={styles.itemStyle}>
@@ -159,7 +162,8 @@ export default class MailList extends Component {
                     renderSectionHeader={this._renderSectionHeader}
                     sections={this.state.sections}
                     keyExtractor={(item, index) => item + index}
-                    ItemSeparatorComponent={() =>  <View style={{height: 1, backgroundColor: '#F4F4F4', marginLeft: 54*unitWidth}}/>}
+                    ItemSeparatorComponent={() =>
+                        <View style={{height: 1, backgroundColor: '#F4F4F4', marginLeft: 54*unitWidth}}/>}
                 />
 
                 {/*右侧字母栏*/}

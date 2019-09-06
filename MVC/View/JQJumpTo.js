@@ -47,19 +47,20 @@ export default class JQJumpTo extends React.Component{
             {
                 'dataSource':this.props.dataSource,
                 'refresh':(item) => {
-                    let ids = '';
+                    let ids = [];
                     let names = '';
                     item.map((i)=>{
                         if (i.select){
                             names = names + i.name + ',';
-                            ids = ids + i.id + ',';
+                            ids.push(i.id);
                             this.setState({rightText: names});
                         }
                     });
 
                     let xx = this.state.data;
                     xx['title'] = this.props.leftTitle;
-                    xx[this.props.postKeyName] = ids;
+                    let keyName = this.props.postKeyName;
+                    xx[keyName] = ids;
                     xx['name'] = names;
                     this.setState({data: xx}, ()=>{
                         this.props.callBack(this.state.data);

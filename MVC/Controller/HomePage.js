@@ -116,12 +116,25 @@ export default class HomePage extends React.Component {
                 break;
             case 9:
                 break;
-            case 25:
-
-                break;
             case 27:
+                //效能审核
+                this.props.navigation.navigate('AuditList');
+                break;
+            case 31:
+                //效能问责
+                this.props.navigation.navigate('AccountabilityList');
+                break;
+            case 82:
                 //督查约谈
                 this.props.navigation.navigate('IInterviewList');
+                break;
+            case 83:
+                //约谈事项
+                this.props.navigation.navigate('IInterviewReleaseList');
+                break;
+            case 84:
+                //问责事项
+                this.props.navigation.navigate('AccountabilityReleaseList');
                 break;
             default:
                 this.props.navigation.navigate('AddFunction',{

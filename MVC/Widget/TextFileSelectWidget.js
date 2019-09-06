@@ -10,6 +10,7 @@ import {
     Dimensions, TouchableWithoutFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {unitWidth} from "../Tools/ScreenAdaptation";
 
 var screenWidth = Dimensions.get('window').width;
 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        height: 55,
+        height: 55*unitWidth,
         alignItems: 'center',
         borderBottomWidth: 0.5 / PixelRatio.get(),
         borderColor:'gray',//需要标色
@@ -60,17 +61,17 @@ const styles = StyleSheet.create({
     },
     textInputTitle: {
         flex:1,
-        width: 80,
-        fontSize: 15,
+        width: 80*unitWidth,
+        fontSize: 15*unitWidth,
         color: '#333',
-        marginLeft: 15,
+        marginLeft: 15*unitWidth,
     },
 
     rightArrow:{
-        marginLeft:10,
-        marginRight: 10,
+        marginLeft:10*unitWidth,
+        marginRight: 10*unitWidth,
     }
 
 });
 
-module.exports = TextFileSelectWidget
+module.exports = TextFileSelectWidget;

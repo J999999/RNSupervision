@@ -11,6 +11,7 @@ import {
     PixelRatio,
     Dimensions
 }from 'react-native';
+import {unitWidth} from "../Tools/ScreenAdaptation";
 
 
 var screenWidth = Dimensions.get('window').width;
@@ -36,10 +37,11 @@ class TextInputMultWidget extends Component{
                             numberOfLines = {4}
                             style = {styles.textInput}
                             underlineColorAndroid='transparent'
-                            placeholder = { this.props.placeholder }
+                            placeholder = {this.props.placeholder}
                             onChangeText={this.props.onChangeText}
                             defaultValue={this.props.defaultValue}
                             value = {this.props.value}
+                            editable={this.props.editable}
                         />
                     </View>
                 </View>
@@ -61,16 +63,16 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 0.5 / PixelRatio.get(),
-        borderColor:'gray',//需要标色
+        borderBottomWidth: unitWidth ,
+        borderColor: '#F4F4F4',//需要标色
 
     },
     textInputTitle: {
-        width: 80,
-        fontSize: 15,
+        width: 80*unitWidth,
+        fontSize: 15*unitWidth,
         color: '#333',
-        marginLeft: 15,
-        marginTop:15,
+        marginLeft: 15*unitWidth,
+        marginTop:15*unitWidth,
         alignSelf:'flex-start'
     },
 
@@ -79,17 +81,17 @@ const styles = StyleSheet.create({
     },
 
     textInput:{
-        padding:5,
-        height:120,
+        padding:5*unitWidth,
+        height:120*unitWidth,
         textAlignVertical: "top",
         borderColor:'gray',
-        borderRadius:2,
-        borderWidth:0.5,
+        borderRadius:2*unitWidth,
+        borderWidth:0.5*unitWidth,
         textAlign:'left',
-        marginTop:10,
-        marginLeft:-5,
-        marginBottom:10,
-        marginRight:10,
+        marginTop:10*unitWidth,
+        marginLeft:-5*unitWidth,
+        marginBottom:10*unitWidth,
+        marginRight:10*unitWidth,
     },
 
 });
