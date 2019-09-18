@@ -12,13 +12,47 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 export default class Login extends React.Component {
 
+    /**
+     *
+     dcjz		123456	督察局局长
+     dcfjza		123456	督查局副局长
+     dcfjzb		123456	督查局副局长
+     dcdb1		123456	督查一室科长
+     dcdb11		123456	督查一室科员
+
+     xnkz		123456	效能科长
+     xnky		123456	效能科员
+     jxkz		123456	绩效科长
+     jxky		123456	绩效科员
+     wbone		123456	外部一级用户
+     wbtwo		123456	外部二级
+     wbthree	123456	外部三级
+     wbfour		123456	外部四级
+     wbfive		123456	外部五级
+
+     xzsj  书记
+     xzsz  市长
+     */
+
     constructor(){
         super();
         this.state = {
-            userName: 'cb',
-            password: '123456',
+            // userName: 'cb',
+            // password: '123456',
             // userName: 'dcdb1',
             // password: '123456',
+            // userName: 'dcfjza',
+            // password: '12345678',
+            // userName: 'dcfjzb',
+            // password: '12345678',
+            // userName: 'dcjz',
+            // password: '123456',
+            // userName: 'xzsz',
+            // password: '123456',
+            // userName: 'wbthree',
+            // password: '123456',
+            userName: 'wbfive',
+            password: '123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -69,7 +103,7 @@ export default class Login extends React.Component {
                     <View style={styles.userName}>
                         <Image source={require('../Images/userName.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 25, height: unitWidth * 25}}/>
+                               style={{width: unitWidth * 30, height: unitWidth * 30,padding:4}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入用户名'}
                                    onChangeText={(text)=>{this.setState({userName:text})}}
@@ -82,7 +116,7 @@ export default class Login extends React.Component {
                     <View style={styles.password}>
                         <Image source={require('../Images/password.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 25, height: unitWidth * 25}}/>
+                               style={{width: unitWidth * 30, height: unitWidth * 30,padding:4}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入密码'}
                                    onChangeText={(text)=>{this.setState({password:text})}}
@@ -131,10 +165,10 @@ export default class Login extends React.Component {
             RRCToast.show('请输入密码');
             return
         }
-        if (!this.state.imsi) {
-            RRCToast.show('获取imsi失败，请重试...');
-            return
-        }
+        // if (!this.state.imsi) {
+        //     RRCToast.show('获取imsi失败，请重试...');
+        //     return
+        // }
         HttpPost(URLS.Login,{
             'username': this.state.userName,
             'password': this.state.password,
@@ -143,6 +177,7 @@ export default class Login extends React.Component {
             RRCToast.show(response.msg);
             if (response.result === 1){
                 AsyncStorage.setItem('token', response.data.token);
+                this.getLoginInfo()
                 this.props.navigation.navigate('Home');
             }else {
                 this.props.navigation.popToTop();
@@ -151,6 +186,15 @@ export default class Login extends React.Component {
             RRCAlert.alert('服务器内部错误');
         });
     };
+
+    getLoginInfo(){
+        HttpPost(URLS.LoginUser,{},'').then((response)=>{
+            if (response.result == 1){
+                AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
+            }
+        })
+    }
+
     forgetAction = () => {
         //忘记密码
     };
@@ -174,7 +218,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: unitHeight * 200,
         width: unitWidth * 250,
-        height :unitHeight * 37,
+        height :unitHeight * 40,
         borderTopRightRadius: unitWidth * 5,
         borderTopLeftRadius: unitWidth * 5,
         borderBottomWidth: unitHeight,
@@ -186,7 +230,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: unitHeight * 200,
         width: unitWidth * 250,
-        height :unitHeight * 37,
+        height :unitHeight * 40,
         borderBottomLeftRadius: unitWidth * 5,
         borderBottomRightRadius: unitWidth * 5,
     },
@@ -215,7 +259,8 @@ const styles = StyleSheet.create({
     TInput: {
         paddingVertical: 0,
         width: unitWidth * 200,
-        height: unitHeight * 22,
+        height: unitHeight * 30,
         left: unitWidth * 5,
+        color: '#022',
     },
 });

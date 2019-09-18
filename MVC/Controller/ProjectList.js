@@ -13,11 +13,13 @@ import {
 } from 'react-native';
 import { HttpPost} from '../Tools/JQFetch';
 import {screenHeight, titleHeight, unitWidth} from '../Tools/ScreenAdaptation';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import PopSearchview from '../View/PopSearchview';
+import DataDictionary from '../Tools/DataDictionary';
 
 var navigation = null;
 var context ;
-export default class NoticeList extends React.Component {
+export default class ProjectList extends React.Component {
     pageNo = 1;
     pageSize = 10;
     totalSize = 0;
@@ -25,7 +27,6 @@ export default class NoticeList extends React.Component {
     constructor(props) {
         super(props);
         navigation = this.props.navigation;
-
         context = this;
         this.filter = {};
         this.state = {
@@ -40,7 +41,7 @@ export default class NoticeList extends React.Component {
     }
 
     componentWillUnmount(){
-        this.filter = {}
+
     }
 
     fetchData(){
@@ -53,7 +54,7 @@ export default class NoticeList extends React.Component {
         if(this.filter ){
             Object.assign(data,this.filter)
         }
-        HttpPost(URLS.QueryNoticeList,data,"获取公告通知").then((response)=>{
+        HttpPost(URLS.QueryProjectList,data,"获取信息中").then((response)=>{
             console.log(response.data)
 
             if(!response || !response.data && response.data.result != 1){
@@ -77,52 +78,6 @@ export default class NoticeList extends React.Component {
             RRCToast.show(err);
         });
     }
-
-    callbackRecall = (item, index) =>{
-        if(index===0){
-            this.fetchRecall(item)
-        }
-    }
-
-    callbackDelete = (item, index) =>{
-        if(index===0){
-            this.fetchDelete(item)
-        }
-    }
-
-
-    fetchRecall(item){
-
-
-        HttpPost(URLS.NoticeRecall,{id:item.id},"正在撤销").then((response)=>{
-            console.log(response)
-
-            if(response.result == 1){
-                this._renderRefresh()
-            }else{
-                RRCToast.show(response.msg);
-            }
-
-        }).catch((err)=>{
-            RRCToast.show(err);
-        });
-    }
-
-    fetchDelete(item){
-        HttpPost(URLS.NoticeDelete,{id:item.id},"正在删除").then((response)=>{
-            console.log(response)
-
-            if(response.result == 1){
-                this._renderRefresh()
-            }else{
-                RRCToast.show(response.msg);
-            }
-
-        }).catch((err)=>{
-            RRCToast.show(err);
-        });
-    }
-
 
     // 自定义分割线
     _renderItemSeparatorComponent = ({highlighted}) => (
@@ -154,16 +109,16 @@ export default class NoticeList extends React.Component {
 
 
     static  navigationOptions = ({navigation}) =>({
-        title: '公告通知',
+        title: '立项交办',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{
-                                            navigation.navigate('NoticeAdd',{
+                                            navigation.navigate('ProjectAdd',{
                                                 callback:function(){
                                                     context._renderRefresh()
                                                 }
                                             });
                                         }}>
-            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{navigation.state.params.internal==1 ?'新增':''}</Text>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>新增</Text>
         </TouchableOpacity>)
     });
 
@@ -173,35 +128,77 @@ export default class NoticeList extends React.Component {
             <View style={{flex:1 }}>
 
                 <PopSearchview dataSource={[
-                    {'name':'标题内容', 'type':2, 'postKeyName':'queryStr'},
-                    {'name':'发布人', 'type':2, 'postKeyName':'creatorName'},
-
-
-                    {'name':'状态查询', 'type':3, 'postKeyName':'queryState', 'dataSource':
+                    {'name':'名称内容', 'type':2, 'postKeyName':'queryStr'},
+                    {'name':'编辑人员', 'type':2, 'postKeyName':'creatorName'},
+                    {'name':'事项分类', 'type':3, 'postKeyName':'projectTypes', 'dataSource':
                             [
-                                {'name': '已发布', 'id': 0},
-                                {'name': '已撤回', 'id': 1},
-                                {'name': '已读', 'id': 2},
-                                {'name': '未读', 'id': 3},
+                                {'name': '重点项目', 'id': '1'},
+                                {'name': '领导批示', 'id': '2'},
+                                {'name': '决策部署', 'id': '3'},
+                                {'name': '政务督查', 'id': '4'},
+                                {'name': '民生实事', 'id': '5'},
+                                {'name': '两代表一委员建议（议案）', 'id': '6'},
+                                {'name': '其他工作', 'id': '7'},
                             ]
                     },
-                    {'name':'查询时间', 'type':1, 'postKeyName':'startTime' ,'postKeyNameEnd':'endTime'}
+                    {'name':'工作属性', 'type':3, 'postKeyName':'workAttrs', 'dataSource':
+                            [
+                                {'name': '常规', 'id': '1'},
+                                {'name': '阶段', 'id': '2'},
+                                {'name': '临时', 'id': '3'},
+                                {'name': '紧急', 'id': '4'},
+                            ]
+                    },
+                    {'name':'督查状态', 'type':3, 'postKeyName':'superviseStates', 'dataSource':
+                            [
+                                {'name': '已发布', 'id': '0'},
+                                {'name': '已撤回', 'id': '1'},
+                                {'name': '已读', 'id': '2'},
+                                {'name': '未读', 'id': '3'},
+                            ]
+                    },
+                    {'name':'进展情况', 'type':3, 'postKeyName':'progress', 'dataSource':
+                            [
+                                {'name': '已完成', 'id': '1'},
+                                {'name': '正常推进', 'id': '2'},
+                                {'name': '临期', 'id': '3'},
+                                {'name': '逾期', 'id': '4'},
+                            ]
+                    },
+                    {'name':'汇报审核状态', 'type':3, 'postKeyName':'reportApprovalStates', 'dataSource':
+                            [
+                                {'name': '无汇报', 'id': '1'},
+                                {'name': '待审核', 'id': '2'},
+                                {'name': '审核通过', 'id': '3'},
+                                {'name': '审核驳回', 'id': '4'},
+                            ]
+                    },
+                    {'name':'审批状态', 'type':3, 'postKeyName':'approvalStates', 'dataSource':
+                            [
+                                {'name': '未提交', 'id': '1'},
+                                {'name': '待审批', 'id': '2'},
+                                {'name': '审批中', 'id': '3'},
+                                {'name': '审批通过', 'id': '4'},
+                                {'name': '驳回', 'id': '5'},
+                            ]
+                    },
+                    {'name':'查询时间', 'type':1, 'postKeyName':'createStartTime' ,'postKeyNameEnd':'createEndTime'}
                  ]}
                                ref={ref => this.popSearchview = ref}
                                callback={(queryData)=>{
-                                   //----[{"title":"标题内容","queryStr":"擦得"},{"title":"发布人","creatorName":"把手"},{"title":"状态查询","queryState":"0,","name":"已发布,"},{"title":"查询时间","startTime":"2019-09-03","endTime":"2019-09-05"}]
                                    console.log('----'+JSON.stringify(queryData))
                                    for(let i in queryData){
                                        let item = queryData[i]
                                        for(let j in item){
-                                            if(j!=='title' && j!=='name'){
-                                                if(item[j] instanceof  Array){
-                                                    this.filter[j] = item[j].join(",")
-                                                }else{
-                                                    this.filter[j] = item[j]
-                                                }
-                                            }
+                                           if(j!=='title' && j!=='name'){
+                                               if(item[j] instanceof  Array){
+                                                   this.filter[j] = item[j].join(",")
+                                               }else{
+                                                   this.filter[j] = item[j]
+                                               }
+                                           }
                                        }
+
                                    }
                                    console.log('llllll====='+JSON.stringify(this.filter))
                                    this.pageNo = 1
@@ -220,7 +217,6 @@ export default class NoticeList extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-
                 <FlatList
                 style = {styles.container}
                 ref={ ref => this.flatList = ref }
@@ -237,11 +233,13 @@ export default class NoticeList extends React.Component {
                 getItemLayout={(data, index) => ( { length: 40, offset: (40 + 1) * index + 50, index } )}
             />
 
+
             </View>
 
         );
     }
 };
+
 
 
 class FlatListItem extends React.PureComponent {
@@ -250,79 +248,25 @@ class FlatListItem extends React.PureComponent {
     }
 
     render() {
-
-        var images = [];
-        if(this.props.detail.buttons){
-            for(let item in this.props.detail.buttons){
-                switch (this.props.detail.buttons[item].name) {
-                    case 'RECALL':
-                        images.push(
-                            <TouchableOpacity
-                                onPress={()=>{
-                                    // context.fetchRecall(this.props.detail)
-
-                                    RRCAlert.alert("提示","是否确定要进行撤销操作？",[{
-                                        text: '是' ,style:{color:'#38ADFF', fontWeight: 'bold'}}
-                                        ,{
-                                            text: '否',style:{color:'#38ADFF', fontWeight: 'bold'}
-                                        }
-                                    ],context.callbackRecall.bind(this,this.props.detail))
-
-                                }}   >
-                                <Image style={styles.image}  source={require("../Images/icon_recall.png") }  />
-                            </TouchableOpacity> )
-                        break;
-                    case 'EDIT':
-                        images.push(
-                            <TouchableOpacity
-                                onPress={()=>{
-                                    navigation.navigate('NoticeAdd',{bean:this.props.detail})
-                                }}  >
-                                <Image style={styles.image} source={require("../Images/icon_edit.png") }  />
-                            </TouchableOpacity> )
-                        break;
-                    case 'DELETE':
-                        images.push(
-                            <TouchableOpacity
-                                 onPress={()=>{
-                                    // context.fetchDelete(this.props.detail)
-                                     RRCAlert.alert("提示","是否确定要进行删除操作？",[{
-                                         text: '是' ,style:{color:'#38ADFF', fontWeight: 'bold'}}
-                                         ,{
-                                             text: '否',style:{color:'#38ADFF', fontWeight: 'bold'}
-                                         }
-                                     ],context.callbackDelete.bind(this,this.props.detail))
-                                }}   >
-                                <Image style={styles.image} source={require("../Images/icon_delete.png") }  />
-                            </TouchableOpacity> )
-                        break;
-                }
-            }
-        }
-
-        var content = this.props.detail.content
-        if(this.props.detail.content.length > 22 ){
-            content = this.props.detail.content.substr(0,22)
-            content = content +'...'
-        }
-
         return(
 
             <TouchableHighlight
                 underlayColor={"#EEE"}
-                onPress={()=> {navigation.navigate('NoticeDetail',{new :this.props.detail,'internal':navigation.state.params.internal})}    }
+                onPress={()=> {navigation.navigate('ProjectDetail',{bean :this.props.detail})}    }
             >
                 <View style={styles.thumbnail}>
-                    <Text style={styles.rowTitle}>{this.props.detail.title}</Text>
-                    <Text
-                        style={styles.rowSmallTitle}>{ this.props.detail.publishTimeStr }  发布人：{this.props.detail.creatorName}  </Text>
-                    <Text style={styles.rowContent} numberOfLines={2}>
-                        {content}
-                    </Text>
-
-                    <View style={styles.imageButton}>
-                        { images}
+                    <Text style={styles.rowTitle}>{this.props.detail.projectName}</Text>
+                    <View style={styles.view}>
+                        <Text style={styles.rowSmallTitle}>{ this.props.detail.createTime }</Text>
+                        <Text style={styles.rowSmallTitle}>编辑人：{this.props.detail.creatorName}</Text>
                     </View>
+                    <View style={styles.view}>
+                        <Text style={styles.rowSmallTitle}>分类：{ DataDictionary.MatterTypes[this.props.detail.projectType] }</Text>
+                        <Text style={styles.rowSmallTitle}>属性：{DataDictionary.WorkTypes[this.props.detail.workAttr]}</Text>
+                    </View>
+
+                    <Text style={styles.rowContent} numberOfLines={2}>{this.props.detail.projectInfo}</Text>
+
                 </View>
             </TouchableHighlight>
 
@@ -352,7 +296,12 @@ var styles = StyleSheet.create({
             borderBottomWidth: StyleSheet.hairlineWidth,
             borderBottomColor: '#D9D7D5',
             overflow: 'hidden',
-            backgroundColor: "#FFF",
+            backgroundColor: "#FFF"
+        },
+
+        view:{
+            flexDirection:'row',
+            justifyContent:'space-between',
         },
 
         rowTitle: {
@@ -368,18 +317,6 @@ var styles = StyleSheet.create({
             fontSize: 12*unitWidth,
             marginTop: 5*unitWidth,
             color: "#A5A5AF"
-        },
-        imageButton: {
-            position: 'absolute',
-            right: 12*unitWidth,
-            top: 20*unitWidth,
-            width: 40*unitWidth,
-            height: 40*unitWidth,
-        },
-        image : {
-            marginBottom:6*unitWidth,
-            width: 28*unitWidth,
-            height: 28*unitWidth,
         },
     }
 )

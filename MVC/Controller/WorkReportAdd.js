@@ -4,7 +4,7 @@ import {
     Text,
     View,
     Button,
-    Image, Dimensions, PixelRatio, TouchableOpacity
+    Image, Dimensions, PixelRatio, TouchableOpacity, TouchableWithoutFeedback,
 } from 'react-native';
 import TextInputWidget from "../Widget/TextInputWidget";
 import TextInputMultWidget from "../Widget/TextInputMultWidget";
@@ -14,7 +14,10 @@ import ImagePicker from 'react-native-image-picker' ;
 import URLS from '../Tools/InterfaceApi';
 import {HttpPost, HttpPostFile} from '../Tools/JQFetch';
 import {RRCToast} from 'react-native-overlayer/src';
-import {KeyboardAwareScrollView} from  'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view/index';
+import TextSelectWidget from '../Widget/TextSelectWidget';
+import DataDictionary from '../Tools/DataDictionary';
+import Picker from 'react-native-picker';
 
 var options = {
     title: '选择文件',
@@ -30,36 +33,73 @@ var options = {
 var screenWidth = Dimensions.get('window').width;
 var navigation = null;
 var attachItem = null;
-class NoticeAdd  extends React.Component {
+
+/**
+ * 新增  工作汇报
+ */
+class WorkReportAdd  extends React.Component {
+
+    workReport={
+        "approveState": '',
+        "approveTime": "",
+        "approveUserId": '',
+        "approveUserName": "",
+        "fileList": [],
+        "files": "",
+        "id": '',
+        "projectId": '',
+        "projectName": "string",
+        "recordType": '',
+        "replyList": [],
+        "reportContent": "",
+        "reportNode": "",
+        "reportTime": "",
+        "reportTitle": "",
+        "reportType": '',
+        "reportUnit": '',
+        "reportUnitName": "",
+        "reportUserId": '',
+        "reportUserName": "",
+        "suggestion": "",
+    };
 
     constructor(props){
         super(props);
-        this.title = "";
-        this.content = "";
         this.fileList = [];
         this.fileUrlList =[];
-        this.bean = null;
-
         navigation = this.props.navigation;
+        this.workReportType = {
+            1:'进度汇报',
+            2:'完成汇报',
+        };
         this.state = {
+            bean: null,
+            timeNodes:[],
             hasAttach:false,
+            isShowPick:false
         }
      }
 
-     componentDidMount(): void {
-        if(this.bean!=null){
-            this.getNoticeInfo()
+    componentDidMount(): void {
+         const  {params} = this.props.navigation.state;
+        if(params.bean.id){
+            this.workReport = params.bean
+            this.fileUrlList = params.bean.fileList
         }
-     }
+         this.setState({
+             bean : params.bean
+         })
 
-    getNoticeInfo(){
-        HttpPost(URLS.NoticeDetail,{id:this.bean.id},"").then((response)=>{
-            // RRCToast.show(response.msg);
+        this.getTimeNode(params.bean)
+    }
+
+    getTimeNode=(bean)=>{
+        if(bean == null) return
+
+        HttpPost(URLS.WorkReportTimeNodes,{projectId:bean.projectId},"").then((response)=>{
             if(response.result == 1){
-                this.bean = response.data
-                this.fileUrlList=this.bean.fileList
                 this.setState({
-                    hasAttach:true
+                    timeNodes:response.data
                 })
             }else{
                 alert(response.msg);
@@ -70,15 +110,19 @@ class NoticeAdd  extends React.Component {
         });
     }
 
-    uploadNoticeInfo=(files)=> {
+    uploadInfo=(files)=> {
+
         let filesss = this.fileUrlList&&this.fileUrlList.length>0 ? this.fileUrlList :[]
         filesss = filesss.concat(files)
-        console.log(filesss)
-        let requestData = {"title":this.title,"content":this.content,"fileList":filesss};
-        if(this.bean !=null){
-            requestData['id']= this.bean.id
+
+        if(this.workReport.id == ''){
+            this.workReport.projectId = this.state.bean.projectId
+            this.workReport.projectName = this.state.bean.projectName
+            this.workReport.reportType = 2
         }
-        HttpPost(URLS.AddNotice,requestData,"正在保存..").then((response)=>{
+        this.workReport.fileList= filesss
+
+        HttpPost(URLS.SaveWorkReport,this.workReport,"正在提交..").then((response)=>{
             RRCToast.show(response.msg);
             if(response.result == 1){
                 navigation.state.params.callback()
@@ -94,13 +138,23 @@ class NoticeAdd  extends React.Component {
 
     _pressSumbit =()=> {
 
-        if(this.title==""){
-            RRCToast.show("请输入标题");
-            return;
+        if(this.workReport.reportType==""){
+            RRCToast.show("请选择汇报类型");
+            return ;
         }
 
-        if(this.content==""){
-            RRCToast.show("请输入内容");
+        if(this.workReport.reportNode == ""){
+            RRCToast.show("请选择汇报节点");
+            return ;
+        }
+
+        if(this.workReport.reportTitle == ""){
+            RRCToast.show("请输入汇报标题");
+            return ;
+        }
+
+        if(this.workReport.reportContent == ""){
+            RRCToast.show("请输入汇报内容");
             return ;
         }
 
@@ -116,7 +170,7 @@ class NoticeAdd  extends React.Component {
              HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
                 if(response.result == 1){
                     files = response.data
-                    this.uploadNoticeInfo(files)
+                    this.uploadInfo(files)
                  }else{
                     alert(response.msg);
                 }
@@ -125,13 +179,9 @@ class NoticeAdd  extends React.Component {
                 RRCToast.show(err);
             });
         }else{
-            this.uploadNoticeInfo([])
+            this.uploadInfo([])
         }
-
-
     };
-
-
 
     takePicture = async function() {
 
@@ -178,6 +228,7 @@ class NoticeAdd  extends React.Component {
                 }
             }
         }
+
         if(type === 1){
             for(let i in this.fileUrlList){
                 if(this.fileUrlList[i] == item){
@@ -186,9 +237,8 @@ class NoticeAdd  extends React.Component {
                 }
             }
         }
-
         if(has){
-            if(this.fileList.length>0 || this.fileUrlList.length>0){
+            if(this.fileList.length>0  || this.fileUrlList.length>0){
                 this.setState({
                     hasAttach:true
                 });
@@ -208,18 +258,55 @@ class NoticeAdd  extends React.Component {
     }
 
     static  navigationOptions = ({navigation}) =>({
-        title: (navigation.state.params && navigation.state.params.bean )?'修改':'新增',
+        title:  navigation.state.params.title,
     });
 
-
-    render(){
-        const  {params} = this.props.navigation.state;
-        if(this.bean==null && params && params.bean){
-            this.bean  = params.bean
-            this.title = params.bean.title
-            this.content = params.bean.content
+    showPicker=(listData,param)=>{
+        let list = []
+        for (let i in listData){
+            list.push(listData[i])
         }
 
+        this.setState({
+            isShowPick:true
+        })
+        Picker.init({
+            pickerData: list,
+            selectedValue: [list[0]],
+            pickerCancelBtnText: "取消",
+            pickerConfirmBtnText: "确定",
+            pickerTitleText: "",
+            onPickerConfirm:
+                data => {
+                    if(this.workReport!=null){
+                        if(param == 'reportNode'){
+                            this.workReport[param] = data[0]
+                        }else{
+                            this.workReport[param] = DataDictionary.getIndexValue(list,data)+1
+                        }
+                    }
+                    this.setState({
+                        isShowPick:false
+                    })
+                },
+            onPickerCancel:
+                data => {
+                    this.setState({
+                        isShowPick:false
+                    })
+                },
+            onPickerSelect:
+                data => {
+                }
+        });
+        Picker.show();
+    }
+
+    static  navigationOptions = ({navigation}) =>({
+        title: (navigation.state.params && navigation.state.params.bean.id )?'修改':'新增',
+    });
+
+    render(){
         var fileButtons = [] ;
 
         for(let i in this.fileList){
@@ -237,14 +324,13 @@ class NoticeAdd  extends React.Component {
                     <View style={styles.rightIcon}>
                         <Button title="查看" onPress={ ()=>{
                             attachItem = this.fileList[i];
-                            NoticeAdd._pressDetail();
+                            this._pressDetail();
                         }}   />
                     </View>
                 </View>
             );
             fileButtons.push(button);
         } ;
-
 
         for(let j in this.fileUrlList){
             var buttonUrl = (
@@ -261,7 +347,7 @@ class NoticeAdd  extends React.Component {
                     <View style={styles.rightIcon}>
                         <Button title="查看" onPress={ ()=>{
                             attachItem = this.fileUrlList[j];
-                            NoticeAdd._pressDetail();
+                            this._pressDetail();
                         }}   />
                     </View>
                 </View>
@@ -275,11 +361,26 @@ class NoticeAdd  extends React.Component {
 
                 <View style={styles.edit}>
 
-                    <TextInputWidget  defaultValue={this.bean!=null ? this.bean.title :''}  title='标    题：'  placeholder='请输入' onChangeText={(text)=>{
-                            this.title = text;
+                    <TextInputWidget  title='事项名称：' defaultValue={ this.state.bean!=null ? this.state.bean.projectName :'' }  placeholder='请输入' onChangeText={(text)=>{
+                            // this.workReport.projectName = text;
+                    }}
+                                      editable = {true}
+                    />
+
+                    <TextSelectWidget title='汇报类型：' placehodler='请选择' value = {this.workReportType[this.workReport.reportType] }
+                        onPress={()=>{this.showPicker(this.workReportType,'reportType') }}
+                    />
+
+                    <TextSelectWidget title='汇报节点：' placehodler='请选择'  value={ this.workReport.reportNode}
+                                      onPress={()=>{ this.showPicker(this.state.timeNodes,'reportNode')
+                                      }}/>
+
+                    <TextInputWidget  defaultValue={ this.workReport!=null ? this.workReport.reportTitle :'' }  title='汇报标题：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.workReport.reportTitle = text;
                     }}/>
-                    <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.bean.content :''}  title='内    容：'  placeholder='请输入' onChangeText={(text)=>{
-                            this.content = text;
+
+                    <TextInputMultWidget  defaultValue={ this.workReport!=null ? this.workReport.reportContent :'' }  title='汇报内容：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.workReport.reportContent = text;
                     }}/>
 
                     {
@@ -287,6 +388,7 @@ class NoticeAdd  extends React.Component {
                     }
 
                     <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.takePicture.bind(this)}/>
+
 
                 </View>
 
@@ -296,9 +398,30 @@ class NoticeAdd  extends React.Component {
                     <Text style={styles.buttonText}>提交</Text>
                 </TouchableOpacity>
 
+                {this.state.isShowPick && <TouchableWithoutFeedback
+                    onPress={() => {
+                        Picker.hide();
+                        this.setState({
+                            isShowPick:false
+                        })
+                    }}
+                >
+                    <View
+                        style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}></View>
+                </TouchableWithoutFeedback>}
+
             </View>
         );
     }
+
+
 }
 
 var styles = StyleSheet.create({
@@ -358,4 +481,4 @@ var styles = StyleSheet.create({
 })
 
 
-module.exports = NoticeAdd
+module.exports = WorkReportAdd

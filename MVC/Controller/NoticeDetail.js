@@ -7,17 +7,57 @@ import {
     Alert,
     Image, ScrollView, TouchableOpacity, Dimensions,
 } from 'react-native';
+import {HttpPost} from '../Tools/JQFetch';
+import URLS from '../Tools/InterfaceApi';
+import {RRCToast} from 'react-native-overlayer/src';
+import {unitWidth} from '../Tools/ScreenAdaptation';
+import AsyncStorage from '@react-native-community/async-storage';
 
 var screenWidth = Dimensions.get('window').width;
 
+var context = null
 class NoticeDetail extends Component {
 
     constructor(props){
         super(props);
+        context = this;
+        this.bean = null;
+        this.fileList = [];
         this.state = {
             show:false,
         }
     };
+
+    componentDidMount(): void {
+        this.getNoticeInfo()
+    }
+
+    getNoticeInfo(){
+        HttpPost(URLS.NoticeDetail,{id:this.bean.id},"").then((response)=>{
+            // RRCToast.show(response.msg);
+            if(response.result == 1){
+                this.bean = response.data
+                this.fileList = response.data.fileList
+                this.setState({
+                    show:true
+                })
+            }else{
+                alert(response.msg);
+            }
+
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
+    }
+    static  navigationOptions = ({navigation}) =>({
+        title: '公告详情',
+        headerRight: (<TouchableOpacity activeOpacity={.5}
+                                        onPress={()=>{
+                                            navigation.navigate('ReadList',{list:context.bean.readList});
+                                        }}>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{navigation.state.params.internal==1 ? '阅读情况' :''}</Text>
+        </TouchableOpacity>)
+    });
 
     render(){
         const  {params} = this.props.navigation.state;
@@ -25,16 +65,19 @@ class NoticeDetail extends Component {
         var buttons = [] ;
         var images = [];
 
-        for(let i in params.new.fileList){
+        if(params && this.bean==null) this.bean = params.new
+
+        for(let i in this.fileList){
             var button = (
                 <TouchableOpacity  key = {i}  style= {styles.down}
-                    onPress={() =>
-                    this.setState({
-                        show : true,
-                    })}>
+                    // onPress={() =>
+                    // this.setState({
+                    //     show : true,
+                    // })}
+                >
 
                     <Text   numberOfLines = {1}
-                            style={styles.downText}> {'下载附件:'+ params.new.fileList[i].name} </Text>
+                            style={styles.downText}> {'下载附件:'+ this.fileList[i].name} </Text>
                 </TouchableOpacity>
             );
 
@@ -42,7 +85,7 @@ class NoticeDetail extends Component {
                 <Image
                     key ={i+1}
                     style={styles.img}
-                    source={{ uri: params.new.fileList[i].url }} />
+                    source={{ uri: this.fileList[i].url }} />
              );
 
             buttons.push(button);
@@ -57,7 +100,6 @@ class NoticeDetail extends Component {
                         <Text style = {styles.titleInfo}> 发布人：{params.new.createName} </Text>
                         <Text style = {styles.titleInfo}>
                             <Text> 发布时间: {params.new.publishTimeStr} </Text>
-                            {/*<Text style = {styles.font}>      已阅：{params.new.countReaded} / {params.new.count}</Text>*/}
                         </Text>
                         <Text style={styles.line}>  </Text>
                         <Text style = {styles.content}> {params.new.content}</Text>

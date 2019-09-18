@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         borderColor: '#F4F4F4',//需要标色
     },
     textInputTitle: {
-        width: 90*unitWidth,
+        width: 80*unitWidth,
         fontSize: 15*unitWidth,
         color: '#333',
         marginLeft: 15*unitWidth,

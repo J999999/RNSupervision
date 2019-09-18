@@ -4,6 +4,11 @@ const  FunctionEnum = {
     actionMap:{
         1: 'NoticeList',
         8: 'NoticeList',//公告通知
+        11:'ProjectList',//立项交办
+        12:'OpinionApprovalList',//意见审批
+
+        14:'WorkReportList' , //工作汇报
+        15:'WorkReportList' , //督查统计
     },
 
     /**
@@ -26,8 +31,11 @@ const  FunctionEnum = {
         8:require('../Images/tongzhigonggao.png'),//通知公告
         9:require('../Images/duanxinqunfa.png'),//短信群发
 
-        10:require('../Images/ducujiandu.png'),//工作督查
+        10:require('../Images/ducujiandu.png'),
+        11:require('../Images/ducujiandu.png'),//工作督查
         12:require('../Images/yijianshenhe.png'),//意见审批
+        13:require('../Images/yijianshenhe.png'),//承办落实
+        14:require('../Images/yijianshenhe.png'),//工作汇报
         15:require('../Images/duchatongji.png'),//督查统计
 
         16:require('../Images/jixiaokaohe.png'),//绩效考核

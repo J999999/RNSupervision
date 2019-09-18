@@ -15,6 +15,7 @@ import URLS from '../Tools/InterfaceApi';
 import {HttpPost, HttpPostFile} from '../Tools/JQFetch';
 import {RRCToast} from 'react-native-overlayer/src';
 import {KeyboardAwareScrollView} from  'react-native-keyboard-aware-scroll-view';
+import TextDateSelectWidget from '../Widget/TextDateSelectWidget';
 
 var options = {
     title: '选择文件',
@@ -30,55 +31,49 @@ var options = {
 var screenWidth = Dimensions.get('window').width;
 var navigation = null;
 var attachItem = null;
-class NoticeAdd  extends React.Component {
+
+/**
+ * 新增 延期申请，约谈申请，问责申请
+ *     申请延期，申请约谈，申请问责
+ */
+class ApplyInterviewAdd  extends React.Component {
 
     constructor(props){
         super(props);
-        this.title = "";
+        this.source = "";
+        this.reason = "";
+        this.object = "";
         this.content = "";
+
         this.fileList = [];
-        this.fileUrlList =[];
-        this.bean = null;
+
+        // this.bean = null;
 
         navigation = this.props.navigation;
         this.state = {
+            delayTime:'',
+            finishTime:'',
             hasAttach:false,
         }
      }
 
      componentDidMount(): void {
-        if(this.bean!=null){
-            this.getNoticeInfo()
-        }
+         const  {params} = this.props.navigation.state;
+         this.setState({
+             finishTime : params.finishTime
+         })
      }
 
-    getNoticeInfo(){
-        HttpPost(URLS.NoticeDetail,{id:this.bean.id},"").then((response)=>{
-            // RRCToast.show(response.msg);
-            if(response.result == 1){
-                this.bean = response.data
-                this.fileUrlList=this.bean.fileList
-                this.setState({
-                    hasAttach:true
-                })
-            }else{
-                alert(response.msg);
-            }
 
-        }).catch((err)=>{
-            RRCToast.show(err);
-        });
-    }
+    uploadInfo=(files)=> {
 
-    uploadNoticeInfo=(files)=> {
-        let filesss = this.fileUrlList&&this.fileUrlList.length>0 ? this.fileUrlList :[]
-        filesss = filesss.concat(files)
-        console.log(filesss)
-        let requestData = {"title":this.title,"content":this.content,"fileList":filesss};
-        if(this.bean !=null){
-            requestData['id']= this.bean.id
-        }
-        HttpPost(URLS.AddNotice,requestData,"正在保存..").then((response)=>{
+        const {navigation} = this.props;
+        let id = navigation.getParam('id');
+
+        //recordType 申请类型，1-延期，2-约谈，3-问责
+        let requestData = { cause:this.reason,"fileList":files.join(','),projectId:id,recordType:2,sources:this.source,interviewUser:this.object,mainSituation:this.content};
+
+        HttpPost(navigation.getParam('url'),requestData,"正在提交..").then((response)=>{
             RRCToast.show(response.msg);
             if(response.result == 1){
                 navigation.state.params.callback()
@@ -93,14 +88,21 @@ class NoticeAdd  extends React.Component {
     }
 
     _pressSumbit =()=> {
-
-        if(this.title==""){
-            RRCToast.show("请输入标题");
-            return;
+        if(this.source==""){
+            RRCToast.show("请输入来源");
+            return ;
+        }
+        if(this.reason==""){
+            RRCToast.show("请输入事由");
+            return ;
+        }
+        if(this.object==""){
+            RRCToast.show("请输入约谈对象");
+            return ;
         }
 
         if(this.content==""){
-            RRCToast.show("请输入内容");
+            RRCToast.show("请输入主要情况");
             return ;
         }
 
@@ -116,7 +118,7 @@ class NoticeAdd  extends React.Component {
              HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
                 if(response.result == 1){
                     files = response.data
-                    this.uploadNoticeInfo(files)
+                    this.uploadInfo(files)
                  }else{
                     alert(response.msg);
                 }
@@ -125,12 +127,11 @@ class NoticeAdd  extends React.Component {
                 RRCToast.show(err);
             });
         }else{
-            this.uploadNoticeInfo([])
+            this.uploadInfo([])
         }
 
 
     };
-
 
 
     takePicture = async function() {
@@ -178,17 +179,10 @@ class NoticeAdd  extends React.Component {
                 }
             }
         }
-        if(type === 1){
-            for(let i in this.fileUrlList){
-                if(this.fileUrlList[i] == item){
-                    this.fileUrlList.pop(item);
-                    has = true;
-                }
-            }
-        }
+
 
         if(has){
-            if(this.fileList.length>0 || this.fileUrlList.length>0){
+            if(this.fileList.length>0  ){
                 this.setState({
                     hasAttach:true
                 });
@@ -208,17 +202,12 @@ class NoticeAdd  extends React.Component {
     }
 
     static  navigationOptions = ({navigation}) =>({
-        title: (navigation.state.params && navigation.state.params.bean )?'修改':'新增',
+        title:  navigation.state.params.title,
     });
 
 
     render(){
-        const  {params} = this.props.navigation.state;
-        if(this.bean==null && params && params.bean){
-            this.bean  = params.bean
-            this.title = params.bean.title
-            this.content = params.bean.content
-        }
+
 
         var fileButtons = [] ;
 
@@ -237,7 +226,7 @@ class NoticeAdd  extends React.Component {
                     <View style={styles.rightIcon}>
                         <Button title="查看" onPress={ ()=>{
                             attachItem = this.fileList[i];
-                            NoticeAdd._pressDetail();
+                            this._pressDetail();
                         }}   />
                     </View>
                 </View>
@@ -246,47 +235,42 @@ class NoticeAdd  extends React.Component {
         } ;
 
 
-        for(let j in this.fileUrlList){
-            var buttonUrl = (
-                <View
-                    key = {j}
-                    style= {styles.attach} >
-                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ this.fileUrlList[j].name} </Text>
-                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
-                        this._pressDelAttach(this.fileUrlList[j],1);
-                    }}>
-                        <Image style={styles.delete} source={require('../Images/sc_delete.png')}   />
-                    </TouchableOpacity>
-
-                    <View style={styles.rightIcon}>
-                        <Button title="查看" onPress={ ()=>{
-                            attachItem = this.fileUrlList[j];
-                            NoticeAdd._pressDetail();
-                        }}   />
-                    </View>
-                </View>
-            );
-            fileButtons.push(buttonUrl);
-        }
-
         return (
             <View style = {styles.all}>
             <KeyboardAwareScrollView style = {styles.all}>
 
                 <View style={styles.edit}>
 
-                    <TextInputWidget  defaultValue={this.bean!=null ? this.bean.title :''}  title='标    题：'  placeholder='请输入' onChangeText={(text)=>{
-                            this.title = text;
+
+                    <TextInputMultWidget  title='来源事项：'  placeholder='请输入' onChangeText={(text)=>{
+                            this.source = text;
                     }}/>
-                    <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.bean.content :''}  title='内    容：'  placeholder='请输入' onChangeText={(text)=>{
-                            this.content = text;
+
+                    <TextInputMultWidget  title='事由：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.reason = text;
                     }}/>
+
+                    <TextInputMultWidget  title='约谈对象：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.object = text;
+                    }}/>
+                    <TextInputMultWidget  title='主要情况：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.content = text;
+                    }}/>
+                    {/*<TextInputWidget    title='编辑人：'  placeholder='请输入' onChangeText={(text)=>{*/}
+                    {/*    this.title = text;*/}
+                    {/*}}/>*/}
+                    {/*<TextDateSelectWidget title='编辑时间：' placehodler='请选择'  date={this.bean!=null ? this.bean.assignTime :''}*/}
+                    {/*                      onDateChange={(date)=>{*/}
+                    {/*                          this.bean.assignTime = date*/}
+                    {/*                      }}/>*/}
 
                     {
                         this.state.hasAttach == true ?  fileButtons  :  null
                     }
 
                     <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.takePicture.bind(this)}/>
+
+
 
                 </View>
 
@@ -358,4 +342,4 @@ var styles = StyleSheet.create({
 })
 
 
-module.exports = NoticeAdd
+module.exports = ApplyInterviewAdd

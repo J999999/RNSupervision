@@ -5,9 +5,6 @@
  * @format
  * @flow
  */
-import URLS from './MVC/Tools/InterfaceApi';
-import {RRCLoading, RRCAlert, RRCToast} from 'react-native-overlayer';
-import {getGuid} from './MVC/Tools/JQGuid';
 import React from 'react';
 import {View} from 'react-native';
 import NavigationService from './MVC/Tools/NavigationService'
@@ -42,7 +39,23 @@ import CheckList from './MVC/View/CheckList'
 import NoticeList from './MVC/Controller/NoticeList';
 import NoticeAdd  from './MVC/Controller/NoticeAdd';
 import NoticeDetail  from './MVC/Controller/NoticeDetail';
+import ReadList  from './MVC/Controller/ReadList';
 import AttachDetail  from './MVC/Controller/AttachDetail';
+import ProjectList from './MVC/Controller/ProjectList';
+import ProjectDetail from './MVC/Controller/ProjectDetail';
+import ProjectAdd from './MVC/Controller/ProjectAdd';
+import OpinionApprovalList from './MVC/Controller/OpinionApprovalList';
+import OpinionWithContent from './MVC/Controller/OpinionWithContent';
+import OpinionDetail from './MVC/Controller/OpinionDetail';
+import OpinionAdd from './MVC/Controller/OpinionAdd';
+import ApplyDelayAdd from './MVC/Controller/ApplyDelayAdd';
+import ApplyInterviewAdd from './MVC/Controller/ApplyInterviewAdd';
+import ApplyDutyAdd from './MVC/Controller/ApplyDutyAdd';
+import ReportOpinionSummary from './MVC/Controller/ReportOpinionSummary';
+import WorkReportList from './MVC/Controller/WorkReportList';
+import WorkReportAdd from './MVC/Controller/WorkReportAdd';
+import WorkReportDetail from './MVC/Controller/WorkReportDetail';
+import WorkReportSummary from './MVC/Controller/WorkReportSummary';
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -84,6 +97,25 @@ const AppNavigator = createStackNavigator({
     NoticeAdd:   {screen: NoticeAdd},
     NoticeDetail:   {screen: NoticeDetail},
     AttachDetail:   {screen: AttachDetail},
+    ReadList : {screen:ReadList},
+
+    ProjectList:  {screen: ProjectList},
+    ProjectAdd:   {screen: ProjectAdd},
+    ProjectDetail:   {screen:ProjectDetail},
+
+    OpinionApprovalList:{screen:OpinionApprovalList},
+    OpinionWithContent:{screen:OpinionWithContent},
+    OpinionDetail:{screen:OpinionDetail},
+    OpinionAdd:{screen:OpinionAdd},
+    ApplyDelayAdd:{screen:ApplyDelayAdd},
+    ApplyInterviewAdd:{screen:ApplyInterviewAdd},
+    ApplyDutyAdd:{screen:ApplyDutyAdd},
+    ReportOpinionSummary:{screen:ReportOpinionSummary},
+
+    WorkReportList:{screen:WorkReportList},
+    WorkReportAdd:{screen:WorkReportAdd},
+    WorkReportDetail:{screen:WorkReportDetail},
+    WorkReportSummary:{screen:WorkReportSummary},
 
 },{
   initialRouteName: 'Login',

@@ -11,6 +11,7 @@ export default class Function extends React.Component {
 
     constructor(){
         super();
+        this.internal = ''//是否内部角色 1=是 、0=否
         this.state = {
             data:[],
         };
@@ -18,12 +19,14 @@ export default class Function extends React.Component {
 
     componentDidMount(): void {
         AsyncStorage.getItem('userMenu').then((value) => {
-            // console.log(value)
+            console.log(value)
             this.setState({
                 data: JSON.parse(value),
             })
         });
-
+        AsyncStorage.getItem('internal').then((value) => {
+            this.internal = JSON.parse(value)
+        });
     }
 
     _renderRow = (rowItem, rowId, sectionId) => (
@@ -50,7 +53,7 @@ export default class Function extends React.Component {
                               }
                               console.log(func + '   '+icon)
 
-                              this.props.navigation.navigate(func);
+                              this.props.navigation.navigate(func,{'internal':this.internal});
 
 
                           }}>
@@ -67,13 +70,15 @@ export default class Function extends React.Component {
         </TouchableOpacity>
     );
     _renderSection = (section, sectionId)  => {
-        // console.log("section-----"+section + sectionId )
+
+        let sec = this.state.data[sectionId]
+
         return (
             <View style={{height: 64*unitHeight, borderBottomWidth: unitHeight, flexDirection:'row',
                 alignItems: 'center', borderBottomColor: '#F4F4F4', justifyContent: 'space-between'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center',padding:4}}>
                     <Image source={
-                        FunctionEnum.iconMap[sectionId]?FunctionEnum.iconMap[sectionId] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
+                        FunctionEnum.iconMap[sec.id]?FunctionEnum.iconMap[sec.id] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
                     }
                            style={{width: 48*unitWidth, height: 48*unitWidth, marginLeft: 20*unitWidth}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 17*unitWidth}}>{section}</Text>

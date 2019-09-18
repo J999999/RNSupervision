@@ -4,6 +4,7 @@ import {
     View,
     Image,
 } from 'react-native';
+import {titleHeight, unitHeight, unitWidth} from '../Tools/ScreenAdaptation';
 
 class AttachDetail extends Component {
 
@@ -22,15 +23,12 @@ class AttachDetail extends Component {
         console.log(JSON.stringify(params.item) )
         return(
             <View style={styles.main}>
-                {/*<Image style={styles.image} source={ {uri : "file://"+params.item.path} }   />*/}
                 <Image style={styles.image} source={ {uri :  params.item.uri } }  />
             </View>
         )
 
     }
 }
-
-
 
 var styles = StyleSheet.create({
 
@@ -39,12 +37,11 @@ var styles = StyleSheet.create({
         backgroundColor:'#fff',
         alignItems:'center',
         justifyContent:'center',
-        padding:20,
     },
 
     image:{
-        width:300,
-        height:400,
+        width:'100%',
+        height:'100%',
     }
 
 })

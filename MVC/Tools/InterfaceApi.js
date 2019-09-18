@@ -1,6 +1,7 @@
-const HOST = 'http://192.168.2.42:8081/'; //岳毅
-//const HOST = 'http://192.168.2.45:8081/'; //小好
-//const HOST = 'http://221.13.156.198:10008/api/';
+
+// const HOST = 'http://192.168.2.45:8081/';
+const HOST = 'http://192.168.2.42:8081/';
+// const HOST = 'http://221.13.156.198:10008/api/';
 
 const URLS = {
     Login: HOST + 'login',
@@ -27,9 +28,52 @@ const URLS = {
 
     QueryNoticeList: HOST + '/notice/queryList',
     AddNotice: HOST + '/notice/save',
+    NoticeDetail: HOST + '/notice/queryDetail', // 根据ID查看详情
     NoticeRecall: HOST + '/notice/recall',
     NoticeDelete: HOST + '/notice/delete',
     FileUpload: HOST + '/file/fileUpload',
     FileUploads: HOST + '/file/fileBatchUpload',
+    //立项交办
+    QueryProjectList: HOST + '/projectInfo/getProjectInfoList',
+    SubmitProject: HOST + '/projectInfo/addSubmitAudit', //提交立项数据
+    SaveProject: HOST + '/projectInfo/saveOrUpdate', //保存立项信息
+    ProjectDetail: HOST + '/projectInfo/getProjectInfo', // 根据ID查看详情
+    ProjectRecall: HOST + '/projectInfo/revokeProject',//撤回
+    ProjectDelete: HOST + '/projectInfo/deleteProject',
+    SysLog: HOST + '/projectInfo/getSystemLog', //立项交办，系统记录
+    QueryApproval:HOST + '/projectApproval/queryLogList',//查询审批流程
+    GetParamDept:HOST + '/admin/dept/getParamDept' ,//根据条件获取一级部门 ,查牵头单位或配合单位
+
+
+    ProjectApprovalList:HOST + '/projectApproval/queryList' ,// 意见审批查询列表
+    ProjectApprovalAgree:HOST + '/projectApproval/agreeProject',// 意见审批同意
+    ProjectApprovalReject:HOST + '/projectApproval/rejectProject',// 意见审批驳回
+    OpinionSave:HOST + '/projectApproval/saveOpinion',//意见建议/批示/回复保存接口
+
+    ProjectApplicationSave:HOST + '/applicationForPIA/addApplication',//提起延期申请，约谈申请，问责申请
+
+    DeleteProjectRelation:HOST + '/follow/projectRelation/deleteProjectRelation',//取消事项关注
+    AddProjectRelation:HOST + '/follow/projectRelation/saveProjectRelation',//添加事项关注
+
+    ProjectDelaySave:HOST + '/projectApproval/delayedProject',//事项延期
+    ProjectDutySave:HOST + '/projectApproval/accountabilityProject',//事项问责
+    ProjectInterviewSave:HOST + '/projectApproval/interviewProject',//事项约谈
+
+    ReportOpinionQuery:HOST + '/projectApproval/queryAllReportOpinionList',//批示汇报汇总查询
+    LeadingUnitOpinionQuery:HOST + '/projectApproval/queryLeadingUnitOpinionList',//查询牵头单位汇报与批示回复
+    LeadingUnitOpinionQueryV2:HOST + '/projectApproval/queryLeadingUnitOpinionListV2',//查询汇报单位汇报与批示回复
+    OpinionQuery:HOST + '/projectApproval/queryOpinionList',//查询意见批示
+
+
+    ApprovelWorkReport:HOST + '/workReport/approveWorkReport',//审批工作汇报
+    ReplyWorkReport:HOST + '/workReport/reply',//回复工作汇报
+
+    QueryWorkReportList:HOST + '/workReport/queryProjectList',//分页查询工作汇报项目列表
+    SaveWorkReport:HOST + '/workReport/save',//保存工作汇报
+
+    WorkReportTimeNodes:HOST + '/workReport/listReportTime',//根据项目ID获取当前汇报单位的汇报节点
+
+
+
 };
 export default URLS;
