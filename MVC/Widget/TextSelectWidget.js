@@ -7,9 +7,8 @@ import {
     View,
     Text,
     PixelRatio,
-    Dimensions, TouchableWithoutFeedback, TextInput,
+    Dimensions, TouchableWithoutFeedback, TextInput, Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {unitWidth} from '../Tools/ScreenAdaptation';
 
 var screenWidth = Dimensions.get('window').width;
@@ -35,10 +34,8 @@ class TextSelectWidget extends Component{
                     > {this.props.value}</Text>
 
                     <View style={styles.rightArrow}>
-                        <Icon
-                            name='angle-down'
-                            size={30}
-                        />
+                        <Image source={require('../Images/goRight.png')}
+                               style={{width: 10*unitWidth, height: 10*unitWidth }}/>
                     </View>
                 </View>
             </TouchableWithoutFeedback>

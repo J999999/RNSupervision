@@ -56,6 +56,8 @@ import WorkReportList from './MVC/Controller/WorkReportList';
 import WorkReportAdd from './MVC/Controller/WorkReportAdd';
 import WorkReportDetail from './MVC/Controller/WorkReportDetail';
 import WorkReportSummary from './MVC/Controller/WorkReportSummary';
+import ProjectStatisticsList from './MVC/Controller/ProjectStatisticsList';
+import StatisticsCharts from './MVC/Controller/StatisticsCharts';
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -92,17 +94,17 @@ const AppNavigator = createStackNavigator({
     IInterviewReleaseDetail: {screen: IInterviewReleaseDetail},
     AccountabilityReleaseList: {screen: AccountabilityReleaseList},
     AccountabilityReleaseDetail: {screen: AccountabilityReleaseDetail},
-
+//公告通知
     NoticeList:  {screen: NoticeList},
     NoticeAdd:   {screen: NoticeAdd},
     NoticeDetail:   {screen: NoticeDetail},
     AttachDetail:   {screen: AttachDetail},
     ReadList : {screen:ReadList},
-
+//立项交办
     ProjectList:  {screen: ProjectList},
     ProjectAdd:   {screen: ProjectAdd},
     ProjectDetail:   {screen:ProjectDetail},
-
+//意见审批
     OpinionApprovalList:{screen:OpinionApprovalList},
     OpinionWithContent:{screen:OpinionWithContent},
     OpinionDetail:{screen:OpinionDetail},
@@ -112,10 +114,15 @@ const AppNavigator = createStackNavigator({
     ApplyDutyAdd:{screen:ApplyDutyAdd},
     ReportOpinionSummary:{screen:ReportOpinionSummary},
 
+  //工作汇报
     WorkReportList:{screen:WorkReportList},
     WorkReportAdd:{screen:WorkReportAdd},
     WorkReportDetail:{screen:WorkReportDetail},
     WorkReportSummary:{screen:WorkReportSummary},
+
+//督查统计
+    ProjectStatisticsList:{screen:ProjectStatisticsList},
+    StatisticsCharts:{screen:StatisticsCharts},
 
 },{
   initialRouteName: 'Login',

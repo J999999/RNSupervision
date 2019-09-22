@@ -6,6 +6,8 @@ import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import AsyncStorage from '@react-native-community/async-storage'
 import FunctionEnum from '../Tools/FunctionEnum';
+import {HttpPost} from '../Tools/JQFetch';
+import URLS from '../Tools/InterfaceApi';
 
 export default class Function extends React.Component {
 
@@ -18,14 +20,35 @@ export default class Function extends React.Component {
     }
 
     componentDidMount(): void {
-        AsyncStorage.getItem('userMenu').then((value) => {
-            console.log(value)
-            this.setState({
-                data: JSON.parse(value),
-            })
-        });
+
+        this.getFunctionMenu()
+        // AsyncStorage.getItem('userMenu').then((value) => {
+        //     console.log(value)
+        //     this.setState({
+        //         data: JSON.parse(value),
+        //     })
+        // });
         AsyncStorage.getItem('internal').then((value) => {
             this.internal = JSON.parse(value)
+        });
+    }
+
+    getFunctionMenu(){
+        HttpPost(URLS.UserMenu, {'isDefault':0},'').then((response)=>{
+            if (response.result !== 1) {
+                RRCToast.show(response.msg);
+            }else {
+                let functions = []
+                for (let i = 0; i < response.data.length; i++){
+                    let func = response.data[i];
+                    if (func.isDefault == 0){
+                       functions.push(func);
+                    }
+                }
+                this.setState({
+                    data: functions,
+                })
+            }
         });
     }
 
@@ -53,8 +76,7 @@ export default class Function extends React.Component {
                               }
                               console.log(func + '   '+icon)
 
-                              this.props.navigation.navigate(func,{'internal':this.internal});
-
+                              this.props.navigation.navigate(func,{'internal':this.internal,'children':rowItem.children,'title':rowItem.name,'id':rowItem.id});
 
                           }}>
             <View>
@@ -74,13 +96,13 @@ export default class Function extends React.Component {
         let sec = this.state.data[sectionId]
 
         return (
-            <View style={{height: 64*unitHeight, borderBottomWidth: unitHeight, flexDirection:'row',
+            <View style={{height: 56*unitHeight, borderBottomWidth: unitHeight, flexDirection:'row',
                 alignItems: 'center', borderBottomColor: '#F4F4F4', justifyContent: 'space-between'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center',padding:4}}>
                     <Image source={
                         FunctionEnum.iconMap[sec.id]?FunctionEnum.iconMap[sec.id] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
                     }
-                           style={{width: 48*unitWidth, height: 48*unitWidth, marginLeft: 20*unitWidth}}/>
+                           style={{width: 40*unitWidth, height: 40*unitWidth, marginLeft: 20*unitWidth}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 17*unitWidth}}>{section}</Text>
                 </View>
                 <Image source={require('../Images/goRight.png')}

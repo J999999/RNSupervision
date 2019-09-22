@@ -1,7 +1,7 @@
 
 // const HOST = 'http://192.168.2.45:8081/';
-const HOST = 'http://192.168.2.42:8081/';
-// const HOST = 'http://221.13.156.198:10008/api/';
+// const HOST = 'http://192.168.2.42:8081/';
+const HOST = 'http://221.13.156.198:10008/api/';
 
 const URLS = {
     Login: HOST + 'login',
@@ -67,11 +67,19 @@ const URLS = {
 
     ApprovelWorkReport:HOST + '/workReport/approveWorkReport',//审批工作汇报
     ReplyWorkReport:HOST + '/workReport/reply',//回复工作汇报
-
     QueryWorkReportList:HOST + '/workReport/queryProjectList',//分页查询工作汇报项目列表
     SaveWorkReport:HOST + '/workReport/save',//保存工作汇报
-
     WorkReportTimeNodes:HOST + '/workReport/listReportTime',//根据项目ID获取当前汇报单位的汇报节点
+
+    StatisticsUser:HOST + '/project/statistics/pic',//责任人统计
+    StatisticsProject:HOST + '/project/statistics/projectInfo',//立项统计
+    StatisticsUnit:HOST + '/project/statistics/respUnit',//责任单位统计
+
+    WorkBenchQueryLeaderOpinion:HOST + '/workbench/queryLeaderOpinion',//领导的批示/领导的批示意见
+    WorkBenchQueryMyFollow:HOST + '/workbench/queryMyFollow',//我的关注
+    WorkBenchQueryMyOpinion:HOST + '/workbench/queryMyOpinion',//我的批示/我的意见建议
+    WorkBenchQueryTodoList:HOST + '/workbench/queryTodoList',//待办事项
+    WorkBenchSaveRead:HOST + '/workbench/saveWorkbenchRead',//标记阅读状态
 
 
 

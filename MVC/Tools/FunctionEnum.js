@@ -8,7 +8,13 @@ const  FunctionEnum = {
         12:'OpinionApprovalList',//意见审批
 
         14:'WorkReportList' , //工作汇报
-        15:'WorkReportList' , //督查统计
+        15:'ProjectStatisticsList' , //督查统计
+
+        46:'WorkBanchList' ,//我的关注
+        49:'WorkBanchList',//领导批示意见
+        51:'WorkBanchList',//待办事项
+        52:'WorkBanchList',//通知公告
+        53:'',//预警信息
     },
 
     /**

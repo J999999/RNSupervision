@@ -13,7 +13,6 @@ import {RRCAlert, RRCToast} from 'react-native-overlayer/src';
 import DataDictionary from '../Tools/DataDictionary';
 import {unitHeight, unitWidth} from '../Tools/ScreenAdaptation';
 import ExpandableList from 'react-native-expandable-section-flatlist';
-import EditDialogWidget from '../Widget/EditDialogWidget';
 import AsyncStorage from '@react-native-community/async-storage';
 
 var screenWidth = Dimensions.get('window').width;

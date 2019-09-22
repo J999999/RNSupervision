@@ -17,13 +17,13 @@ export default class HomePage extends React.Component {
     async componentDidMount(): void {
         const xx = await AsyncStorage.getItem('homePageFunc');
         // console.log(JSON.stringify(xx));
-        if (xx) {
-            this.setState({
-                data: JSON.parse(xx),
-            })
-        } else {
+        // if (xx) {
+        //     this.setState({
+        //         data: JSON.parse(xx),
+        //     })
+        // } else {
             this._getFunctionAction();
-        }
+        // }
     }
     _getFunctionAction(){
         let functions = [];
@@ -34,10 +34,15 @@ export default class HomePage extends React.Component {
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
-                    for (let j = 0; j < oneLevel.children.length; j++){
-                        let twoLevel = oneLevel.children[j];
-                        functions.push(twoLevel);
+                    if(oneLevel.isDefault==0){
+                        for (let j = 0; j < oneLevel.children.length; j++){
+                            let twoLevel = oneLevel.children[j];
+                            functions.push(twoLevel);
+                        }
+                    }else{
+                        functions.push(oneLevel);
                     }
+
                 }
                 //展示在首页的功能数组,获取之后保存在本地(添加删除功能对 homePageFunc 进行操作)
                 functions.push({'name':'添加功能'});
