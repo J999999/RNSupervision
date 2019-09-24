@@ -1,6 +1,5 @@
-
-// const HOST = 'http://192.168.2.45:8081/';
-// const HOST = 'http://192.168.2.42:8081/';
+//const HOST = 'http://192.168.2.42:8081/'; //岳毅
+//const HOST = 'http://192.168.2.45:8081/'; //小好
 const HOST = 'http://221.13.156.198:10008/api/';
 
 const URLS = {
@@ -25,6 +24,38 @@ const URLS = {
     RejectApproval : HOST + '/implementForIAForApproval/rejectApproval', //审批驳回
     QueryReleaseAccountability : HOST + '/implementForIA/queryReleaseAccountability', //问责事项查询
     QueryReleaseInterview : HOST + '/implementForIA/queryReleaseInterview', //约谈事项查询
+    //绩效考核
+    ListPageFillin: HOST + 'assess/fillin/listPage', //绩效考核列表
+    ListDetailFillin : HOST + 'assess/fillin/listDetailInfo', //绩效考核详情
+    SaveFillin : HOST + 'assess/fillin/save',//填报保存，编辑，上报
+    reportByIdFillin : HOST + 'assess/fillin/reportById',//点击某条单独上报
+    reportBatchFillin : HOST + 'assess/fillin/reportBatch',//批量上报
+    IndicatorList: HOST + 'assess/indicator/listPage', //考核指标列表
+    ViewLogFillin : HOST + 'assess/scoreWeight/approvalViewLog', //查看系统记录
+    ApprovalFillin : HOST + 'assess/scoreWeight/queryApproval', //查看审核信息
+    ApproveListFillin: HOST + 'assess/scoreWeight/approveList', //填报审核列表
+    ApproveDetailFillin : HOST + 'assess/scoreWeight/listDetailInfo', //填报审核详情
+    UpApproveFillin : HOST + 'assess/scoreWeight/approve', //填报审核
+    //主体责任
+    QueryListByInspectionreform : HOST + 'inspectionreform/queryList', //巡查整改列表
+    QueryDetailByInspectionreform : HOST + 'inspectionreform/queryDetail', //巡查整改详情
+    QueryLogByInspectionreform: HOST + 'inspectionreform/queryLog', //巡查整改系统记录
+    QueryListByExchangeexperience : HOST + 'exchangeexperience/queryList', //经验交流列表
+    QueryDetailByExchangeexperience : HOST + 'exchangeexperience/queryDetail', //经验交流详情
+    QueryLogByExchangeexperience: HOST + 'exchangeexperience/queryLog', //经验交流系统记录
+    QueryPartyInfoByParam : HOST + 'partyOrganizationInfo/queryPartyInfoByParam', //获取党组织信息
+    QueryPageList : HOST + 'subjectDutyInventory/queryPageList', //主体责任清单列表
+    GetSubjectDutyById : HOST + 'subjectDutyInventory/getSubjectDutyById', //主体责任清单详情
+    GetSubjectDutyLogById : HOST + 'subjectDutyInventory/getSubjectDutyLogById', //主体责任清单系统记录
+    GetDutyByDutyInventoryId: HOST + 'subjectDutyPracticable/getDutyByDutyInventoryId', //获取主体责任清单落实
+    QueryListByDutyPracticable: HOST + 'subjectDutyPracticable/queryPageList', //获取主体责任落实情况列表
+    QueryListByApprovalWork : HOST + 'approvalWork/queryPageList', //主体责任 工作审核
+    ApproveBatch : HOST + 'approvalWork/approveBatch', //工作审核 审核
+    //资料云盘
+    GetDataCloud : HOST + 'cloudDisk/queryList',  //获取资料云盘列表
+    SaveDataCloud : HOST + 'cloudDisk/save', //上传资料云盘
+    DeleteDataCloud : HOST + 'cloudDisk/delete', //删除资料云盘
+
 
     QueryNoticeList: HOST + '/notice/queryList',
     AddNotice: HOST + '/notice/save',

@@ -32,8 +32,35 @@ import IInterviewReleaseList from './MVC/Controller/EffectivenessAccountability/
 import IInterviewReleaseDetail from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewReleaseDetail' //约谈事项详情
 import AccountabilityReleaseList from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityReleaseList' //问责事项查询
 import AccountabilityReleaseDetail from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityReleaseDetail' //问责事项详情
-
-
+import PAppraisalList from './MVC/Controller/PerformanceAppraisal/PAppraisalList' //绩效考核列表
+import PAppraisalDetail from './MVC/Controller/PerformanceAppraisal/PAppraisalDetail' //绩效考核详情
+import PAppraisalViewLog from './MVC/Controller/PerformanceAppraisal/PAppraisalViewLog' //绩效考核系统记录
+import PAppraisalApproval from './MVC/Controller/PerformanceAppraisal/PAppraisalApproval'
+import FillAuditList from './MVC/Controller/PerformanceAppraisal/FillAuditList'
+import FillInAuditDetail from './MVC/Controller/PerformanceAppraisal/FillInAuditDetail'
+import FillInAuditOptions from './MVC/Controller/PerformanceAppraisal/FillInAuditOptions'
+import IndicatorList from './MVC/Controller/PerformanceAppraisal/IndicatorList' //考核指标列表
+import InspectionreformInformation from './MVC/Controller/SubjectResponsibility/InspectionreformInformation' //巡查整改党组信息
+import InspectionreformList from './MVC/Controller/SubjectResponsibility/InspectionreformList' //巡查整改列表
+import InspectionreformDetail from './MVC/Controller/SubjectResponsibility/InspectionreformDetail' //巡查整改详情
+import InspectionreformLog from './MVC/Controller/SubjectResponsibility/InspectionreformLog' //巡查整改系统记录
+import ExchangeexperienceList from './MVC/Controller/SubjectResponsibility/ExchangeexperienceList' //经验交流列表
+import ExchangeexperienceDetail from './MVC/Controller/SubjectResponsibility/ExchangeexperienceDetail' //经验交流详情
+import ExchangeexperienceLog from './MVC/Controller/SubjectResponsibility/ExchangeexperienceLog' //经验交流系统记录
+import InformationImprovement from './MVC/Controller/SubjectResponsibility/InformationImprovement' //党组织信息完善
+import DetailedListInformation from './MVC/Controller/SubjectResponsibility/DetailedListInformation' //主体责任清单党组信息
+import DetailedList from './MVC/Controller/SubjectResponsibility/DetailedList' //主体责任清单列表
+import DetailedListDetail from './MVC/Controller/SubjectResponsibility/DetailedListDetail' //主体责任清单详情
+import DetailedListLog from './MVC/Controller/SubjectResponsibility/DetailedListLog' //主体责任清单系统记录
+import DetailedListLuoShi from './MVC/Controller/SubjectResponsibility/DetailedListLuoShi' //主体责任清单落实情况
+import PracticableInformation from './MVC/Controller/SubjectResponsibility/PracticableInformation'
+import PracticableList from './MVC/Controller/SubjectResponsibility/PracticableList'
+import PracticableDetail from './MVC/Controller/SubjectResponsibility/PracticableDetail'
+import PracticableLuoShi from './MVC/Controller/SubjectResponsibility/PracticableLuoShi'
+import ApprovalWorkList from './MVC/Controller/SubjectResponsibility/ApprovalWorkList' //工作审核
+import ApprovalWorkOptions from './MVC/Controller/SubjectResponsibility/ApprovalWorkOptions' //工作审核操作页面
+import KDataCloudList from './MVC/Controller/DataCloudDisk/KDataCloudList'
+import JDataCloudList from './MVC/Controller/DataCloudDisk/JDataCloudList'
 
 import CheckList from './MVC/View/CheckList'
 import NoticeList from './MVC/Controller/NoticeList';
@@ -94,6 +121,36 @@ const AppNavigator = createStackNavigator({
     IInterviewReleaseDetail: {screen: IInterviewReleaseDetail},
     AccountabilityReleaseList: {screen: AccountabilityReleaseList},
     AccountabilityReleaseDetail: {screen: AccountabilityReleaseDetail},
+    PAppraisalList: {screen: PAppraisalList},
+    PAppraisalDetail: {screen: PAppraisalDetail},
+    PAppraisalViewLog: {screen: PAppraisalViewLog},
+    PAppraisalApproval: {screen: PAppraisalApproval},
+    FillAuditList: {screen: FillAuditList},
+    FillInAuditDetail: {screen: FillInAuditDetail},
+    FillInAuditOptions: {screen: FillInAuditOptions},
+    IndicatorList: {screen: IndicatorList},
+    InspectionreformList: {screen: InspectionreformList},
+    InspectionreformDetail: {screen: InspectionreformDetail},
+    InspectionreformLog: {screen: InspectionreformLog},
+    ExchangeexperienceList: {screen: ExchangeexperienceList},
+    ExchangeexperienceDetail: {screen: ExchangeexperienceDetail},
+    ExchangeexperienceLog: {screen: ExchangeexperienceLog},
+    InformationImprovement: {screen: InformationImprovement},
+    InspectionreformInformation: {screen: InspectionreformInformation},
+    DetailedListInformation: {screen: DetailedListInformation},
+    DetailedList: {screen: DetailedList},
+    DetailedListDetail: {screen: DetailedListDetail},
+    DetailedListLog: {screen: DetailedListLog},
+    DetailedListLuoShi: {screen: DetailedListLuoShi},
+    PracticableInformation: {screen: PracticableInformation},
+    PracticableList: {screen: PracticableList},
+    PracticableDetail: {screen: PracticableDetail},
+    PracticableLuoShi: {screen: PracticableLuoShi},
+    ApprovalWorkList: {screen: ApprovalWorkList},
+    ApprovalWorkOptions: {screen: ApprovalWorkOptions},
+    KDataCloudList: {screen: KDataCloudList},
+    JDataCloudList: {screen: JDataCloudList},
+
 //公告通知
     NoticeList:  {screen: NoticeList},
     NoticeAdd:   {screen: NoticeAdd},

@@ -62,7 +62,6 @@ export default class IInterviewDetail extends React.Component{
         let buttons = navigation.getParam('buttons');
         this.setState({buttons: buttons});
         HttpPost(URLS.QueryInfoById, {id:id}, '正在查询...').then((response)=>{
-            console.log('约谈详情 = ', response);
             RRCToast.show(response.msg);
             if (response.result === 1){
                 let model = response['data'];

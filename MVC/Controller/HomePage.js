@@ -17,13 +17,13 @@ export default class HomePage extends React.Component {
     async componentDidMount(): void {
         const xx = await AsyncStorage.getItem('homePageFunc');
         // console.log(JSON.stringify(xx));
-        // if (xx) {
-        //     this.setState({
-        //         data: JSON.parse(xx),
-        //     })
-        // } else {
+        if (xx) {
+            this.setState({
+                data: JSON.parse(xx),
+            })
+        } else {
             this._getFunctionAction();
-        // }
+        }
     }
     _getFunctionAction(){
         let functions = [];
@@ -42,7 +42,6 @@ export default class HomePage extends React.Component {
                     }else{
                         functions.push(oneLevel);
                     }
-
                 }
                 //展示在首页的功能数组,获取之后保存在本地(添加删除功能对 homePageFunc 进行操作)
                 functions.push({'name':'添加功能'});
@@ -99,6 +98,9 @@ export default class HomePage extends React.Component {
         )
     }
     _deleteFuncAction(item){
+        if (item.isDefault === 1){
+            return;
+        }
         let homeFuncs = [];
         homeFuncs = homeFuncs.concat(this.state.data);
         for (let i=0; i<homeFuncs.length; i++){
@@ -112,34 +114,71 @@ export default class HomePage extends React.Component {
         })
     }
     /**
-     * 8.通知公告 9.短信群发 12.意见审批 15.督查统计 23.考核成绩展示 27.效能审核 31.经验交流 82.主题责任清单
-     * 83.主体责任落实情况 84.巡查整改完成情况 45.资料云盘...............
+     * OA办公
+     *      8.通知公告 9.短信群发
+     * 工作督查
+     *      11.立项交办 12.意见审批 13.承办落实 14.工作汇报 15.督查统计
+     * 绩效考核
+     *      20.考核填报 21.填报审核 22.考核成绩预览 23.考核成绩展示
+     * 效能问责
+     *      25.效能问责 26.督查约谈 27.效能审核 68.约谈事项 69.问责事项
+     * 主体责任
+     *      31.经验交流 32.工作审核 81.党组织信息维护 82.主体责任清单 83.主体责任落实情况 84.巡察整改完成情况
+     * 市长热线
+     *      35.案件登记 36.承办案件
+     * 资料云盘
+     * 我的关注
+     * 我的批示
+     * 领导批示
+     * 领导批示意见
+     * 我的意见建议
+     * 待办事项
+     * 通知公告
+     * 预警信息
      */
     _ClickItemAction(item){
         switch (item.id) {
-            case 8:
+            case 20:
+                this.props.navigation.navigate('PAppraisalList');
                 break;
-            case 9:
+            case 21:
+                this.props.navigation.navigate('FillAuditList');
+                break;
+            case 25:
+                this.props.navigation.navigate('AccountabilityList');
+                break;
+            case 26:
+                this.props.navigation.navigate('IInterviewList');
                 break;
             case 27:
-                //效能审核
                 this.props.navigation.navigate('AuditList');
                 break;
             case 31:
-                //效能问责
-                this.props.navigation.navigate('AccountabilityList');
+                this.props.navigation.navigate('ExchangeexperienceList');
                 break;
-            case 82:
-                //督查约谈
-                this.props.navigation.navigate('IInterviewList');
+            case 32:
+                this.props.navigation.navigate('ApprovalWorkList');
                 break;
-            case 83:
-                //约谈事项
+            case 100:
+                this.props.navigation.navigate('KDataCloudList');
+                break;
+            case 68:
                 this.props.navigation.navigate('IInterviewReleaseList');
                 break;
-            case 84:
-                //问责事项
+            case 69:
                 this.props.navigation.navigate('AccountabilityReleaseList');
+                break;
+            case 81:
+                this.props.navigation.navigate('InformationImprovement');
+                break;
+            case 82:
+                this.props.navigation.navigate('DetailedListInformation');
+                break;
+            case 83:
+                this.props.navigation.navigate('PracticableInformation');
+                break;
+            case 84:
+                this.props.navigation.navigate('InspectionreformInformation');
                 break;
             default:
                 this.props.navigation.navigate('AddFunction',{

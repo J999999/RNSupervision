@@ -51,7 +51,7 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'wbthree',
             // password: '123456',
-            userName: 'wbfive',
+            userName: 'jxky',
             password: '123456',
             keyboardShown: false,
             imsi: '',
@@ -165,10 +165,10 @@ export default class Login extends React.Component {
             RRCToast.show('请输入密码');
             return
         }
-        // if (!this.state.imsi) {
-        //     RRCToast.show('获取imsi失败，请重试...');
-        //     return
-        // }
+        if (!this.state.imsi) {
+            RRCToast.show('获取imsi失败，请重试...');
+            return
+        }
         HttpPost(URLS.Login,{
             'username': this.state.userName,
             'password': this.state.password,

@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import TextInputMultWidget from "../../../Widget/TextInputMultWidget";
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {screenWidth, unitWidth} from "../../../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {HttpPost} from "../../../Tools/JQFetch";

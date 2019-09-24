@@ -10,11 +10,30 @@ const  FunctionEnum = {
         14:'WorkReportList' , //工作汇报
         15:'ProjectStatisticsList' , //督查统计
 
+        20:'PAppraisalList',
+        21:'FillAuditList',
+        25:'AccountabilityList',
+        26:'IInterviewList',
+        27:'AuditList',
+
+        31:'ExchangeexperienceList',
+        32:'ApprovalWorkList',
+
         46:'WorkBanchList' ,//我的关注
         49:'WorkBanchList',//领导批示意见
         51:'WorkBanchList',//待办事项
         52:'WorkBanchList',//通知公告
         53:'',//预警信息
+
+        68:'IInterviewReleaseList',
+        69:'AccountabilityReleaseList',
+
+        81:'InformationImprovement',
+        82:'DetailedListInformation',
+        83:'PracticableInformation',
+        84:'InspectionreformInformation',
+
+        100:'KDataCloudList',
     },
 
     /**
@@ -61,7 +80,7 @@ const  FunctionEnum = {
         45:require('../Images/logo.png'),//资料云盘
      }
 
-}
+};
 
 
 export default FunctionEnum

@@ -133,6 +133,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
     }
     splits {
         abi {
@@ -176,7 +177,11 @@ android {
 
         }
     }
-
+    repositories {
+        maven {
+            url "http://dl.bintray.com/lukaville/maven"
+        }
+    }
     packagingOptions {
         pickFirst '**/armeabi-v7a/libc++_shared.so'
         pickFirst '**/x86/libc++_shared.so'
@@ -188,7 +193,9 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-vector-icons')
+    implementation 'com.nbsp:library:1.8'
+    implementation project(':react-native-doc-viewer')
+    implementation project(':rn-fetch-blob')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-keychain')
     implementation fileTree(dir: "libs", include: ["*.jar"])

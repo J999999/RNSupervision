@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 
+
 export default class AddFunction extends React.Component{
     static navigationOptions = ({navigation}) =>({
         title: '功能配置',
@@ -113,6 +114,9 @@ export default class AddFunction extends React.Component{
         })
     }
     _itemOnPressAction(item){
+        if (item.isDefault === 1){
+            return;
+        }
         let sectionArr = [];
         sectionArr = sectionArr.concat(this.state.sections);
         for (let i=0; i<sectionArr.length; i++){

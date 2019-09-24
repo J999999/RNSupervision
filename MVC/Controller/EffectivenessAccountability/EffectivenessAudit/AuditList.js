@@ -7,7 +7,6 @@ import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import PopSearchview from '../../../View/PopSearchview'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import JQFlatList, {RefreshState} from '../../../View/JQFlatList'
-import {forInStatement, isDebuggerStatement} from "@babel/types";
 
 var search = {}; //查询参数
 var drop = false;
