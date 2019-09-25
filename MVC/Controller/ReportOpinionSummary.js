@@ -19,6 +19,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 var screenWidth = Dimensions.get('window').width;
 var context ;
 
+/**
+ * 意见审批，批示汇总
+ */
 class ReportOpinionSummary extends Component {
 
     constructor(props){

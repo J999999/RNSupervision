@@ -16,8 +16,6 @@ import {Col} from '../View/Table/cols';
 import {unitWidth} from '../Tools/ScreenAdaptation';
 import Bar from '../View/Table/Bar';
 // import {ChartColors} from '../View/Theme';
-var navigation = null;
-var context ;
 /**
  * 统计图标
  */
@@ -25,9 +23,6 @@ export default class StatisticsCharts extends React.Component {
 
     constructor(props) {
         super(props);
-        navigation = this.props.navigation;
-
-        context = this;
 
         this.statisticUrl={
             '86':URLS.StatisticsUnit,//责任单位统计
@@ -118,8 +113,24 @@ export default class StatisticsCharts extends React.Component {
 
      }
 
+    rightClick=()=>{
+        let state = !this.state.isChart
+        this.setState({
+            isChart:state,
+        },()=>{
+            this.props.navigation.setParams({
+                isChart:state
+            })
+        })
+    }
+
+
     componentDidMount() {
-       const {params} =  navigation.state
+
+       this.props.navigation.setParams({rightClick:this.rightClick})
+       this.props.navigation.setParams({isChart:this.state.isChart})
+
+       const {params} =  this.props.navigation.state
        this.bean = params.bean
 
        this.getStaticsInfo()
@@ -320,20 +331,15 @@ export default class StatisticsCharts extends React.Component {
 
     }
 
-
-
     static  navigationOptions = ({navigation}) =>({
         title: '督查统计',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{
-                                            context.setState({
-                                                isChart:!context.state.isChart,
-                                            })
+                                            navigation.state.params.rightClick()
                                         }}>
-            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{context!=null&&context.state.isChart?'图表':'表格'}</Text>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{navigation.getParam('isChart')?'表格':'图表'}</Text>
         </TouchableOpacity>)
     });
-
 
 
     render() {

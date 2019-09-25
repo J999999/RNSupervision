@@ -20,10 +20,12 @@ const  FunctionEnum = {
         32:'ApprovalWorkList',
 
         46:'WorkBanchList' ,//我的关注
+        47:'WorkBanchList' ,//我的批示
         49:'WorkBanchList',//领导批示意见
+        50:'WorkBanchList',//我的意见建议
         51:'WorkBanchList',//待办事项
-        52:'WorkBanchList',//通知公告
-        53:'',//预警信息
+        52:'NoticeList',//通知公告
+        53:'WorkBenchWarning',//预警信息
 
         68:'IInterviewReleaseList',
         69:'AccountabilityReleaseList',
@@ -48,6 +50,19 @@ const  FunctionEnum = {
      主体责任：党组织信息完善、主体责任清单编辑、主体责任落实情况、巡察整改完成情况、经验交流、工作审核。（所有都不做手机端录入，只做查看）
 
      市长热线：案件登记、承办案件（待定）
+
+     * OA办公
+     *      8.通知公告 9.短信群发
+     * 工作督查
+     *      11.立项交办 12.意见审批 13.承办落实 14.工作汇报 15.督查统计
+     * 绩效考核
+     *      20.考核填报 21.填报审核 22.考核成绩预览 23.考核成绩展示
+     * 效能问责
+     *      25.效能问责 26.督查约谈 27.效能审核 68.约谈事项 69.问责事项
+     * 主体责任
+     *      31.经验交流 32.工作审核 81.党组织信息维护 82.主体责任清单 83.主体责任落实情况 84.巡察整改完成情况
+     * 市长热线
+     *      35.案件登记 36.承办案件
      */
     iconMap:{
         "placeholder":require('../Images/logo.png'),
@@ -80,7 +95,7 @@ const  FunctionEnum = {
         45:require('../Images/logo.png'),//资料云盘
      }
 
-};
+}
 
 
 export default FunctionEnum

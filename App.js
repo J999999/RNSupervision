@@ -85,6 +85,8 @@ import WorkReportDetail from './MVC/Controller/WorkReportDetail';
 import WorkReportSummary from './MVC/Controller/WorkReportSummary';
 import ProjectStatisticsList from './MVC/Controller/ProjectStatisticsList';
 import StatisticsCharts from './MVC/Controller/StatisticsCharts';
+import WorkBanchList from './MVC/Controller/WorkBanchList';
+import WorkBenchWarning from './MVC/Controller/WorkBenchWarning';
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -180,6 +182,10 @@ const AppNavigator = createStackNavigator({
 //督查统计
     ProjectStatisticsList:{screen:ProjectStatisticsList},
     StatisticsCharts:{screen:StatisticsCharts},
+
+  //工作台
+  WorkBanchList:{screen:WorkBanchList},
+  WorkBenchWarning:{screen:WorkBenchWarning},
 
 },{
   initialRouteName: 'Login',

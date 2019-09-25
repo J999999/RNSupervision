@@ -473,7 +473,6 @@ class OpinionDetail extends Component {
     render(){
         const  {params} = this.props.navigation.state;
 
-
         if(params && this.bean==null){
             this.bean = params.bean
             this.buttons = params.bean.buttons

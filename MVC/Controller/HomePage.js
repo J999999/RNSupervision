@@ -5,6 +5,7 @@ import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {HttpGet, HttpPost} from "../Tools/JQFetch";
 import URLS from "../Tools/InterfaceApi";
 import AsyncStorage from '@react-native-community/async-storage'
+import FunctionEnum from '../Tools/FunctionEnum';
 
 const {width, height} = Dimensions.get('window');
 const cols = 3;
@@ -75,6 +76,11 @@ export default class HomePage extends React.Component {
         );
     }
     renderItem({item, index})  {
+        let icon   = FunctionEnum.iconMap[item.id]
+        if(!icon){
+            icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
+        }
+
         return (
             <TouchableOpacity activeOpacity={.75}
                               onPress={()=>{this._ClickItemAction(item)}}
@@ -89,7 +95,7 @@ export default class HomePage extends React.Component {
                         {this.state.deleteBtnHidden === true?<Image source={require('../Images/deleteicon.png')}
                                                                     style={{width: 20*unitWidth, height: 20*unitWidth, marginLeft: 85*unitWidth}}/>:null}
                     </TouchableOpacity>
-                    <Image source={require('../Images/testIcon/xxfk.png')}
+                    <Image source={icon}
                            style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}/>
                     <Text style={{marginTop: 15, textAlign: 'center'}}
                           numberOfLines={0}>{item.name}</Text>
@@ -137,58 +143,21 @@ export default class HomePage extends React.Component {
      * 预警信息
      */
     _ClickItemAction(item){
-        switch (item.id) {
-            case 20:
-                this.props.navigation.navigate('PAppraisalList');
-                break;
-            case 21:
-                this.props.navigation.navigate('FillAuditList');
-                break;
-            case 25:
-                this.props.navigation.navigate('AccountabilityList');
-                break;
-            case 26:
-                this.props.navigation.navigate('IInterviewList');
-                break;
-            case 27:
-                this.props.navigation.navigate('AuditList');
-                break;
-            case 31:
-                this.props.navigation.navigate('ExchangeexperienceList');
-                break;
-            case 32:
-                this.props.navigation.navigate('ApprovalWorkList');
-                break;
-            case 100:
-                this.props.navigation.navigate('KDataCloudList');
-                break;
-            case 68:
-                this.props.navigation.navigate('IInterviewReleaseList');
-                break;
-            case 69:
-                this.props.navigation.navigate('AccountabilityReleaseList');
-                break;
-            case 81:
-                this.props.navigation.navigate('InformationImprovement');
-                break;
-            case 82:
-                this.props.navigation.navigate('DetailedListInformation');
-                break;
-            case 83:
-                this.props.navigation.navigate('PracticableInformation');
-                break;
-            case 84:
-                this.props.navigation.navigate('InspectionreformInformation');
-                break;
-            default:
-                this.props.navigation.navigate('AddFunction',{
-                    refresh: (homeFuncs) => {
-                        this.setState({
-                            data: homeFuncs,
-                        })
-            },
-                });
+
+
+        if(item.id==undefined){
+            this.props.navigation.navigate('AddFunction',{
+                refresh: (homeFuncs) => {
+                    this.setState({
+                        data: homeFuncs,
+                    })
+                },
+            });
+        }else{
+            let func = FunctionEnum.actionMap[item.id]
+            this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         }
+
     }
 }
 

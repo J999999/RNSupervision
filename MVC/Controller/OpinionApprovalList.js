@@ -10,6 +10,8 @@ import DataDictionary from '../Tools/DataDictionary';
 
 var drop = false;
 var context  = null;
+var navigation = null;
+
 export default class OpinionApprovalList extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: '意见审批',
@@ -20,6 +22,7 @@ export default class OpinionApprovalList extends React.Component{
         this.internal =  '' //是否内部角色 1=是 、0=否
 
         context = this
+        navigation = this.props.navigation;
 
         this.filter = {}
         this.state = {
@@ -93,6 +96,11 @@ export default class OpinionApprovalList extends React.Component{
     _getListData = (refresh) => {
         this.filter['pageNo'] = this.state.pageNo;
         this.filter['pageSize'] = this.state.pageSize;
+
+        if(navigation.state.params.superviseStates != undefined){
+            this.filter['superviseStates'] = navigation.state.params.superviseStates
+        }
+
         HttpPost(URLS.ProjectApprovalList,
             this.filter).then((response)=>{
             RRCToast.show(response.msg);
@@ -302,6 +310,11 @@ export default class OpinionApprovalList extends React.Component{
                     <View style={styles.view}>
                         <Text style={styles.rowSmallTitle}>审批状态：{DataDictionary.ApprovalTypes[item.approvalState] }</Text>
                         <Text style={styles.rowSmallTitle}>关注状态：{DataDictionary.FollowStates[item.followState]}</Text>
+                    </View>
+
+                    <View style={styles.view}>
+                        <Text style={styles.rowSmallTitle}>督查状态：{DataDictionary.SuperViseStates[item.superviseState] }</Text>
+                        <Text style={styles.rowSmallTitle}>进展情况：{item.progress==null?'无':DataDictionary.ProgressTypes[item.progress]}</Text>
                     </View>
                 </View>
 

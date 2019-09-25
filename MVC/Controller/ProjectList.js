@@ -51,6 +51,11 @@ export default class ProjectList extends React.Component {
         }
 
         let data = {'pageNo':this.pageNo,'pageSize':this.pageSize}
+
+        if(navigation.state.params.superviseStates != undefined){
+            data['superviseStates'] = navigation.state.params.superviseStates
+        }
+
         if(this.filter ){
             Object.assign(data,this.filter)
         }
@@ -151,10 +156,13 @@ export default class ProjectList extends React.Component {
                     },
                     {'name':'督查状态', 'type':3, 'postKeyName':'superviseStates', 'dataSource':
                             [
-                                {'name': '已发布', 'id': '0'},
-                                {'name': '已撤回', 'id': '1'},
-                                {'name': '已读', 'id': '2'},
-                                {'name': '未读', 'id': '3'},
+                                {'name': '待审批', 'id': '1'},
+                                {'name': '正常督查', 'id': '2'},
+                                {'name': '待承办单位接收', 'id': '3'},
+                                {'name': '暂停督查', 'id': '4'},
+                                {'name': '停止督查', 'id': '5'},
+                                {'name': '督查转办-待接收', 'id': '6'},
+                                {'name': '已撤回', 'id': '7'},
                             ]
                     },
                     {'name':'进展情况', 'type':3, 'postKeyName':'progress', 'dataSource':

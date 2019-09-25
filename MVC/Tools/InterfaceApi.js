@@ -106,6 +106,8 @@ const URLS = {
     StatisticsProject:HOST + '/project/statistics/projectInfo',//立项统计
     StatisticsUnit:HOST + '/project/statistics/respUnit',//责任单位统计
 
+
+    StatisticsWorkbenchProject:HOST + '/project/statistics/workbenchProject',//预警信息统计
     WorkBenchQueryLeaderOpinion:HOST + '/workbench/queryLeaderOpinion',//领导的批示/领导的批示意见
     WorkBenchQueryMyFollow:HOST + '/workbench/queryMyFollow',//我的关注
     WorkBenchQueryMyOpinion:HOST + '/workbench/queryMyOpinion',//我的批示/我的意见建议

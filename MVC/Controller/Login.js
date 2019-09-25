@@ -14,33 +14,31 @@ export default class Login extends React.Component {
 
     /**
      *
-     dcjz		123456	督察局局长
-     dcfjza		123456	督查局副局长
+     dcjz		123456	督察局局长   内部一级
+     dcfjza		123456	督查局副局长  内部二级
      dcfjzb		123456	督查局副局长
-     dcdb1		123456	督查一室科长
-     dcdb11		123456	督查一室科员
+     dcdb1		123456	督查一室科长  内部三级
+     dcdb11		123456	督查一室科员  内部四级
 
      xnkz		123456	效能科长
      xnky		123456	效能科员
      jxkz		123456	绩效科长
      jxky		123456	绩效科员
-     wbone		123456	外部一级用户
+
      wbtwo		123456	外部二级
      wbthree	123456	外部三级
      wbfour		123456	外部四级
      wbfive		123456	外部五级
 
-     xzsj  书记
-     xzsz  市长
+     xzsj  书记  外部一级
+     xzsz  市长  外部一级
      */
 
     constructor(){
         super();
         this.state = {
-            // userName: 'cb',
-            // password: '123456',
-            // userName: 'dcdb1',
-            // password: '123456',
+            userName: 'dcdb1',
+            password: '123456',
             // userName: 'dcfjza',
             // password: '12345678',
             // userName: 'dcfjzb',
@@ -51,8 +49,12 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'wbthree',
             // password: '123456',
-            userName: 'jxky',
-            password: '123456',
+            // userName: 'wbfive',
+            // password: '123456',
+            // userName: 'xzsj',
+            // password: '12345678',
+            // userName: 'jxky',
+            // password: '123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -165,10 +167,10 @@ export default class Login extends React.Component {
             RRCToast.show('请输入密码');
             return
         }
-        if (!this.state.imsi) {
-            RRCToast.show('获取imsi失败，请重试...');
-            return
-        }
+        // if (!this.state.imsi) {
+        //     RRCToast.show('获取imsi失败，请重试...');
+        //     return
+        // }
         HttpPost(URLS.Login,{
             'username': this.state.userName,
             'password': this.state.password,
@@ -191,6 +193,7 @@ export default class Login extends React.Component {
         HttpPost(URLS.LoginUser,{},'').then((response)=>{
             if (response.result == 1){
                 AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
+                AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
             }
         })
     }
