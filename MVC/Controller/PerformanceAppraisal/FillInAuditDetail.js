@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, SectionList, Image, Button, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, View, SectionList, Image, Button, StyleSheet, Platform} from 'react-native';
 import {screenWidth, unitHeight, unitWidth} from "../../Tools/ScreenAdaptation";
 import {HttpPost, HttpPostFile} from "../../Tools/JQFetch";
 import URLS from "../../Tools/InterfaceApi";
@@ -8,6 +8,8 @@ import TextInputWidget from "../../Widget/TextInputWidget";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TextFileSelectWidget from "../../Widget/TextFileSelectWidget";
 import ImagePicker from "react-native-image-picker";
+import OpenFile from 'react-native-doc-viewer'
+import RNFetchBlob from "rn-fetch-blob";
 
 export default class FillInAuditDetail extends React.Component{
     static navigationOptions = ({navigation}) => ({
@@ -95,7 +97,7 @@ export default class FillInAuditDetail extends React.Component{
         let status = navigation.getParam('item').status;
         var fileButtons = [] ;
         for(let i in this.state.fileList){
-            let nameStr = this.state.filesList[i].name ? this.state.filesList[i].name : this.state.filesList[i].fileName;
+            let nameStr = this.state.fileList[i].name ? this.state.fileList[i].name : this.state.fileList[i].fileName;
             var button = (
                 <View
                     key = {i}
@@ -173,10 +175,31 @@ export default class FillInAuditDetail extends React.Component{
     _upLoadFiles = () => {
         const {navigation} = this.props;
         let id = navigation.getParam('item').id;
-        this.props.navigation.navigate('FillInAuditOptions', {id: id})
+        this.props.navigation.navigate('FillInAuditOptions', {id: id, callback: function () {
+                navigation.state.params.callback();
+                navigation.goBack();
+            }})
     };
     _pressDetail = (attachItem)=> {
-        this.props.navigation.navigate('AttachDetail',{item : attachItem});
+        if (Platform.OS === 'ios') {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : attachItem.uri;
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileNameOptional: '附件'
+            }], (error, url)=>{
+
+            })
+        }else {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : 'file://' + attachItem.uri;
+            let uriSuffix = attUrl.substr(attUrl.lastIndexOf(".")+1).toLowerCase();
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileName: '附件',
+                fileType: uriSuffix,
+                cache: true,
+            }], (error, uri)=>{
+            })
+        }
     };
 }
 

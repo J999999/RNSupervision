@@ -5,6 +5,7 @@
  * @format
  * @flow
  */
+import URLS from './MVC/Tools/InterfaceApi'
 import React from 'react';
 import {View} from 'react-native';
 import NavigationService from './MVC/Tools/NavigationService'
@@ -40,6 +41,13 @@ import FillAuditList from './MVC/Controller/PerformanceAppraisal/FillAuditList'
 import FillInAuditDetail from './MVC/Controller/PerformanceAppraisal/FillInAuditDetail'
 import FillInAuditOptions from './MVC/Controller/PerformanceAppraisal/FillInAuditOptions'
 import IndicatorList from './MVC/Controller/PerformanceAppraisal/IndicatorList' //考核指标列表
+import PreviewList from './MVC/Controller/PreviewAndRelease/PreviewList'//成绩预览列表
+import PreviewDetail from './MVC/Controller/PreviewAndRelease/PreviewDetail'//成绩详情
+import PreviewLog from './MVC/Controller/PreviewAndRelease/PreviewLog' //预览系统记录
+import PreviewSetup from './MVC/Controller/PreviewAndRelease/PreviewSetup' //分值权重设置
+import PreviewSetupDetail from './MVC/Controller/PreviewAndRelease/PreviewSetupDetail' //基本信息设置
+import PreviewDeptSetup from './MVC/Controller/PreviewAndRelease/PreviewDeptSetup' //评分
+
 import InspectionreformInformation from './MVC/Controller/SubjectResponsibility/InspectionreformInformation' //巡查整改党组信息
 import InspectionreformList from './MVC/Controller/SubjectResponsibility/InspectionreformList' //巡查整改列表
 import InspectionreformDetail from './MVC/Controller/SubjectResponsibility/InspectionreformDetail' //巡查整改详情
@@ -133,6 +141,13 @@ const AppNavigator = createStackNavigator({
     FillInAuditDetail: {screen: FillInAuditDetail},
     FillInAuditOptions: {screen: FillInAuditOptions},
     IndicatorList: {screen: IndicatorList},
+    PreviewList: {screen: PreviewList},
+    PreviewDetail: {screen: PreviewDetail},
+    PreviewLog: {screen: PreviewLog},
+    PreviewSetup: {screen: PreviewSetup},
+    PreviewSetupDetail: {screen: PreviewSetupDetail},
+    PreviewDeptSetup: {screen: PreviewDeptSetup},
+
     InspectionreformList: {screen: InspectionreformList},
     InspectionreformDetail: {screen: InspectionreformDetail},
     InspectionreformLog: {screen: InspectionreformLog},

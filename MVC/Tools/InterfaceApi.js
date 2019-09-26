@@ -1,5 +1,5 @@
-//const HOST = 'http://192.168.2.42:8081/'; //岳毅
-//const HOST = 'http://192.168.2.45:8081/'; //小好
+//const HOST = 'http://192.168.2.48:8081/'; //岳毅
+//const HOST = 'http://192.168.2.47:8081/'; //小好
 const HOST = 'http://221.13.156.198:10008/api/';
 
 const URLS = {
@@ -36,6 +36,17 @@ const URLS = {
     ApproveListFillin: HOST + 'assess/scoreWeight/approveList', //填报审核列表
     ApproveDetailFillin : HOST + 'assess/scoreWeight/listDetailInfo', //填报审核详情
     UpApproveFillin : HOST + 'assess/scoreWeight/approve', //填报审核
+    QueryListPublish: HOST + 'assess/publish/queryList',//成绩预览列表
+    PreviewScorePublish: HOST + 'assess/publish/previewScore',// 预览详情
+    PreviewLog: HOST + 'assess/publish/getLog', //预览系统记录
+    ReleasePublish: HOST + 'assess/publish/publishScoreList' , //考核成绩批量发布
+    BackPublish: HOST + 'assess/publish/recallList' , //考核成绩批量撤回
+    ReleasePublishOne: HOST + 'assess/publish/publishScore', //考核成绩单个发布
+    BackPublishOne : HOST + 'assess/publish/recall', //单个撤回
+    GetBaseSetup : HOST + 'assess/publish/getBaseSetup', //'获取分值权重发布设置基本信息'
+    SaveBaseSetup : HOST + 'assess/publish/saveBaseSetup', //保存分值权重发布设置基本信息
+    GetDeptSetup : HOST + 'assess/publish/getDeptSetup', //分值权重表加分项设置
+    SaveDeptSetup : HOST + 'assess/publish/saveDeptSetup', //考核单位加分项设置保存
     //主体责任
     QueryListByInspectionreform : HOST + 'inspectionreform/queryList', //巡查整改列表
     QueryDetailByInspectionreform : HOST + 'inspectionreform/queryDetail', //巡查整改详情

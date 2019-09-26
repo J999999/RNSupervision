@@ -10,18 +10,48 @@ import PopSearchview from '../../View/PopSearchview'
 
 var search = {}; //查询参数
 var drop = false;
+var _that ;
 export default class PAppraisalList extends React.Component{
-    static navigationOptions = {
-        title: '考核填报'
+    static navigationOptions = ({navigation}) => ({
+        title: '考核填报',
+        headerRight: (<TouchableOpacity activeOpacity={.5}
+                                        onPress={()=>{navigation.state.params.rightOnPress()}}>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>
+                { navigation.getParam('isInSelect') ? '完成' : '批量上报' }
+            </Text>
+        </TouchableOpacity>)
+    });
+    _ClickHeaderRightAction = () => {
+        this.setState({
+            isChecks: !this.state.isChecks,
+        }, ()=>{
+            this.props.navigation.setParams({ isInSelect: this.state.isChecks });
+        });
+        if (this.state.ids.length === 0) {
+            return;
+        }
+        if (this.state.isChecks === true){
+            HttpPost(URLS.reportBatchFillin, {ids: this.state.ids}, '正在上传...').then((response)=>{
+                RRCToast.show(response.msg);
+                if (response.result === 1) {
+                    this._onHeaderRefresh();
+                }
+            }).catch((err)=>{
+                RRCAlert.alert('服务器内部错误')
+            })
+        }
     };
     constructor(props){
         super (props);
+        _that = this;
         this.state = {
             dataList: [],
             refreshState: 0,
             pageSize: 11,
             pageNo: 1,
-        }
+            isChecks:false,            //是否多选
+            ids: [],                   //多选时，存储id，用来审核
+        };
     }
     componentWillUnmount(): void {
         search = {};
@@ -29,6 +59,7 @@ export default class PAppraisalList extends React.Component{
     }
 
     componentDidMount(): void {
+        this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
         drop = false;
         this._onHeaderRefresh();
     }
@@ -61,6 +92,11 @@ export default class PAppraisalList extends React.Component{
             RRCToast.show(response.msg);
             if (response.result === 1){
                 const item = response.data.records;
+                if (item.length > 0) {
+                    item.map((i)=>{
+                        i['select'] = false;
+                    })
+                }
                 if (refresh){
                     this.setState({dataList: item, refreshState: RefreshState.Idle});
                 } else {
@@ -158,16 +194,45 @@ export default class PAppraisalList extends React.Component{
                         <Text style={{textAlign: 'right'}}>{recordState}</Text>
                         <Text>{item.assignTime}</Text>
                     </View>
+                    {
+                        this.state.isChecks === true ?
+                            item.select === true ?
+                                <View style={{justifyContent: 'center'}}>
+                                    <Image source={require('../../Images/select_right.png')}
+                                           style={{height: 15*unitWidth, width: 15*unitWidth, marginRight: 10*unitWidth}}
+                                    />
+                                </View>
+                                :null
+                            : null
+                    }
                 </View>
             </TouchableOpacity>
         )
     };
     _clickCellAction = (item) => {
         //操作按钮  status 1.填报 2.查看/编辑/上报 3/4.查看  5.查看/编辑
-        this.props.navigation.navigate('PAppraisalDetail', {item});
+        if (this.state.isChecks === false){
+            this.props.navigation.navigate('PAppraisalDetail', {item, callback: function () {
+                _that._onHeaderRefresh();
+                }});
+        } else {
+            let arr = [];
+            let idsArr = [];
+            arr = arr.concat(this.state.dataList);
+            idsArr = idsArr.concat(this.state.ids);
+            arr.map((i)=>{
+                console.log(i);
+                if (i.status === 2){
+                    if (i.id === item.id){
+                        i.select = !item.select;
+                        i.select === true ? idsArr.push(i.id) : idsArr.splice(idsArr.indexOf(i.id), 1);
+                    }
+                }
+            });
+            this.setState({dataList: arr, ids: idsArr});
+        }
     };
     _searchAction = (info) => {
-        console.log(info);
         search = {};
         let searchArr = [];
         searchArr = searchArr.concat(info);

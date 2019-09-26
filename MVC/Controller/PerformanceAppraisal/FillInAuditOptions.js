@@ -50,6 +50,7 @@ export default class FillInAuditOptions extends React.Component{
                 }, '正在提交...').then((response) =>{
                 RRCToast.show(response.msg);
                 if (response.result === 1){
+                    navigation.state.params.callback();
                     navigation.goBack();
                 }
             }).catch((error)=>{
@@ -69,6 +70,7 @@ export default class FillInAuditOptions extends React.Component{
                 }, '正在提交...').then((response) =>{
                 RRCToast.show(response.msg);
                 if (response.result === 1){
+                    navigation.state.params.callback();
                     navigation.goBack();
                 }
             }).catch((error)=>{

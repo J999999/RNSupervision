@@ -11,9 +11,59 @@ import PopSearchview from '../../View/PopSearchview'
 var search = {}; //查询参数
 var drop = false;
 var _that ;
-export default class FillAuditList extends React.Component{
-    static navigationOptions = {
-        title: '填报审核'
+export default class PreviewList extends React.Component{
+    static navigationOptions = ({navigation}) => ({
+        title: '成绩预览',
+        headerRight: (<TouchableOpacity activeOpacity={.5}
+                                        onPress={()=>{navigation.state.params.rightOnPress()}}>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>
+                { navigation.getParam('isInSelect') ? '完成' : '批量' }
+            </Text>
+        </TouchableOpacity>)
+    });
+    _ClickHeaderRightAction = () => {
+        this.setState({
+            isChecks: !this.state.isChecks,
+        }, ()=>{
+            this.props.navigation.setParams({ isInSelect: this.state.isChecks });
+            if (this.state.isChecks) {
+                RRCAlert.alert('请选择', '', [
+                    {text:'批量发布', style:{color:'#38ADFF', fontWeight: 'bold'}},
+                    {text:'批量撤回', style:{color:'#38ADFF', fontWeight: 'bold'}},
+                    {text:'取消', style:{color:'#38ADFF', fontWeight: 'bold'}},
+                ], (index)=>{
+                    switch (index) {
+                        case 0://发布
+                            HttpPost(URLS.ReleasePublish, {swIds: this.state.ids}, '正在发布...').then((response)=>{
+                                RRCToast.show(response.msg);
+                                if (response.result === 1) {
+                                    this._onHeaderRefresh();
+                                }
+                            }).catch((err)=>{
+                               RRCAlert.alert('服务器内部错误')
+                            });
+                            break;
+                        case 1://撤回
+                            HttpPost(URLS.BackPublish, {swIds: this.state.ids}, '正在撤回...').then((response)=>{
+                                RRCToast.show(response.msg);
+                                if (response.result === 1) {
+                                    this._onHeaderRefresh();
+                                }
+                            }).catch((err)=>{
+                                RRCAlert.alert('服务器内部错误')
+                            });
+                            break;
+                        case 2://取消
+                            this.setState({
+                                isChecks: false,
+                            }, ()=>{
+                                this.props.navigation.setParams({ isInSelect: this.state.isChecks });
+                            });
+                            break;
+                    }
+                });
+            }
+        });
     };
     constructor(props){
         super (props);
@@ -23,7 +73,9 @@ export default class FillAuditList extends React.Component{
             refreshState: 0,
             pageSize: 11,
             pageNo: 1,
-        }
+            isChecks:false,            //是否多选
+            ids: [],                   //多选时，存储id，用来上报或驳回
+        };
     }
     componentWillUnmount(): void {
         search = {};
@@ -31,6 +83,7 @@ export default class FillAuditList extends React.Component{
     }
 
     componentDidMount(): void {
+        this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
         drop = false;
         this._onHeaderRefresh();
     }
@@ -58,11 +111,17 @@ export default class FillAuditList extends React.Component{
     _getListData = (refresh) => {
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
-        HttpPost(URLS.ApproveListFillin,
+        HttpPost(URLS.QueryListPublish,
             search).then((response)=>{
+                console.log(response);
             RRCToast.show(response.msg);
             if (response.result === 1){
                 const item = response.data.records;
+                if (item.length > 0) {
+                    item.map((i)=>{
+                        i['select'] = false;
+                    })
+                }
                 if (refresh){
                     this.setState({dataList: item, refreshState: RefreshState.Idle});
                 } else {
@@ -107,18 +166,17 @@ export default class FillAuditList extends React.Component{
                     </TouchableOpacity>
                 </View>
                 <PopSearchview dataSource={[
-                    {'name':'权重表名称', 'type':2, 'postKeyName':'queryStr'},
-                    {'name':'指标名称', 'type':2, 'postKeyName':'indicatorName'},
-                    {'name':'单位名称', 'type':2, 'postKeyName':'deptName'},
-                    {'name':'状态查询', 'type':3, 'postKeyName':'statusArray', 'dataSource':
+                    {'name':'权重表名称', 'type':2, 'postKeyName':'swName'},
+                    {'name':'表名称', 'type':2, 'postKeyName':'tableName'},
+                    {'name':'编辑时间', 'type':1, 'postKeyName':'beginTime', 'postKeyNameEnd':'endTime'},
+                    {'name':'状态查询', 'type':3, 'postKeyName':'state', 'dataSource':
                             [
-                                {'name': '未审核', 'id': 3},
-                                {'name': '审核通过', 'id': 4},
-                                {'name': '审核驳回', 'id': 5},
+                                {'name': '未发布', 'id': 0},
+                                {'name': '已发布', 'id': 1},
+                                {'name': '已撤回', 'id': 2},
+                                {'name': '填报完成', 'id': 3},
                             ]
                     },
-                    {'name':'上报时间', 'type':1, 'postKeyName':'startTime', 'postKeyNameEnd':'endTime'},
-
                 ]}
                                ref={ref => this.popSearchview = ref}
                                callback={(c)=>{this._searchAction(c)}}
@@ -128,24 +186,18 @@ export default class FillAuditList extends React.Component{
     }
     _renderItemAction = ({item}) =>{
         let recordState = '';
-        switch (item.status) {
+        switch (item.publishState) {
+            case 0:
+                recordState = '未发布';
+                break;
             case 1:
-                recordState = '未填报';
+                recordState = '已发布';
                 break;
             case 2:
-                recordState = '已保存';
+                recordState = '已撤回';
                 break;
             case 3:
-                recordState = '已上报待审核';
-                break;
-            case 4:
-                recordState = '审核通过';
-                break;
-            case 5:
-                recordState = '审核驳回';
-                break;
-            case 6:
-                recordState = '已过期';
+                recordState = '填报完成';
                 break;
         }
         return (
@@ -153,39 +205,63 @@ export default class FillAuditList extends React.Component{
                 <View style={styles.itemStyle}>
                     <View style={styles.itemLeftStyle}>
                         <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.swName}</Text>
-                        <Text>{item.indicatorName}</Text>
+                        <Text>{item.publishName}</Text>
                     </View>
                     <View style={styles.itemRightStyle}>
                         <Text style={{textAlign: 'right'}}>{recordState}</Text>
-                        <Text style={{textAlign: 'right'}}>{item.deptName}</Text>
+                        <Text>{item.createTime}</Text>
                     </View>
+                    {
+                        this.state.isChecks === true ?
+                            item.select === true ?
+                                <View style={{justifyContent: 'center'}}>
+                                    <Image source={require('../../Images/select_right.png')}
+                                           style={{height: 15*unitWidth, width: 15*unitWidth, marginRight: 10*unitWidth}}
+                                    />
+                                </View>
+                                :null
+                            : null
+                    }
                 </View>
             </TouchableOpacity>
         )
     };
     _clickCellAction = (item) => {
-        this.props.navigation.navigate('FillInAuditDetail', {item, callback: function () {
-                _that._onHeaderRefresh();
-            }});
+        if (this.state.isChecks === false){
+            this.props.navigation.navigate('PreviewDetail', {item, callback: function () {
+                    _that._onHeaderRefresh();
+                }});
+        } else {
+            let arr = [];
+            let idsArr = [];
+            arr = arr.concat(this.state.dataList);
+            idsArr = idsArr.concat(this.state.ids);
+            arr.map((i)=>{
+                if (i.publishState === 3){
+                    if (i.id === item.id){
+                        i.select = !item.select;
+                        i.select === true ? idsArr.push(i.swId) : idsArr.splice(idsArr.indexOf(i.swId), 1);
+                    }
+                }
+            });
+            this.setState({dataList: arr, ids: idsArr});
+        }
     };
     _searchAction = (info) => {
-        console.log(info);
         search = {};
         let searchArr = [];
         searchArr = searchArr.concat(info);
         searchArr.map((i)=>{
             if (i.startTime)
-                search['startTime'] = i.startTime;
+                search['beginTime'] = i.startTime;
             if (i.endTime)
                 search['endTime'] = i.endTime;
-            if (i.queryStr)
-                search['queryStr'] = i.queryStr;
-            if (i.indicatorName)
-                search['indicatorName'] = i.indicatorName;
-            if (i.deptName)
-                search['deptName'] = i.deptName;
-            if (i.statusArray)
-                search['statusArray'] = i.statusArray;
+            if (i.swName)
+                search['swName'] = i.swName;
+            if (i.state)
+                search['state'] = i.state;
+            if (i.tableName)
+                search['tableName'] = i.tableName;
         });
         this._onHeaderRefresh();
     };

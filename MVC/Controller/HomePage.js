@@ -16,15 +16,16 @@ const hMargin = 25;
 export default class HomePage extends React.Component {
 
     async componentDidMount(): void {
-        const xx = await AsyncStorage.getItem('homePageFunc');
-        // console.log(JSON.stringify(xx));
-        if (xx) {
-            this.setState({
-                data: JSON.parse(xx),
-            })
-        } else {
-            this._getFunctionAction();
-        }
+        // const xx = await AsyncStorage.getItem('homePageFunc');
+        // if (xx) {
+        //     this.setState({
+        //         data: JSON.parse(xx),
+        //     })
+        // } else {
+        //     this._getFunctionAction();
+        // }
+        this._getFunctionAction();
+
     }
     _getFunctionAction(){
         let functions = [];
@@ -35,7 +36,7 @@ export default class HomePage extends React.Component {
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
-                    if(oneLevel.isDefault==0){
+                    if(oneLevel.isDefault===0){
                         for (let j = 0; j < oneLevel.children.length; j++){
                             let twoLevel = oneLevel.children[j];
                             functions.push(twoLevel);
@@ -76,7 +77,7 @@ export default class HomePage extends React.Component {
         );
     }
     renderItem({item, index})  {
-        let icon   = FunctionEnum.iconMap[item.id]
+        let icon   = FunctionEnum.iconMap[item.id];
         if(!icon){
             icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
         }
@@ -145,7 +146,7 @@ export default class HomePage extends React.Component {
     _ClickItemAction(item){
 
 
-        if(item.id==undefined){
+        if(item.id===undefined){
             this.props.navigation.navigate('AddFunction',{
                 refresh: (homeFuncs) => {
                     this.setState({
@@ -154,7 +155,7 @@ export default class HomePage extends React.Component {
                 },
             });
         }else{
-            let func = FunctionEnum.actionMap[item.id]
+            let func = FunctionEnum.actionMap[item.id];
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         }
 

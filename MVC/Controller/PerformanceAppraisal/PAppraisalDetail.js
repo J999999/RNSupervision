@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, SectionList, Image, Button, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, View, SectionList, Image, Button, StyleSheet, Platform} from 'react-native';
 import {screenWidth, unitHeight, unitWidth} from "../../Tools/ScreenAdaptation";
 import {HttpPost, HttpPostFile} from "../../Tools/JQFetch";
 import URLS from "../../Tools/InterfaceApi";
@@ -8,6 +8,7 @@ import TextInputWidget from "../../Widget/TextInputWidget";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TextFileSelectWidget from "../../Widget/TextFileSelectWidget";
 import ImagePicker from "react-native-image-picker";
+import OpenFile from "react-native-doc-viewer";
 
 export default class PAppraisalDetail extends React.Component{
     static navigationOptions = ({navigation}) => ({
@@ -283,6 +284,10 @@ export default class PAppraisalDetail extends React.Component{
 
         HttpPost(URLS.SaveFillin, requestData, '正在上报...').then((response)=>{
             RRCToast.show(response.msg);
+            if (response.result === 1) {
+                this.props.navigation.state.params.callback();
+                this.props.navigation.goBack();
+            }
         }).catch((err)=>{
             RRCAlert.alert('服务器内部错误');
         })
@@ -305,8 +310,11 @@ export default class PAppraisalDetail extends React.Component{
         requestData['fillInVOS'] = fillInVOS;
 
         HttpPost(URLS.SaveFillin, requestData, '正在保存...').then((response)=>{
-            console.log('保存结果 = ',response);
             RRCToast.show(response.msg);
+            if (response.result === 1) {
+                this.props.navigation.state.params.callback();
+                this.props.navigation.goBack();
+            }
         }).catch((err)=>{
             RRCAlert.alert('服务器内部错误');
         })
@@ -372,7 +380,25 @@ export default class PAppraisalDetail extends React.Component{
         }
     };
     _pressDetail = (attachItem)=> {
-        this.props.navigation.navigate('AttachDetail',{item : attachItem});
+        if (Platform.OS === 'ios') {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : attachItem.uri;
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileNameOptional: '附件'
+            }], (error, url)=>{
+
+            })
+        }else {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : 'file://' + attachItem.uri;
+            let uriSuffix = attUrl.substr(attUrl.lastIndexOf(".")+1).toLowerCase();
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileName: '附件',
+                fileType: uriSuffix,
+                cache: true,
+            }], (error, uri)=>{
+            })
+        }
     };
 }
 
