@@ -37,8 +37,10 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            userName: 'dcdb1',
-            password: '123456',
+            userName: '',
+            password: '',
+            // userName: 'dcdb1',
+            // password: '123456',
             // userName: 'dcfjza',
             // password: '12345678',
             // userName: 'dcfjzb',
@@ -105,7 +107,7 @@ export default class Login extends React.Component {
                     <View style={styles.userName}>
                         <Image source={require('../Images/userName.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 30, height: unitWidth * 30,padding:4}}/>
+                               style={{width: unitWidth * 28, height: unitWidth * 28,padding:4}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入用户名'}
                                    onChangeText={(text)=>{this.setState({userName:text})}}
@@ -118,7 +120,7 @@ export default class Login extends React.Component {
                     <View style={styles.password}>
                         <Image source={require('../Images/password.png')}
                                resizeMode={'contain'}
-                               style={{width: unitWidth * 30, height: unitWidth * 30,padding:4}}/>
+                               style={{width: unitWidth * 28, height: unitWidth * 28,padding:4}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入密码'}
                                    onChangeText={(text)=>{this.setState({password:text})}}
@@ -220,8 +222,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         top: unitHeight * 200,
-        width: unitWidth * 250,
-        height :unitHeight * 40,
+        width: unitWidth * 280,
+        height :unitHeight * 50,
+        padding:4*unitWidth,
         borderTopRightRadius: unitWidth * 5,
         borderTopLeftRadius: unitWidth * 5,
         borderBottomWidth: unitHeight,
@@ -232,8 +235,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         top: unitHeight * 200,
-        width: unitWidth * 250,
-        height :unitHeight * 40,
+        width: unitWidth * 280,
+        height :unitHeight * 50,
+        padding:4*unitWidth,
         borderBottomLeftRadius: unitWidth * 5,
         borderBottomRightRadius: unitWidth * 5,
     },
@@ -242,8 +246,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         top: unitHeight * 222,
-        width: unitWidth * 250,
-        height :unitHeight * 44,
+        width: unitWidth * 280,
+        height :unitHeight * 54,
         borderRadius: unitWidth * 10,
     },
     loginText: {

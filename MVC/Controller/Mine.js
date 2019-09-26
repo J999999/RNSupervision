@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image,TouchableOpacity} from 'react-native';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {HttpPost} from "../Tools/JQFetch";
 import URLS from "../Tools/InterfaceApi";
@@ -43,27 +43,31 @@ export default class Mine extends React.Component {
                     <Image source={require('../Images/goRight.png')}
                            style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>
                 </View>
-                <View style={{flexDirection: 'row', backgroundColor: '#fff', marginTop: 10*unitHeight,
-                    height: 64*unitHeight, justifyContent: 'space-between', alignItems: 'center'}}>
-                    <View style={{flexDirection: 'row', alignItems: 'center', height: 64*unitHeight}}>
-                        <Image source={require('../Images/main_contacts_1.png')}
-                               style={{width: 25*unitWidth, height: 25*unitWidth, marginLeft: 10*unitWidth}}/>
-                        <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>系统设置</Text>
-                    </View>
-                    <Image source={require('../Images/goRight.png')}
-                           style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>
-                </View>
+                {/*<View style={{flexDirection: 'row', backgroundColor: '#fff', marginTop: 10*unitHeight,*/}
+                {/*    height: 64*unitHeight, justifyContent: 'space-between', alignItems: 'center'}}>*/}
+                {/*    <View style={{flexDirection: 'row', alignItems: 'center', height: 64*unitHeight}}>*/}
+                {/*        <Image source={require('../Images/setting.png')}*/}
+                {/*               style={{width: 25*unitWidth, height: 25*unitWidth, marginLeft: 10*unitWidth}}/>*/}
+                {/*        <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>系统设置</Text>*/}
+                {/*    </View>*/}
+                {/*    <Image source={require('../Images/goRight.png')}*/}
+                {/*           style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>*/}
+                {/*</View>*/}
                 <View style={{height: unitHeight, backgroundColor: '#fff', width: 50*unitWidth}}/>
-                <View style={{flexDirection: 'row', backgroundColor: '#fff', height: 64*unitHeight,
-                    justifyContent: 'space-between', alignItems: 'center'}}>
+                <TouchableOpacity style={{flexDirection: 'row', backgroundColor: '#fff', height: 64*unitHeight,
+                    justifyContent: 'space-between', alignItems: 'center'}}
+                                  onPress={() => {
+                                      this.props.navigation.navigate('AboutUs')
+                                  }}
+                >
                     <View style={{flexDirection: 'row', alignItems: 'center', height: 64*unitHeight}}>
-                        <Image source={require('../Images/main_contacts_1.png')}
+                        <Image source={require('../Images/about.png')}
                                style={{width: 25*unitWidth, height: 25*unitWidth, marginLeft: 10*unitWidth}}/>
                         <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>关于我们</Text>
                     </View>
                     <Image source={require('../Images/goRight.png')}
                            style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     }

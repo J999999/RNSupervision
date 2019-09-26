@@ -132,9 +132,12 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
         vectorDrawables.useSupportLibrary = true
-    }
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+     }
     splits {
         abi {
             reset()
@@ -156,8 +159,6 @@ android {
             signingConfig signingConfigs.release
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://facebook.github.io/react-native/docs/signed-apk-android.
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -193,16 +194,18 @@ android {
 }
 
 dependencies {
-    implementation 'com.nbsp:library:1.8'
     implementation project(':react-native-doc-viewer')
+    implementation project(':react-native-picker')
+    implementation project(':react-native-gesture-handler')
+    implementation project(':@react-native-community_async-storage')
+    implementation 'com.nbsp:library:1.8'
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-keychain')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.android.support:support-compat:28.0.0-alpha1"
-    implementation 'com.android.support:support-annotations:20.0.0'
-
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
 
     if (enableHermes) {
       def hermesPath = "../../node_modules/hermesvm/android/";

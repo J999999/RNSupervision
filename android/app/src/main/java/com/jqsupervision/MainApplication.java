@@ -9,13 +9,13 @@ import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNReactNativeDocViewerPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.keychain.KeychainPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import com.tencent.bugly.Bugly;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -51,5 +51,6 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    Bugly.init(getApplicationContext(), "d2eab10c7d", false);
   }
 }

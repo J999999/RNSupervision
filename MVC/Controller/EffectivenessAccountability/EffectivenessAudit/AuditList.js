@@ -73,6 +73,10 @@ export default class AuditList extends React.Component{
     _getListData = (refresh) => {
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
+        let states = this.props.navigation.getParam('states')
+        if(states!=undefined){
+            search['states'] = states ;
+        }
         HttpPost(URLS.QueryList,
             search).then((response)=>{
             RRCToast.show(response.msg);

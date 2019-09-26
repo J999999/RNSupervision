@@ -88,6 +88,8 @@ import StatisticsCharts from './MVC/Controller/StatisticsCharts';
 import WorkBanchList from './MVC/Controller/WorkBanchList';
 import WorkBenchWarning from './MVC/Controller/WorkBenchWarning';
 
+import AboutUs from './MVC/Controller/AboutUs';
+
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
   Home: {
@@ -186,6 +188,8 @@ const AppNavigator = createStackNavigator({
   //工作台
   WorkBanchList:{screen:WorkBanchList},
   WorkBenchWarning:{screen:WorkBenchWarning},
+
+    AboutUs:{screen:AboutUs},
 
 },{
   initialRouteName: 'Login',

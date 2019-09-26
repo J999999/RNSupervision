@@ -50,7 +50,6 @@ export default class WorkBanchList extends React.Component {
     componentDidMount() {
        const {params} =  navigation.state
 
-
         this.id = params.id
 
        this.getInfo(this.workBanchUrls[this.id])
@@ -101,14 +100,13 @@ export default class WorkBanchList extends React.Component {
 
     }
 
-
     _gotoNext(item){
         //待办事项
         //待办事项类型（1-承办待接收事项 2-临期待汇报事项 3-转办待接收事项 4-主体责任待审批事项 6-约谈待实施
         // 7-立项交办审批 8-约谈问责发布审批 9-延期申请审批 10-约谈申请审批 11-问责申请审批 12-问责待实施）
         if(this.id == 51){
+            // switch (12) {
             switch (item.todoType) {
-            // switch (item.todoType) {
                 case 2://工作督查-工作汇报
                     navigation.navigate('WorkReportList',{
                         internal:this.internal,
@@ -121,11 +119,13 @@ export default class WorkBanchList extends React.Component {
                     });
                     break;
                 case 4://主体责任-工作审核
-
+                    navigation.navigate('ApprovalWorkList',{
+                    });
                     break;
-
                 case 6://效能问责-督查约谈：查询条件“状态”默认“待约谈”
-
+                    navigation.navigate('IInterviewList',{
+                        'states':[1]
+                    });
                     break;
                 case 7://工作督查-意见审批：查询条件“督查状态”默认“待审批”
                     navigation.navigate('OpinionApprovalList',{
@@ -134,15 +134,22 @@ export default class WorkBanchList extends React.Component {
                     });
                     break;
                 case 8://效能问责-效能审核：查询条件“状态”默认“发布待审核”
-
+                    //AuditList
+                    navigation.navigate('AuditList',{
+                        states:[1]
+                    });
                     break;
-
                 case 12://效能问责-效能问责：查询条件“状态”默认“待问责”
-
+                    //AccountabilityList
+                    navigation.navigate('AccountabilityList',{
+                        states:[1]
+                    });
                     break;
             }
         }else{
             this.getProjectInfo(item)
+            //更新阅读状态
+            this.setReadState(item)
         }
 
     }
@@ -169,6 +176,19 @@ export default class WorkBanchList extends React.Component {
                 }
                 break;
         }
+    }
+    //更新阅读状态
+    setReadState(item){
+        HttpPost(URLS.WorkBenchSaveRead,{'projectId':item.projectId,'readType':item.dataType,},"").then((response)=>{
+            if(response.result == 1){
+                console.log(response.data)
+
+            }else{
+                alert(response.msg);
+            }
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
     }
 
     getProjectInfo(item){
