@@ -12,6 +12,7 @@ const  FunctionEnum = {
         20:'PAppraisalList',
         21:'FillAuditList',
         22:'PreviewList',
+        23:'ShowScoreList',
         25:'AccountabilityList',
         26:'IInterviewList',
         27:'AuditList',

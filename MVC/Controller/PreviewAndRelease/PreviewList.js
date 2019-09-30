@@ -34,23 +34,13 @@ export default class PreviewList extends React.Component{
                 ], (index)=>{
                     switch (index) {
                         case 0://发布
-                            HttpPost(URLS.ReleasePublish, {swIds: this.state.ids}, '正在发布...').then((response)=>{
-                                RRCToast.show(response.msg);
-                                if (response.result === 1) {
-                                    this._onHeaderRefresh();
-                                }
-                            }).catch((err)=>{
-                               RRCAlert.alert('服务器内部错误')
+                            this.setState({
+                                isRelease: true,
                             });
                             break;
                         case 1://撤回
-                            HttpPost(URLS.BackPublish, {swIds: this.state.ids}, '正在撤回...').then((response)=>{
-                                RRCToast.show(response.msg);
-                                if (response.result === 1) {
-                                    this._onHeaderRefresh();
-                                }
-                            }).catch((err)=>{
-                                RRCAlert.alert('服务器内部错误')
+                            this.setState({
+                                isRelease: false,
                             });
                             break;
                         case 2://取消
@@ -62,6 +52,26 @@ export default class PreviewList extends React.Component{
                             break;
                     }
                 });
+            } else {
+                if (this.state.isRelease){
+                    HttpPost(URLS.ReleasePublish, {swIds: this.state.ids}, '正在发布...').then((response)=>{
+                        RRCToast.show(response.msg);
+                        if (response.result === 1) {
+                            this._onHeaderRefresh();
+                        }
+                    }).catch((err)=>{
+                        RRCAlert.alert('服务器内部错误')
+                    });
+                } else {
+                    HttpPost(URLS.BackPublish, {swIds: this.state.ids}, '正在撤回...').then((response)=>{
+                        RRCToast.show(response.msg);
+                        if (response.result === 1) {
+                            this._onHeaderRefresh();
+                        }
+                    }).catch((err)=>{
+                        RRCAlert.alert('服务器内部错误')
+                    });
+                }
             }
         });
     };
@@ -75,6 +85,7 @@ export default class PreviewList extends React.Component{
             pageNo: 1,
             isChecks:false,            //是否多选
             ids: [],                   //多选时，存储id，用来上报或驳回
+            isRelease: false,
         };
     }
     componentWillUnmount(): void {
@@ -113,7 +124,6 @@ export default class PreviewList extends React.Component{
         search['pageSize'] = this.state.pageSize;
         HttpPost(URLS.QueryListPublish,
             search).then((response)=>{
-                console.log(response);
             RRCToast.show(response.msg);
             if (response.result === 1){
                 const item = response.data.records;
@@ -237,11 +247,9 @@ export default class PreviewList extends React.Component{
             arr = arr.concat(this.state.dataList);
             idsArr = idsArr.concat(this.state.ids);
             arr.map((i)=>{
-                if (i.publishState === 3){
-                    if (i.id === item.id){
-                        i.select = !item.select;
-                        i.select === true ? idsArr.push(i.swId) : idsArr.splice(idsArr.indexOf(i.swId), 1);
-                    }
+                if (i.id === item.id){
+                    i.select = !item.select;
+                    i.select === true ? idsArr.push(i.swId) : idsArr.splice(idsArr.indexOf(i.swId), 1);
                 }
             });
             this.setState({dataList: arr, ids: idsArr});

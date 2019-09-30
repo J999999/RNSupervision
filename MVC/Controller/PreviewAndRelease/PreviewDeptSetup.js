@@ -15,6 +15,7 @@ export default class PreviewDeptSetup extends React.Component{
         this.state = {
             data: [],
         }
+
     }
     componentDidMount(): void {
         let swId = this.props.navigation.getParam('item').swId;
@@ -59,7 +60,6 @@ export default class PreviewDeptSetup extends React.Component{
                 this.setState({
                     data: plusesArr,
                 });
-                console.log(plusesArr);
             }
         }).catch((err)=>{
             RRCAlert.alert('服务器内部错误')

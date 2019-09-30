@@ -47,6 +47,8 @@ import PreviewLog from './MVC/Controller/PreviewAndRelease/PreviewLog' //预览�
 import PreviewSetup from './MVC/Controller/PreviewAndRelease/PreviewSetup' //分值权重设置
 import PreviewSetupDetail from './MVC/Controller/PreviewAndRelease/PreviewSetupDetail' //基本信息设置
 import PreviewDeptSetup from './MVC/Controller/PreviewAndRelease/PreviewDeptSetup' //评分
+import ShowScoreList from './MVC/Controller/ShowScore/ShowScoreList' //成绩展示列表
+import ShowScoreDetail from './MVC/Controller/ShowScore/ShowScoreDetail' //成绩展示详情
 
 import InspectionreformInformation from './MVC/Controller/SubjectResponsibility/InspectionreformInformation' //巡查整改党组信息
 import InspectionreformList from './MVC/Controller/SubjectResponsibility/InspectionreformList' //巡查整改列表
@@ -147,6 +149,8 @@ const AppNavigator = createStackNavigator({
     PreviewSetup: {screen: PreviewSetup},
     PreviewSetupDetail: {screen: PreviewSetupDetail},
     PreviewDeptSetup: {screen: PreviewDeptSetup},
+    ShowScoreList: {screen: ShowScoreList},
+    ShowScoreDetail: {screen: ShowScoreDetail},
 
     InspectionreformList: {screen: InspectionreformList},
     InspectionreformDetail: {screen: InspectionreformDetail},

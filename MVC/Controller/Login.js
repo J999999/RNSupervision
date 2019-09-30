@@ -37,8 +37,8 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            userName: '',
-            password: '',
+            // userName: '',
+            // password: '',
             // userName: 'dcdb1',
             // password: '123456',
             // userName: 'dcfjza',
@@ -55,8 +55,8 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'xzsj',
             // password: '12345678',
-            // userName: 'jxky',
-            // password: '123456',
+            userName: 'jxky',
+            password: '123456',
             keyboardShown: false,
             imsi: '',
         };

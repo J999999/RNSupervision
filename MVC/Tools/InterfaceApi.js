@@ -47,6 +47,8 @@ const URLS = {
     SaveBaseSetup : HOST + 'assess/publish/saveBaseSetup', //保存分值权重发布设置基本信息
     GetDeptSetup : HOST + 'assess/publish/getDeptSetup', //分值权重表加分项设置
     SaveDeptSetup : HOST + 'assess/publish/saveDeptSetup', //考核单位加分项设置保存
+    ShowScoreList : HOST + 'score/queryList', //成绩展示列表
+    ShowScoreDetail : HOST + 'score/queryDetail', //成绩展示详情
     //主体责任
     QueryListByInspectionreform : HOST + 'inspectionreform/queryList', //巡查整改列表
     QueryDetailByInspectionreform : HOST + 'inspectionreform/queryDetail', //巡查整改详情
