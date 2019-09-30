@@ -128,13 +128,31 @@ export default class ShowScoreDetail extends React.Component{
                     })
                 });
 
+                typeArr.map((i)=>{
+                    i.data.map((j)=>{
+                        let typeNameArr = [];
+                        KHTypeArr.map((l)=>{
+                            j.deptAssessTypeScoreList.map((k)=>{
+                                if (l.title === k.assessTypeName) {
+                                    typeNameArr.push(k);
+                                }
+                            });
+
+                        });
+                        j.deptAssessTypeScoreList = [];
+                        j.deptAssessTypeScoreList = typeNameArr;
+                    })
+                });
+
                 //加分项
                 let scoreName = [];
                 for (let i=0; i<sortArr.length; i++) {
-                    for (let j=0; j<sortArr[i].deptPlusesScoreList.length; j++) {
-                        let dic = sortArr[i].deptPlusesScoreList[j];
-                        if (scoreName.indexOf(dic.plusesName) === -1) {
-                            scoreName.push(dic.plusesName);
+                    if (sortArr[i].deptPlusesScoreList) {
+                        for (let j=0; j<sortArr[i].deptPlusesScoreList.length; j++) {
+                            let dic = sortArr[i].deptPlusesScoreList[j];
+                            if (scoreName.indexOf(dic.plusesName) === -1) {
+                                scoreName.push(dic.plusesName);
+                            }
                         }
                     }
                 }
