@@ -3,7 +3,7 @@ const  FunctionEnum = {
     defaultIcon:'placeholder',
     actionMap:{
         8: 'NoticeList',//公告通知
-        9: 'NoticeList',//短信群发
+        9: 'GroupMessageList',//短信群发
         11:'ProjectList',//立项交办
         12:'OpinionApprovalList',//意见审批
         14:'WorkReportList' , //工作汇报
@@ -25,7 +25,7 @@ const  FunctionEnum = {
         49:'WorkBanchList',//领导批示意见
         50:'WorkBanchList',//我的意见建议
         51:'WorkBanchList',//待办事项
-        52:'NoticeList',//通知公告
+        52:'WorkBenchNoticeList',//通知公告
         53:'WorkBenchWarning',//预警信息
 
         68:'IInterviewReleaseList',
@@ -56,6 +56,8 @@ const  FunctionEnum = {
     iconMap:{
         "placeholder":require('../Images/logo.png'),
 
+        1:require('../Images/gongzuotai.png'),//工作台
+
         7:require('../Images/bangongoa.png'),//OA办公
         8:require('../Images/gonggaotongzhi.png'),//通知公告
         9:require('../Images/duanxinqunfa.png'),//短信群发
@@ -72,7 +74,7 @@ const  FunctionEnum = {
         20:require('../Images/kaohetianbao.png'),
         21:require('../Images/tianbaoshenhe.png'),
         22:require('../Images/kaohechengjiyulan.png'),
-        23:require('../Images/kscjzs.png'),//考核成绩展示
+        23:require('../Images/kaohechengjizhanshi.png'),//考核成绩展示
 
         24:require('../Images/xiaonengwenze.png'),//效能问责
         25:require('../Images/xiaonengwenze.png'),//效能问责

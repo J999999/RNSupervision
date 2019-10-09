@@ -15,6 +15,7 @@ export default class CheckList extends React.Component{
 
     constructor(props){
         super(props);
+        this.multipeSelect= true
         this.state = {
             InputString: '',
             data: [],
@@ -24,6 +25,7 @@ export default class CheckList extends React.Component{
     componentDidMount(): void {
         this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
         const {navigation} = this.props;
+        this.multipeSelect = navigation.getParam('multipeSelect')
         let arr = navigation.getParam('dataSource');
         let dataArr = [];
         dataArr = dataArr.concat(this.state.data);
@@ -81,6 +83,12 @@ export default class CheckList extends React.Component{
         arr.map((i)=>{
             if (i.name === item.name){
                 i.select = !item.select;
+            }
+            //单选
+            if(!this.multipeSelect){
+                if(i.name !== item.name){
+                    i.select = false
+                }
             }
         });
         this.setState({data: arr});

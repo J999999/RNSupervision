@@ -139,7 +139,7 @@ class ProjectAdd  extends React.Component {
             console.log(response.msg);
             if(response.result == 1){
                 this.bean = response.data
-                this.fileUrlList=this.bean.fileList
+                this.fileUrlList= response.data.fileDTOList
 
                 if(this.bean.dutyUnitList!=null && this.bean.dutyUnitList.length>0){
                     //牵头单位
@@ -164,7 +164,7 @@ class ProjectAdd  extends React.Component {
                 }
 
                 this.setState({
-                    getInfoSuccess:true
+                    hasAttach:true
                 })
             }else{
                 alert(response.msg);
@@ -461,7 +461,7 @@ class ProjectAdd  extends React.Component {
 
       var fileButtons = [] ;
 
-        for(let i in this.fileList){
+      for(let i in this.fileList){
             var button = (
                 <View
                     key = {i}
@@ -483,6 +483,29 @@ class ProjectAdd  extends React.Component {
             );
             fileButtons.push(button);
         } ;
+
+        for(let j in this.fileUrlList){
+            var buttonUrl = (
+                <View
+                    key = {j}
+                    style= {styles.attach} >
+                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ this.fileUrlList[j].name} </Text>
+                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
+                        this._pressDelAttach(this.fileUrlList[j],1);
+                    }}>
+                        <Image style={styles.delete} source={require('../Images/sc_delete.png')}   />
+                    </TouchableOpacity>
+
+                    <View style={styles.rightIcon}>
+                        <Button title="查看" onPress={ ()=>{
+                            attachItem = this.fileUrlList[j];
+                            this._pressDetail();
+                        }}   />
+                    </View>
+                </View>
+            );
+            fileButtons.push(buttonUrl);
+        }
 
         let isEditable = true
         if(this.bean.id!=null ){
@@ -769,55 +792,6 @@ class ProjectAdd  extends React.Component {
             this.bean  = params.bean
         }
 
-        var fileButtons = [] ;
-
-        for(let i in this.fileList){
-            var button = (
-                <View
-                    key = {i}
-                    style= {styles.attach} >
-                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ this.fileList[i].fileName} </Text>
-                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
-                        this._pressDelAttach(this.fileList[i],0);
-                    }}>
-                        <Image style={styles.delete} source={require('../Images/sc_delete.png')}   />
-                    </TouchableOpacity>
-
-                    <View style={styles.rightIcon}>
-                        <Button title="查看" onPress={ ()=>{
-                            attachItem = this.fileList[i];
-                            this._pressDetail();
-                        }}   />
-                    </View>
-                </View>
-            );
-            fileButtons.push(button);
-        } ;
-
-
-        for(let j in this.fileUrlList){
-            var buttonUrl = (
-                <View
-                    key = {j}
-                    style= {styles.attach} >
-                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ this.fileUrlList[j].name} </Text>
-                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
-                        this._pressDelAttach(this.fileUrlList[j],1);
-                    }}>
-                        <Image style={styles.delete} source={require('../Images/sc_delete.png')}   />
-                    </TouchableOpacity>
-
-                    <View style={styles.rightIcon}>
-                        <Button title="查看" onPress={ ()=>{
-                            attachItem = this.fileUrlList[j];
-                            this._pressDetail();
-                        }}   />
-                    </View>
-                </View>
-            );
-            fileButtons.push(buttonUrl);
-        }
-
         return (
             <View style = {styles.all}>
 
@@ -878,7 +852,7 @@ var styles = StyleSheet.create({
     button:{
         margin:8*unitWidth,
         // alignItems:'flex-end',
-        width:screenWidth/2,
+        width:(screenWidth-8)/2,
     },
 
     buttonText:{

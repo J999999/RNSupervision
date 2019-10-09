@@ -14,6 +14,7 @@ import DataDictionary from '../Tools/DataDictionary';
 import {unitHeight, unitWidth} from '../Tools/ScreenAdaptation';
 import ExpandableList from 'react-native-expandable-section-flatlist';
 import AsyncStorage from '@react-native-community/async-storage';
+import {downOpenFile} from '../Tools/Utils';
 
 var screenWidth = Dimensions.get('window').width;
 var context ;
@@ -258,10 +259,12 @@ class WorkReportSummary extends Component {
         for(let i in list ){
             let file = list[i]
             let view = (
-                    <View style={styles.view}>
+                    <TouchableOpacity style={styles.view} onPress={()=>{
+                        downOpenFile(file)
+                    }}>
                         <Text style={styles.titleInfo}>附件：</Text>
                         <Text style={styles.titleInfo}>{file.name}</Text>
-                    </View>
+                    </TouchableOpacity>
             );
             fileViews.push(view)
         }

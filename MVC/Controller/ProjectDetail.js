@@ -9,9 +9,11 @@ import {
 } from 'react-native';
 import {HttpPost} from '../Tools/JQFetch';
 import URLS from '../Tools/InterfaceApi';
-import {RRCToast} from 'react-native-overlayer/src';
+import {RRCLoading, RRCToast} from 'react-native-overlayer/src';
 import DataDictionary from '../Tools/DataDictionary';
 import {unitWidth} from '../Tools/ScreenAdaptation';
+import {downOpenFile, FileDir, onClickDownLoad, onClickLook} from '../Tools/Utils';
+import RNFetchBlob from 'rn-fetch-blob';
 
 var screenWidth = Dimensions.get('window').width;
 var context ;
@@ -101,6 +103,7 @@ class ProjectDetail extends Component {
 
     renderNormalData=()=>{
         var yearViews =[]
+        var fileViews = []
         if(this.bean.yearlyPlanList!=null) {
             for(let i  in this.bean.yearlyPlanList){
                 let year = this.bean.yearlyPlanList[i];
@@ -114,6 +117,20 @@ class ProjectDetail extends Component {
                 yearViews.push(view)
             }
         }
+        if(this.bean.fileDTOList){
+            for(let i  in this.bean.fileDTOList){
+                let file = this.bean.fileDTOList[i];
+                let view = (
+                    <TouchableOpacity style={styles.view} onPress={()=>{
+                        downOpenFile(file)
+                    }}>
+                        <Text style={styles.titleInfo}>附件：{file.name}</Text>
+                    </TouchableOpacity>
+                );
+                fileViews.push(view)
+            }
+        }
+
         return <ScrollView style={styles.main}>
             <View style={styles.view}>
                 <Text style={styles.titleInfo}>项目名称：{this.bean.projectName}</Text>
@@ -138,7 +155,7 @@ class ProjectDetail extends Component {
                 <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>
             </View>
             <View style={{height: 10*unitWidth, backgroundColor: '#f5f5f5'}}/>
-
+            {fileViews}
             {
                 this.bean.yearlyPlanList!=null && <View style={styles.view}>
                     <Text style={styles.titleInfo}>序号 </Text>

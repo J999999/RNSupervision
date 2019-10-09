@@ -144,12 +144,12 @@ export default class StatisticsCharts extends React.Component {
         }
         HttpPost(this.statisticUrl[this.bean.id],param,"正在加载").then((response)=>{
             if(response.result == 1){
-                console.log(response.data)
-                if(response.data==null || response.data ==[]){
+                if(response.data==null || response.data ==[] || response.data.labelList.length<1){
+                    RRCToast.show(response.msg)
                     return
+                }else{
+                    this.setData(response.data)
                 }
-                this.setData(response.data)
-
             }else{
                 alert(response.msg);
             }

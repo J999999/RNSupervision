@@ -179,6 +179,7 @@ export default class WorkBanchList extends React.Component {
     }
     //更新阅读状态
     setReadState(item){
+
         HttpPost(URLS.WorkBenchSaveRead,{'projectId':item.projectId,'readType':item.dataType,},"").then((response)=>{
             if(response.result == 1){
                 console.log(response.data)

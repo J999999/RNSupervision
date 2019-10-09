@@ -17,15 +17,26 @@ export default class HomePage extends React.Component {
 
     async componentDidMount(): void {
         // const xx = await AsyncStorage.getItem('homePageFunc');
+        // console.log(JSON.stringify(xx));
         // if (xx) {
         //     this.setState({
         //         data: JSON.parse(xx),
         //     })
         // } else {
-        //     this._getFunctionAction();
+            this._getFunctionAction();
         // }
-        this._getFunctionAction();
 
+        this.getLoginInfo()
+    }
+
+    getLoginInfo(){
+        HttpPost(URLS.LoginUser,{},'').then((response)=>{
+            if (response.result == 1){
+                this.internal = response.data.internal
+                AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
+                AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
+            }
+        })
     }
     _getFunctionAction(){
         let functions = [];
@@ -56,6 +67,7 @@ export default class HomePage extends React.Component {
     }
     constructor(props){
         super(props);
+        this.internal = null
         this.state = {
             data:[],
             deleteBtnHidden: false,
@@ -77,7 +89,7 @@ export default class HomePage extends React.Component {
         );
     }
     renderItem({item, index})  {
-        let icon   = FunctionEnum.iconMap[item.id];
+        let icon   = FunctionEnum.iconMap[item.id]
         if(!icon){
             icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
         }
@@ -144,8 +156,6 @@ export default class HomePage extends React.Component {
      * 预警信息
      */
     _ClickItemAction(item){
-
-
         if(item.id===undefined){
             this.props.navigation.navigate('AddFunction',{
                 refresh: (homeFuncs) => {
@@ -155,7 +165,7 @@ export default class HomePage extends React.Component {
                 },
             });
         }else{
-            let func = FunctionEnum.actionMap[item.id];
+            let func = FunctionEnum.actionMap[item.id]
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         }
 

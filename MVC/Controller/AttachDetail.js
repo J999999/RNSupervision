@@ -5,6 +5,7 @@ import {
     Image,
 } from 'react-native';
 import {titleHeight, unitHeight, unitWidth} from '../Tools/ScreenAdaptation';
+import {FILE_HOST} from '../Tools/InterfaceApi';
 
 class AttachDetail extends Component {
 
@@ -20,10 +21,10 @@ class AttachDetail extends Component {
 
     render(){
         const { params } = this.props.navigation.state;
-        console.log(JSON.stringify(params.item) )
+        let uriStr  = params.item.uri.indexOf('/upload/files/')==-1  ? params.item.uri : (FILE_HOST+ params.item.uri)
         return(
             <View style={styles.main}>
-                <Image style={styles.image} source={ {uri :  params.item.uri } }  />
+                <Image style={styles.image} source={ {uri : uriStr } }  />
             </View>
         )
 

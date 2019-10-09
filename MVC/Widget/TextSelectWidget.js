@@ -57,9 +57,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 55*unitWidth,
         alignItems: 'center',
-        borderBottomWidth: 0.5 / PixelRatio.get(),
-        borderColor:'gray',//需要标色
-
+        borderBottomWidth: unitWidth ,
+        borderColor: '#F4F4F4',//需要标色
     },
     textInputTitle: {
         width: 80*unitWidth,

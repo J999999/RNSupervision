@@ -21,7 +21,7 @@ var navigation = null;
 var context ;
 export default class ProjectList extends React.Component {
     pageNo = 1;
-    pageSize = 10;
+    pageSize = 20;
     totalSize = 0;
 
     constructor(props) {

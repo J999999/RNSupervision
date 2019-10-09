@@ -10,9 +10,23 @@ import DataDictionary from '../Tools/DataDictionary';
 
 var drop = false;
 var context  = null;
-export default class WorkReportList extends React.Component{
+var navigation = null;
+/**
+ * 短信群发
+ */
+export default class GroupMessageList extends React.Component{
     static navigationOptions = ({navigation}) => ({
-        title: '工作汇报',
+        title: '短信群发',
+        headerRight: (<TouchableOpacity activeOpacity={.5}
+                                        onPress={()=>{
+                                            navigation.navigate('GroupMessageAdd',{
+                                                callback:function(){
+                                                    context._onHeaderRefresh()
+                                                }
+                                            });
+                                        }}>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>新增</Text>
+        </TouchableOpacity>)
     });
 
     constructor(props){
@@ -20,13 +34,13 @@ export default class WorkReportList extends React.Component{
         this.internal =  '' //是否内部角色 1=是 、0=否
 
         context = this
+        navigation = this.props.navigation;
 
         this.filter = {}
+        this.pageSize = 20,
         this.state = {
             dataList:[],
-            pageSize: 20,
-            pageNo: 1,
-            refreshState: 0,
+            pageNo:1,
         };
     }
     componentWillUnmount(): void {
@@ -38,13 +52,11 @@ export default class WorkReportList extends React.Component{
         this.internal = this.props.navigation.getParam('internal')
         drop = false;
         this._onHeaderRefresh();
-     }
-
+    }
 
     _onHeaderRefresh = () => {
         this.setState({
             refreshState: RefreshState.HeaderRefreshing,
-            pageSize: this.state.pageSize,
             pageNo: 1,
         }, ()=>{
             this._getListData(true);
@@ -54,7 +66,6 @@ export default class WorkReportList extends React.Component{
         if (drop){
             this.setState({
                 refreshState: RefreshState.FooterRefreshing,
-                pageSize: this.state.pageSize,
                 pageNo: ++this.state.pageNo,
             }, ()=>{
                 this._getListData(false);
@@ -64,18 +75,18 @@ export default class WorkReportList extends React.Component{
     };
     _getListData = (refresh) => {
         this.filter['pageNo'] = this.state.pageNo;
-        this.filter['pageSize'] = this.state.pageSize;
-        HttpPost(URLS.QueryWorkReportList,
+        this.filter['pageSize'] = this.pageSize;
+
+        HttpPost(URLS.QuerySmsList,
             this.filter).then((response)=>{
-            RRCToast.show(response.msg);
+            // RRCToast.show(response.msg);
             if (response.result === 1){
-                console.log(response.data.records)
                 const item = response.data.records;
 
                 if (refresh){
                     this.setState({dataList: item, refreshState: RefreshState.Idle});
                 } else {
-                    if (item < pageSize){
+                    if (item < this.pageSize){
                         this.setState({refreshState: RefreshState.NoMoreData})
                     } else {
                         this.setState({
@@ -85,6 +96,7 @@ export default class WorkReportList extends React.Component{
                     }
                 }
             }else {
+                RRCToast.show(response.msg);
                 this.setState({refreshState: RefreshState.Failure});
             }
         }).catch((err)=>{
@@ -95,6 +107,7 @@ export default class WorkReportList extends React.Component{
     render(): React.ReactNode {
         return (
             <View style={{flex: 1}}>
+
                 <JQFlatList
                     refreshState={this.state.refreshState}
                     onHeaderRefresh={this._onHeaderRefresh}
@@ -118,54 +131,14 @@ export default class WorkReportList extends React.Component{
                 </View>
                 <PopSearchview dataSource={[
                     {'name':'标题内容', 'type':2, 'postKeyName':'queryStr'},
-                    {'name':'编辑人员', 'type':2, 'postKeyName':'creatorName'},
-                    {'name':'事项分类', 'type':3, 'postKeyName':'projectTypes', 'dataSource':
+                    {'name':'接收人员', 'type':2, 'postKeyName':'receiverName'},
+                    {'name':'状态', 'type':3, 'postKeyName':'state', 'dataSource':
                             [
-                                {'name': '重点项目', 'id': '1'},
-                                {'name': '领导批示', 'id': '2'},
-                                {'name': '决策部署', 'id': '3'},
-                                {'name': '政务督查', 'id': '4'},
-                                {'name': '民生实事', 'id': '5'},
-                                {'name': '两代表一委员建议（议案）', 'id': '6'},
-                                {'name': '其他工作', 'id': '7'},
-                            ]
+                                {'name': '发送成功', 'id': 1},
+                                {'name': '发送失败', 'id': 0},
+                            ], 'multipeSelect':false
                     },
-                    {'name':'工作属性', 'type':3, 'postKeyName':'workAttrs', 'dataSource':
-                            [
-                                {'name': '常规', 'id': '1'},
-                                {'name': '阶段', 'id': '2'},
-                                {'name': '临时', 'id': '3'},
-                                {'name': '紧急', 'id': '4'},
-                            ]
-                    },
-                    {'name':'督查状态', 'type':3, 'postKeyName':'superviseStates', 'dataSource':
-                            [
-                                {'name': '待审批', 'id': '1'},
-                                {'name': '正常督查', 'id': '2'},
-                                {'name': '待承办单位接收', 'id': '3'},
-                                {'name': '暂停督查', 'id': '4'},
-                                {'name': '停止督查', 'id': '5'},
-                                {'name': '督查转办-待接收', 'id': '6'},
-                                {'name': '已撤回', 'id': '7'},
-                            ]
-                    },
-                    {'name':'进展情况', 'type':3, 'postKeyName':'progresses', 'dataSource':
-                            [
-                                {'name': '已完成', 'id': '1'},
-                                {'name': '正常推进', 'id': '2'},
-                                {'name': '临期', 'id': '3'},
-                                {'name': '逾期', 'id': '4'},
-                            ]
-                    },
-                    {'name':'汇报审核状态', 'type':3, 'postKeyName':'reportApprovalState', 'dataSource':
-                            [
-                                {'name': '无汇报', 'id': '1'},
-                                {'name': '待审核', 'id': '2'},
-                                {'name': '审核通过', 'id': '3'},
-                                {'name': '审核驳回', 'id': '4'},
-                             ]
-                    },
-                    {'name':'查询时间', 'type':1, 'postKeyName':'startTime' ,'postKeyNameEnd':'endTime'}
+                    {'name':'查询时间', 'type':1, 'postKeyName':'queryStartTime' ,'postKeyNameEnd':'queryEndTime'}
                 ]}
                                ref={ref => this.popSearchview = ref}
                                callback={(queryData)=>{
@@ -180,29 +153,17 @@ export default class WorkReportList extends React.Component{
         return (
             <TouchableOpacity activeOpacity={.5} onPress={this._clickCellAction.bind(this, item)}>
                 <View style={styles.thumbnail}>
+
                     <View style={styles.view}>
-                        <Text style={styles.rowTitle}>{item.projectName}</Text>
-                        <TouchableOpacity
-                            onPress={()=>{
-                                this.props.navigation.navigate('WorkReportAdd',{bean:item,callback:function(){
-                                        context._onHeaderRefresh()
-                                    }})
-                            }}  >
-                            <Image style={styles.image} source={require("../Images/icon_edit.png") }  />
-                        </TouchableOpacity>
+                        <Text style={styles.rowTitle}>{ item.content }</Text>
                     </View>
                     <View style={styles.view}>
-                        <Text style={styles.rowSmallTitle}>{ item.createTime }</Text>
-                        <Text style={styles.rowSmallTitle}>编辑人：{item.creatorName}</Text>
-                    </View>
-                    <View style={styles.view}>
-                        <Text style={styles.rowSmallTitle}>分类：{DataDictionary.MatterTypes[item.projectType] }</Text>
-                        <Text style={styles.rowSmallTitle}>属性：{DataDictionary.WorkTypes[item.workAttr]}</Text>
+                        <Text style={styles.rowSmallTitle}>接收人：{ item.receiverName }</Text>
                     </View>
 
                     <View style={styles.view}>
-                        <Text style={styles.rowSmallTitle}>督查状态：{DataDictionary.SuperViseStates[item.superviseState] }</Text>
-                        <Text style={styles.rowSmallTitle}>汇报审核状态：{DataDictionary.ReportApprovalState[item.reportApprovalState]}</Text>
+                        <Text style={styles.rowSmallTitle}>发布人：{item.creatorName	}</Text>
+                        <Text style={styles.rowSmallTitle}>发布时间：{ item.createTime}</Text>
                     </View>
 
                 </View>
@@ -212,13 +173,12 @@ export default class WorkReportList extends React.Component{
     };
 
     _searchOpt=(queryData)=>{
-        console.log('----'+JSON.stringify(queryData))
         for(let i in queryData){
             let item = queryData[i]
             for(let j in item){
                 if(j!=='title' && j!=='name'){
                     if(item[j] instanceof  Array){
-                        this.filter[j] = item[j]
+                        this.filter[j] = item[j][0]
                     }else{
                         this.filter[j] = item[j]
                     }
@@ -230,10 +190,7 @@ export default class WorkReportList extends React.Component{
     }
 
     _clickCellAction = (item) => {
-        this.props.navigation.navigate('WorkReportDetail', {bean: item ,callback:function(){
-                context.setState({
-                    ids:[]
-                })
+        this.props.navigation.navigate('GroupMessageDetail', {bean: item ,callback:function(){
                 context._onHeaderRefresh()
             }});
     };
@@ -297,17 +254,5 @@ const styles = StyleSheet.create({
         alignSelf:'stretch',
         backgroundColor:'#FF9900',
         borderRadius:5*unitWidth,
-    },
-    imageButton: {
-        position: 'absolute',
-        right: 12*unitWidth,
-        top: 20*unitWidth,
-        width: 40*unitWidth,
-        height: 40*unitWidth,
-    },
-    image : {
-        marginBottom:6*unitWidth,
-        width: 28*unitWidth,
-        height: 28*unitWidth,
     },
 });

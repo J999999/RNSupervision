@@ -10,6 +10,7 @@ export default class JQJumpTo extends React.Component{
         dataSource: PropTypes.array.isRequired,
         postKeyName: PropTypes.string.isRequired,
         callBack:PropTypes.func,
+        multipeSelect:PropTypes.boolean,
     };
     constructor (props){
         super (props);
@@ -45,6 +46,7 @@ export default class JQJumpTo extends React.Component{
     _jumpAction(){
         NavigationService.navigate('CheckList',
             {
+                'multipeSelect':this.props.multipeSelect,
                 'dataSource':this.props.dataSource,
                 'refresh':(item) => {
                     let ids = [];

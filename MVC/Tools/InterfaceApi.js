@@ -1,5 +1,6 @@
-//const HOST = 'http://192.168.2.48:8081/'; //岳毅
-//const HOST = 'http://192.168.2.47:8081/'; //小好
+// const HOST = 'http://192.168.2.40:8081/'; //岳毅
+// const HOST = 'http://192.168.2.48:8081/'; //小好
+export const FILE_HOST = 'http://221.13.156.198:10008/';
 const HOST = 'http://221.13.156.198:10008/api/';
 
 const URLS = {
@@ -127,7 +128,11 @@ const URLS = {
     WorkBenchQueryTodoList:HOST + '/workbench/queryTodoList',//待办事项
     WorkBenchSaveRead:HOST + '/workbench/saveWorkbenchRead',//标记阅读状态
 
-
+    QuerySmsList:HOST +'/sms/queryList' ,//列表
+    SmsDetail:HOST +'/sms/queryDetail' ,//查看详情
+    SmsResend:HOST +'/sms/resend' ,//重新发送
+    SmsSend:HOST +'/sms/sendSms' ,//短信发送
+    SmsGetDeptUser:HOST +'/sms/getDeptUserTree' ,//获取部门树
 
 };
 export default URLS;

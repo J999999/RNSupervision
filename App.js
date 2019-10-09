@@ -97,8 +97,13 @@ import ProjectStatisticsList from './MVC/Controller/ProjectStatisticsList';
 import StatisticsCharts from './MVC/Controller/StatisticsCharts';
 import WorkBanchList from './MVC/Controller/WorkBanchList';
 import WorkBenchWarning from './MVC/Controller/WorkBenchWarning';
+import WorkBenchNoticeList from './MVC/Controller/WorkBenchNoticeList';
 
 import AboutUs from './MVC/Controller/AboutUs';
+import GroupMessageList from './MVC/Controller/GroupMessageList';
+import GroupMessageAdd from './MVC/Controller/GroupMessageAdd';
+import GroupMessageDetail from './MVC/Controller/GroupMessageDetail';
+import EmpSelectList from './MVC/Controller/EmpSelectList';
 
 const AppNavigator = createStackNavigator({
   Login: {screen: Login},
@@ -207,8 +212,13 @@ const AppNavigator = createStackNavigator({
   //工作台
   WorkBanchList:{screen:WorkBanchList},
   WorkBenchWarning:{screen:WorkBenchWarning},
+  WorkBenchNoticeList:{screen:WorkBenchNoticeList},
 
-    AboutUs:{screen:AboutUs},
+  AboutUs:{screen:AboutUs},
+  GroupMessageList:{screen:GroupMessageList},
+  GroupMessageAdd:{screen:GroupMessageAdd},
+  GroupMessageDetail:{screen:GroupMessageDetail},
+  EmpSelectList:{screen:EmpSelectList},
 
 },{
   initialRouteName: 'Login',

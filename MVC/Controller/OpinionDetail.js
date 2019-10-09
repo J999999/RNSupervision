@@ -13,6 +13,7 @@ import {RRCToast} from 'react-native-overlayer/src';
 import DataDictionary from '../Tools/DataDictionary';
 import {unitWidth} from '../Tools/ScreenAdaptation';
 import { RRCActionSheet } from 'react-native-overlayer'
+import {downOpenFile} from '../Tools/Utils';
 
 var screenWidth = Dimensions.get('window').width;
 var context ;
@@ -105,6 +106,7 @@ class OpinionDetail extends Component {
 
     renderNormalData=()=>{
        var yearViews =[]
+       var fileViews = []
        if(this.bean.yearlyPlanList!=null) {
            for(let i  in this.bean.yearlyPlanList){
                let year = this.bean.yearlyPlanList[i];
@@ -117,6 +119,20 @@ class OpinionDetail extends Component {
                );
                yearViews.push(view)
            }
+       }
+
+       if(this.bean.fileDTOList){
+            for(let i  in this.bean.fileDTOList){
+                let file = this.bean.fileDTOList[i];
+                let view = (
+                    <TouchableOpacity style={styles.view} onPress={()=>{
+                        downOpenFile(file)
+                    }}>
+                        <Text style={styles.titleInfo}>附件：{file.name}</Text>
+                    </TouchableOpacity>
+                );
+                fileViews.push(view)
+            }
        }
 
         return <ScrollView style={styles.main}>
@@ -143,7 +159,7 @@ class OpinionDetail extends Component {
                 <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>
             </View>
             <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
-
+            {fileViews}
             {
                 this.bean.yearlyPlanList!=null && <View style={styles.view}>
                     <Text style={styles.titleInfo}>序号 </Text>
@@ -425,9 +441,9 @@ class OpinionDetail extends Component {
     }
 
     _pressAgreeButton =()=>{
-        RRCToast.show(response.msg)
         HttpPost(URLS.ProjectApprovalAgree,{projectIdList:[this.bean.id]},"正在请求").then((response)=>{
             if(response.result == 1){
+                RRCToast.show(response.msg)
                 this.getProjectInfo()
             }else{
                 alert(response.msg);
@@ -439,7 +455,6 @@ class OpinionDetail extends Component {
     }
 
     _pressFollowButton =()=>{
-
         HttpPost(URLS.AddProjectRelation,{id:this.bean.id},"正在关注").then((response)=>{
             RRCToast.show(response.msg)
             if(response.result == 1){

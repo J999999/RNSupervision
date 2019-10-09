@@ -85,6 +85,9 @@ class WorkReportAdd  extends React.Component {
         if(params.bean.id){
             this.workReport = params.bean
             this.fileUrlList = params.bean.fileList
+            this.setState({
+                hasAttach :true
+            })
         }
          this.setState({
              bean : params.bean
@@ -250,7 +253,7 @@ class WorkReportAdd  extends React.Component {
         }
     }
 
-    static  _pressDetail = ()=> {
+    _pressDetail = ()=> {
         if(attachItem.uri===undefined){
             attachItem.uri = attachItem.url
         }

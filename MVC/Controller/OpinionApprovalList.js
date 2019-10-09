@@ -43,8 +43,8 @@ export default class OpinionApprovalList extends React.Component{
     componentDidMount(): void {
         this.internal = this.props.navigation.getParam('internal')
         drop = false;
-        this._onHeaderRefresh();
         this.getDeptUser();//获取牵头单位
+        this._onHeaderRefresh();
     }
 
     getDeptUser(){

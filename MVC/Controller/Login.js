@@ -37,8 +37,8 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            // userName: '',
-            // password: '',
+            userName: '',
+            password: '',
             // userName: 'dcdb1',
             // password: '123456',
             // userName: 'dcfjza',
@@ -51,12 +51,12 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'wbthree',
             // password: '123456',
-            // userName: 'wbfive',
+            // userName: 'wbfive2',
             // password: '123456',
             // userName: 'xzsj',
             // password: '12345678',
-            userName: 'jxky',
-            password: '123456',
+            // userName: 'jxky',
+            // password: '123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -181,7 +181,6 @@ export default class Login extends React.Component {
             RRCToast.show(response.msg);
             if (response.result === 1){
                 AsyncStorage.setItem('token', response.data.token);
-                this.getLoginInfo()
                 this.props.navigation.navigate('Home');
             }else {
                 this.props.navigation.popToTop();
@@ -190,15 +189,6 @@ export default class Login extends React.Component {
             RRCAlert.alert('服务器内部错误');
         });
     };
-
-    getLoginInfo(){
-        HttpPost(URLS.LoginUser,{},'').then((response)=>{
-            if (response.result == 1){
-                AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
-                AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
-            }
-        })
-    }
 
     forgetAction = () => {
         //忘记密码

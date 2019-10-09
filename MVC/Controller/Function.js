@@ -20,19 +20,18 @@ export default class Function extends React.Component {
     }
 
     componentDidMount(): void {
-
         this.getFunctionMenu()
-        // AsyncStorage.getItem('userMenu').then((value) => {
-        //     console.log(value)
-        //     this.setState({
-        //         data: JSON.parse(value),
-        //     })
-        // });
-        AsyncStorage.getItem('internal').then((value) => {
-            this.internal = JSON.parse(value)
-        });
+        this.getLoginInfo()
     }
-
+    getLoginInfo(){
+        HttpPost(URLS.LoginUser,{},'').then((response)=>{
+            if (response.result == 1){
+                this.internal = response.data.internal
+                AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
+                AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
+            }
+        })
+    }
     getFunctionMenu(){
         HttpPost(URLS.UserMenu, {'isDefault':0},'').then((response)=>{
             if (response.result !== 1) {
@@ -84,7 +83,7 @@ export default class Function extends React.Component {
                     <Image source={
                         FunctionEnum.iconMap[rowItem.id]
                     }
-                           style={{width: 35*unitWidth, height: 35*unitWidth, marginLeft: 60*unitWidth,padding:4}}/>
+                           style={{width: 30*unitWidth, height: 30*unitWidth, marginLeft: 60*unitWidth,padding:4}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>{rowItem.name}</Text>
                 </View>
                 <View style={{height: unitHeight, marginLeft: 100*unitWidth, backgroundColor:'#F4F4F4'}}/>
@@ -102,7 +101,7 @@ export default class Function extends React.Component {
                     <Image source={
                         FunctionEnum.iconMap[sec.id]?FunctionEnum.iconMap[sec.id] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
                     }
-                           style={{width: 40*unitWidth, height: 40*unitWidth, marginLeft: 20*unitWidth}}/>
+                           style={{width: 35*unitWidth, height: 35*unitWidth, marginLeft: 20*unitWidth}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 17*unitWidth}}>{section}</Text>
                 </View>
                 <Image source={require('../Images/goRight.png')}

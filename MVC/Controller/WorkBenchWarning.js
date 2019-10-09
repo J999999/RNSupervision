@@ -97,12 +97,12 @@ export default class WorkBenchWarning extends React.Component {
 
         HttpPost(URLS.StatisticsWorkbenchProject,{},"正在加载").then((response)=>{
             if(response.result == 1){
-                console.log(response.data)
-                if(response.data==null || response.data ==[]){
+                if(response.data==null || response.data ==[] || response.data.labelList.length<1){
+                    RRCToast.show(response.msg)
                     return
+                }else{
+                    this.setData(response.data)
                 }
-                this.setData(response.data)
-
             }else{
                 alert(response.msg);
             }
@@ -112,7 +112,6 @@ export default class WorkBenchWarning extends React.Component {
     }
 
     setData(data){
-        let finalData = []
         let tableTitle = data.labelList
         let tableData = []
 

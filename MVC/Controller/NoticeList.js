@@ -19,7 +19,7 @@ var navigation = null;
 var context ;
 export default class NoticeList extends React.Component {
     pageNo = 1;
-    pageSize = 10;
+    pageSize = 20;
     totalSize = 0;
 
     constructor(props) {
@@ -136,7 +136,7 @@ export default class NoticeList extends React.Component {
         this.fetchData();
     };
 
-    // 上拉加载更多，暂时没有分页
+    // 上拉加载更多
     _onEndReached = () => {
         this.fetchData();
     }
@@ -154,7 +154,7 @@ export default class NoticeList extends React.Component {
 
 
     static  navigationOptions = ({navigation}) =>({
-        title: '公告通知',
+        title: navigation.state.params.title ,
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{
                                             navigation.navigate('NoticeAdd',{

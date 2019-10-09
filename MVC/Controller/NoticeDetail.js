@@ -8,10 +8,12 @@ import {
     Image, ScrollView, TouchableOpacity, Dimensions,
 } from 'react-native';
 import {HttpPost} from '../Tools/JQFetch';
-import URLS from '../Tools/InterfaceApi';
-import {RRCToast} from 'react-native-overlayer/src';
+import URLS, {FILE_HOST, HOST} from '../Tools/InterfaceApi';
+import {RRCLoading, RRCToast} from 'react-native-overlayer/src';
 import {unitWidth} from '../Tools/ScreenAdaptation';
 import AsyncStorage from '@react-native-community/async-storage';
+import {FileDir, onClickDownLoad, onClickLook} from '../Tools/Utils';
+import RNFetchBlob from 'rn-fetch-blob';
 
 var screenWidth = Dimensions.get('window').width;
 
@@ -38,9 +40,22 @@ class NoticeDetail extends Component {
             if(response.result == 1){
                 this.bean = response.data
                 this.fileList = response.data.fileList
-                this.setState({
-                    show:true
-                })
+                for(let i in this.fileList){
+                    let file = this.fileList[i]
+
+                    RNFetchBlob.fs.exists(
+                        FileDir + '/' + file.name
+                    ).then((ex)=>{
+                        ex ? file['exists'] = true : file['exists'] = false
+                        if(ex){
+                            this.setState({show:true})
+                        }
+                    })
+                    this.setState({
+                        show:true
+                    })
+                }
+
             }else{
                 alert(response.msg);
             }
@@ -59,6 +74,30 @@ class NoticeDetail extends Component {
         </TouchableOpacity>)
     });
 
+    openFile(item){
+        onClickLook(item)
+    }
+
+    downLoadFile(item){
+        RRCLoading.setLoadingOptions({text: '正在下载...'});
+        RRCLoading.show();
+        let  result = onClickDownLoad(item)
+        result.then((res)=>{
+            RRCLoading.hide()
+            if(res.respInfo.status === 404){
+                RRCToast.show('原文件已缺失');
+            }
+            if (res.respInfo.status === 200){
+                RRCToast.show('下载成功');
+                item.exists = true
+                this.setState({
+                    show:true
+                });
+            }
+        })
+    }
+
+
     render(){
         const  {params} = this.props.navigation.state;
 
@@ -70,14 +109,17 @@ class NoticeDetail extends Component {
         for(let i in this.fileList){
             var button = (
                 <TouchableOpacity  key = {i}  style= {styles.down}
-                    // onPress={() =>
-                    // this.setState({
-                    //     show : true,
-                    // })}
-                >
+                    onPress={() =>{
+                        if(this.fileList[i].exists){
+                            this.openFile(this.fileList[i])
+                        }else{
+                            this.downLoadFile(this.fileList[i])
+                        }
 
-                    <Text   numberOfLines = {1}
-                            style={styles.downText}> {'下载附件:'+ this.fileList[i].name} </Text>
+                    }}
+                >
+                <Text  numberOfLines = {1}
+                            style={styles.downText}> {(this.fileList[i].exists==true?'打开：':'下载附件:')+ this.fileList[i].name} </Text>
                 </TouchableOpacity>
             );
 
@@ -85,7 +127,7 @@ class NoticeDetail extends Component {
                 <Image
                     key ={i+1}
                     style={styles.img}
-                    source={{ uri: this.fileList[i].url }} />
+                    source={{ uri:FILE_HOST+this.fileList[i].url }} />
              );
 
             buttons.push(button);
