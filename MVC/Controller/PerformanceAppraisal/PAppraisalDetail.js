@@ -119,7 +119,7 @@ export default class PAppraisalDetail extends React.Component{
             fileButtons.push(button);
         }
         return (
-            <View style={{flex: 1}}>
+            <KeyboardAwareScrollView style={{flex: 1}}>
                 <View style={{height: 64*unitWidth, width: '100%', alignItems: 'center',
                     justifyContent: 'center', flexDirection: 'row'}}>
                     <Text
@@ -184,7 +184,7 @@ export default class PAppraisalDetail extends React.Component{
                             </Text>
                         </TouchableOpacity> : null
                 }
-            </View>
+            </KeyboardAwareScrollView>
         )
     }
     _renderSectionHeader = (sectionItem) => {

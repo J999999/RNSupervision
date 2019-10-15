@@ -192,7 +192,8 @@ export default class PreviewDetail extends React.Component{
                     {data.tableName}
                 </Text>
                 <View style={{marginTop: 5*unitWidth, marginLeft: 5*unitWidth, height: 607*unitHeight}}>
-                    <ScrollView contentContainerStyle={{width: 9999*unitWidth}}>
+                    <ScrollView style={{flex:1}}   horizontal={true}  contentContainerStyle={{width:9999*unitWidth}} >
+                        <ScrollView style={{flex:1}} >
                         <View style={{flexDirection: 'row'}}>
                             <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
                                 <Text>类别</Text>
@@ -377,6 +378,7 @@ export default class PreviewDetail extends React.Component{
                                 )
                             })
                         }
+                        </ScrollView>
                     </ScrollView>
                 </View>
                 <View style={{flexDirection: 'row', marginTop: 10*unitWidth, justifyContent: 'space-around'}}>

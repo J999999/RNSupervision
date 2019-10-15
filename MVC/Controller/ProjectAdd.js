@@ -44,7 +44,7 @@ class ProjectAdd  extends React.Component {
         dutyUnitList:[], //责任单位
 
         leadingUnitJson:[] ,//牵头单位json
-        fitUnitJson:[],//配合单位json
+        fitUnitJson:[],//责任单位json
 
         fileDTOList:[],//
         files:"",
@@ -69,12 +69,12 @@ class ProjectAdd  extends React.Component {
         this.mid = '';//
         this.progress = '';//备注
         this.reportMode = 1;//汇报模式：1-周期汇报，2-固定时间点汇报
-        this.reportTimeSet = '';//汇报时间设定：1-单独设置，2-与牵头单位一致
+        this.reportTimeSet = 1;//汇报时间设定：1-单独设置，2-与牵头单位一致
         this.reportTimeList = [];//时间设置数据
         this.superviseState = '';//
         this.unitId = '';//
         this.unitName = '';//
-        this.unitType = 1 ;// 单位类型：1-牵头单位，2-配合单位
+        this.unitType = 1 ;// 单位类型：1-牵头单位，2-责任单位
 
         this.reportTimeData=[];
     }
@@ -110,11 +110,16 @@ class ProjectAdd  extends React.Component {
         this.content = '';
 
         this.dutyUnitUser = new this.dutyUnit() //牵头单位
-        this.dutyUnitList = [] //配合单位
+        this.dutyUnitList = [] //责任单位
         // this.reportTimeList = [];//时间设置集
         this.deptUserList = []; //部门
+        this.deptAllUserDic = {};//部门字典集
         this.deptUserDic = {};//部门字典集
         this.selectedDeptUserId = []//已选择的单位id ,新增的时候需要排除
+
+        this.isSubmit = false;
+
+        this.deptIds = '';
 
         this.state = {
             selectDate:'',
@@ -124,7 +129,7 @@ class ProjectAdd  extends React.Component {
             switchTab:false,
             hasAttach:false,
             getInfoSuccess:false,
-        }
+         }
      }
 
      componentDidMount(): void {
@@ -151,7 +156,7 @@ class ProjectAdd  extends React.Component {
                         item.reportMode = this.dutyUnitUser.reportMode
                     )
 
-                    //配合单位
+                    //责任单位
                     this.dutyUnitList = this.bean.dutyUnitList.filter((item)=>
                         item.unitType == 2
                     )
@@ -176,12 +181,13 @@ class ProjectAdd  extends React.Component {
     }
 
     getDeptUser(){
-        HttpPost(URLS.GetParamDept,{ids:''},"").then((response)=>{
+        HttpPost(URLS.GetParamDept,{ids:this.deptIds},"").then((response)=>{
             console.log(response.msg);
             if(response.result == 1){
                 this.deptUserList = response.data
                 for(let i in this.deptUserList){
                     this.deptUserDic[this.deptUserList[i].id] = this.deptUserList[i].deptName
+                    this.deptAllUserDic[this.deptUserList[i].id] = this.deptUserList[i].deptName
                 }
                 this.setState({
                     getInfoSuccess:true
@@ -209,6 +215,8 @@ class ProjectAdd  extends React.Component {
             if(response.result == 1){
                 this.bean.id = response.data.id
 
+                this.isSubmit = true
+
                 this.getProjectInfo()
 
                 // navigation.state.params.callback()
@@ -223,10 +231,12 @@ class ProjectAdd  extends React.Component {
     }
 
     _pressSubmit=()=>{
-        if(this.bean.id == null){
+        if(this.bean.id == null && this.isSubmit == false){
             RRCToast.show("请先保存信息")
             return;
         }
+
+        this._pressSave()
 
         HttpPost(URLS.SubmitProject, {"id":this.bean.id},"正在提交..").then((response)=>{
             // RRCToast.show(response.msg);
@@ -244,7 +254,7 @@ class ProjectAdd  extends React.Component {
     }
 
     _pressSave =()=> {
-        //设置牵头单位和配合单位数据
+        //设置牵头单位和责任单位数据
         this.dutyUnitUser.reportTimeData = this.dutyUnitUser.reportTimeList.filter(item => item.reportMode == this.dutyUnitUser.reportMode )
 
         for(let i in this.dutyUnitList){
@@ -268,27 +278,27 @@ class ProjectAdd  extends React.Component {
 
         var files = []
 
-        if(this.fileList &&  this.fileList.length>0){
-            var formData = new FormData();
-            for(let i  in this.fileList){
-                let file = {uri:this.fileList[i].uri,type:'multipart/form-data',name:this.fileList[i].fileName};
-                formData.append('files',file);
-            }
-
-             HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
-                if(response.result == 1){
-                    files = response.data
-                    this.uploadProjectInfo(files)
-                 }else{
-                    alert(response.msg);
-                }
-
-            }).catch((error)=>{
-                RRCToast.show(err);
-            });
-        }else{
-            this.uploadProjectInfo([])
-        }
+        // if(this.fileList &&  this.fileList.length>0){
+        //     var formData = new FormData();
+        //     for(let i  in this.fileList){
+        //         let file = {uri:this.fileList[i].uri,type:'multipart/form-data',name:this.fileList[i].fileName};
+        //         formData.append('files',file);
+        //     }
+        //
+        //      HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
+        //         if(response.result == 1){
+        //             files = response.data
+        //             this.uploadProjectInfo(files)
+        //          }else{
+        //             alert(response.msg);
+        //         }
+        //
+        //     }).catch((error)=>{
+        //         RRCToast.show(err);
+        //     });
+        // }else{
+        //     this.uploadProjectInfo([])
+        // }
 
     };
 
@@ -508,7 +518,8 @@ class ProjectAdd  extends React.Component {
         }
 
         let isEditable = true
-        if(this.bean.id!=null ){
+        //审批状态：1-未提交，2-待审批，3-待审批(4级提交，3级待审)，4-审核通过，5-驳回
+        if(this.bean.id!=null && this.bean.approvalState!=1 && this.bean.approvalState!=5){
             isEditable  = false
         }
 
@@ -564,7 +575,8 @@ class ProjectAdd  extends React.Component {
 
     renderResponseDepartmentData=()=>{
         let isEditable = true
-        if(this.bean.id!=null ){
+        //approvalState，4-审核通过;;superviseState:督查状态：1-待审批，2-正常督查，3-待承办单位接收，4-暂停督查，5-停止督查，6-督查转办-待接收，7-已撤回，8-审核驳回
+        if(this.bean.id!=null && this.bean.approvalState==4 && (this.bean.superviseState==2||this.bean.superviseState==4||this.bean.superviseState==5)){
             isEditable  = false
         }
 
@@ -577,7 +589,7 @@ class ProjectAdd  extends React.Component {
         }
 
         if(this.dutyUnitUser.unitId !=''){
-            this.dutyUnitUser.unitName = this.deptUserDic[this.dutyUnitUser.unitId]
+            this.dutyUnitUser.unitName = this.deptAllUserDic[this.dutyUnitUser.unitId]
         }
 
 
@@ -585,14 +597,36 @@ class ProjectAdd  extends React.Component {
 
             <View style={styles.edit}>
 
-                <TextSelectWidget title='牵头单位：' placehodler='请选择'  value = { this.deptUserDic[this.dutyUnitUser.unitId] }
+                <TextSelectWidget title='牵头单位：' placehodler='请选择'  value = { this.deptAllUserDic[this.dutyUnitUser.unitId] }
                                   onPress={()=>{
                                       if(isEditable){
+
+                                          //去掉已经选择的
+                                          let ids = []
+                                          for(let i in this.dutyUnitList){
+                                              let unit = this.dutyUnitList[i]
+                                              ids.push(unit.unitId)
+                                          }
+
+                                          if(this.dutyUnitUser.unitId != ''){
+                                              ids.push(this.dutyUnitUser.unitId)
+                                          }
+
+                                          this.deptUserDic =  JSON.parse(JSON.stringify(this.deptAllUserDic));
+
+                                          for(let j in this.deptUserDic){
+                                              if(ids.indexOf(j)>=0){
+                                                  delete this.deptUserDic[j]
+                                              }
+                                          }
+
+                                          console.log(JSON.stringify(this.deptUserDic))
+
                                           this.showPicker(this.deptUserDic,'unitId',2,this.dutyUnitUser)
                                       }
                                   }}/>
 
-                { (this.bean.id !=null && this.bean.id != "")? this.renderProgress(this.dutyUnitUser) :null}
+                { (this.bean.id !=null && this.bean.id != "")? this.renderProgress(this.dutyUnitUser,!isEditable) :null}
 
                 <TextSelectWidget title='汇报模式：' placehodler=''  value = { DataDictionary.ReportModes[this.dutyUnitUser.reportMode] }
                                   onPress={()=>{
@@ -605,7 +639,7 @@ class ProjectAdd  extends React.Component {
                    this.dutyUnitUser.reportMode === 1 ? this.renderPeroidNode(this.dutyUnitUser,isEditable):this.renderFixTimeNode(this.dutyUnitUser,isEditable)
                 }
 
-                {isEditable && <Button title="添加配合单位" onPress={ ()=>{
+                {isEditable && <Button title="添加责任单位" onPress={ ()=>{
                     let unit = new this.dutyUnit()
                     unit.unitType = 2
                     this.dutyUnitList.push(unit)
@@ -621,22 +655,28 @@ class ProjectAdd  extends React.Component {
         </KeyboardAwareScrollView>
     }
 
-    renderProgress(unit){
+    renderProgress(unit,isEditable){
         return (<View>
             <TextSelectWidget title='进展情况：' placehodler='请选择'  value = { DataDictionary.ProgressTypes[unit.progress] }
-                                 onPress={()=>{this.showPicker(DataDictionary.ProgressTypes,'progress',2,unit)
+                                 onPress={()=>{
+                                     if(isEditable) {
+                                         this.showPicker(DataDictionary.ProgressTypes, 'progress', 2, unit)
+                                     }
                                  }}/>
 
             <TextSelectWidget title='督查状态：' placehodler='请选择'  value = { DataDictionary.SuperViseStates[unit.superviseState] }
-                                onPress={()=>{this.showPicker(DataDictionary.SuperViseStates,'superviseState',2,unit)
+                                onPress={()=>{
+                                    if(isEditable) {
+                                        this.showPicker(DataDictionary.SuperViseStates, 'superviseState', 2, unit)
+                                    }
                                 }}/>
         </View>);
     }
 
-    //配合单位
+    //责任单位
     renderOrgNode(unit,isEditable){
         if(unit.unitId !=''){
-            unit.unitName = this.deptUserDic[unit.unitId]
+            unit.unitName = this.deptAllUserDic[unit.unitId]
         }
 
         return (
@@ -645,11 +685,32 @@ class ProjectAdd  extends React.Component {
 
                 <View style={{height: 8, backgroundColor: '#f5f5f5'}}/>
 
-                <TextSelectWidget title='配合单位：' placehodler='请选择'  value = { this.deptUserDic[unit.unitId]  }
+                <TextSelectWidget title='责任单位：' placehodler='请选择'  value = { this.deptAllUserDic[unit.unitId]  }
                                   onPress={()=>{
                                       if(isEditable){
-                                          this.showPicker(this.deptUserDic,'unitId',2,unit)
 
+                                          //去掉已经选择的
+                                          let ids = []
+                                          for(let i in this.dutyUnitList){
+                                              let unit = this.dutyUnitList[i]
+                                              ids.push(unit.unitId)
+                                          }
+
+                                          if(this.dutyUnitUser.unitId != ''){
+                                              ids.push(this.dutyUnitUser.unitId)
+                                          }
+
+                                          this.deptUserDic =  JSON.parse(JSON.stringify(this.deptAllUserDic));
+
+                                          for(let j in this.deptUserDic){
+                                              if(ids.indexOf(j)>=0){
+                                                  delete this.deptUserDic[j]
+                                              }
+                                          }
+
+                                          console.log(JSON.stringify(this.deptUserDic))
+
+                                          this.showPicker(this.deptUserDic,'unitId',2,unit)
                                       }
                                   }}/>
 
@@ -852,7 +913,7 @@ var styles = StyleSheet.create({
     button:{
         margin:8*unitWidth,
         // alignItems:'flex-end',
-        width:(screenWidth-8)/2,
+        width:(screenWidth-10)/2,
     },
 
     buttonText:{

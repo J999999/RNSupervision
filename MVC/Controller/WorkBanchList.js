@@ -120,6 +120,7 @@ export default class WorkBanchList extends React.Component {
                     break;
                 case 4://主体责任-工作审核
                     navigation.navigate('ApprovalWorkList',{
+                        'approveStates':[1]
                     });
                     break;
                 case 6://效能问责-督查约谈：查询条件“状态”默认“待约谈”

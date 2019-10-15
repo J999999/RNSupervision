@@ -36,10 +36,10 @@ class WorkReportSummary extends Component {
         this.type = '' ,//回复类型
         this.state = {
             summaryData:null,//汇总
-            opinionInternalData:null,//督察局
+            opinionInternalData:null,//督查局
             opinionData:null, //领导批示
             unitData:null, //牵头
-            unitAssistData:null,//配合
+            unitAssistData:null,//责任
             switchTab:false,
             show:false,
         }
@@ -363,7 +363,7 @@ class WorkReportSummary extends Component {
     }
 
     /**
-     * 配合单位汇报信息
+     * 责任单位汇报信息
      */
     getUnitAssistInfo(ids) {
 
@@ -479,10 +479,10 @@ class WorkReportSummary extends Component {
 
         this.setState({
             summaryData:null,//汇总
-            opinionInternalData:null,//督察局
+            opinionInternalData:null,//督查局
             opinionData:null, //领导批示
             unitData:null, //牵头
-            unitAssistData:null,//配合
+            unitAssistData:null,//责任
         })
     }
 
@@ -500,9 +500,9 @@ class WorkReportSummary extends Component {
                 <View style={{flexDirection: 'row'}}>
                     {this.renderTabItem("1", '汇总')}
                     {this.renderTabItem("2", '领导批示')}
-                    {this.renderTabItem("3", '督察局')}
+                    {this.renderTabItem("3", '督查局')}
                     {this.renderTabItem("4", '牵头单位')}
-                    {this.renderTabItem("5", '配合单位')}
+                    {this.renderTabItem("5", '责任单位')}
                 </View>
 
                 <View style={{height: 10*unitWidth, backgroundColor: '#f5f5f5'}}/>

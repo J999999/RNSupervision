@@ -56,6 +56,12 @@ export default class ApprovalWorkList extends React.Component{
     _getListData = (refresh) => {
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
+
+        let states = this.props.navigation.getParam('approveStates')
+        if(states!=undefined){
+            search['approveStates'] = states ;
+        }
+
         HttpPost(URLS.QueryListByApprovalWork,
             search).then((response)=>{
             RRCToast.show(response.msg);

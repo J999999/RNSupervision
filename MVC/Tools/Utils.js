@@ -6,6 +6,7 @@ import {FILE_HOST} from './InterfaceApi';
 import {RRCLoading, RRCToast} from 'react-native-overlayer/src';
 
 export const sum = arr => arr.reduce((acc, n) => acc + n, 0);
+export const UploadFileDir =  Platform.OS === 'android'? RNFetchBlob.fs.dirs.SDCardDir: RNFetchBlob.fs.dirs.DocumentDir
 export const FileDir =  Platform.OS === 'android'? RNFetchBlob.fs.dirs.SDCardApplicationDir: RNFetchBlob.fs.dirs.DocumentDir
 
 //下载

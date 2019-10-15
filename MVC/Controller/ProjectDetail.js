@@ -133,10 +133,10 @@ class ProjectDetail extends Component {
 
         return <ScrollView style={styles.main}>
             <View style={styles.view}>
-                <Text style={styles.titleInfo}>项目名称：{this.bean.projectName}</Text>
+                <Text style={styles.titleInfo}>批示事项：{this.bean.projectName}</Text>
             </View>
             <View style={styles.view}>
-                <Text style={styles.titleInfo}>项目内容：{this.bean.projectInfo}</Text>
+                <Text style={styles.titleInfo}>批示内容：{this.bean.projectInfo}</Text>
             </View>
             <View style={styles.view}>
                 <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
@@ -144,16 +144,17 @@ class ProjectDetail extends Component {
             </View>
             <View style={styles.view}>
                 <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
-                <Text style={styles.titleInfo}>新开工/续建：{this.bean.projectState&&this.bean.projectState==1 ? '新开工': '续建'}</Text>
+                <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
+                {/*<Text style={styles.titleInfo}>新开工/续建：{this.bean.projectState&&this.bean.projectState==1 ? '新开工': '续建'}</Text>*/}
             </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>
-                <Text style={styles.titleInfo}>督查状态：{DataDictionary.SuperViseStates[this.bean.superviseState]}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>总投资：{this.bean.totalCost}</Text>
-                <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>
-            </View>
+            {/*<View style={styles.view}>*/}
+            {/*    <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>*/}
+            {/*    <Text style={styles.titleInfo}>督查状态：{DataDictionary.SuperViseStates[this.bean.superviseState]}</Text>*/}
+            {/*</View>*/}
+            {/*<View style={styles.view}>*/}
+            {/*    <Text style={styles.titleInfo}>总投资：{this.bean.totalCost}</Text>*/}
+            {/*    <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>*/}
+            {/*</View>*/}
             <View style={{height: 10*unitWidth, backgroundColor: '#f5f5f5'}}/>
             {fileViews}
             {
@@ -192,7 +193,7 @@ class ProjectDetail extends Component {
 
             contentview.push(<View  style={styles.main}>
                 <View style={styles.view}>
-                    <Text style={styles.titleInfo}>{unit.unitType===1?'牵头':'配合'}单位：{unit.unitName}</Text>
+                    <Text style={styles.titleInfo}>{unit.unitType===1?'牵头':'责任'}单位：{unit.unitName}</Text>
                     <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[unit.progress]}</Text>
                 </View>
                 <View style={styles.view}>
@@ -341,9 +342,15 @@ class ProjectDetail extends Component {
                                                 }
                                             });
                                         }}>
-            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>修改</Text>
+            <Text style={{color: '#fff', marginRight: 10*unitWidth}}>
+                {navigation.state.params.bean.approvalState==1||
+                (navigation.state.params.bean.approvalState==4&&(navigation.state.params.bean.superviseState==2||navigation.state.params.bean.superviseState==4||navigation.state.params.bean.superviseState==5))||
+                 navigation.state.params.bean.approvalState==5
+                 ? '修改':''
+                }</Text>
         </TouchableOpacity>)
     });
+    //审批状态：1-未提交，2-待审批，3-待审批(4级提交，3级待审)，4-审核通过，5-驳回，32-待审批（3级审批，2级待审），31-待审批（2级审批，1级待审）
 
     render(){
         const  {params} = this.props.navigation.state;

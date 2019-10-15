@@ -276,7 +276,11 @@ class FlatListItem extends React.PureComponent {
                         images.push(
                             <TouchableOpacity
                                 onPress={()=>{
-                                    navigation.navigate('NoticeAdd',{bean:this.props.detail})
+                                    navigation.navigate('NoticeAdd',{bean:this.props.detail,
+                                        callback:function(){
+                                            context._renderRefresh()
+                                        }
+                                    })
                                 }}  >
                                 <Image style={styles.image} source={require("../Images/icon_edit.png") }  />
                             </TouchableOpacity> )
@@ -373,11 +377,11 @@ var styles = StyleSheet.create({
             position: 'absolute',
             right: 12*unitWidth,
             top: 20*unitWidth,
-            width: 40*unitWidth,
-            height: 40*unitWidth,
+            width: 34*unitWidth,
+            height: 34*unitWidth,
         },
         image : {
-            marginBottom:6*unitWidth,
+            marginBottom:4*unitWidth,
             width: 28*unitWidth,
             height: 28*unitWidth,
         },

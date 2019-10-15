@@ -30,17 +30,17 @@ export default class StatisticsCharts extends React.Component {
             '88':URLS.StatisticsProject,//重点项目统计
             '89':URLS.StatisticsProject,//决策部署统计
             '90':URLS.StatisticsProject,//领导批示统计
-            '91':URLS.StatisticsProject,//两代表一委员”建议（议案）、提案统计
+            '91':URLS.StatisticsProject,//建议提案、提案统计
             '92':URLS.StatisticsProject,//政务督查统计
             '93':URLS.StatisticsProject,//民生实事统计
             '94':URLS.StatisticsProject,//其他工作统计
         }
-        //事项分类：1-重点项目，2-领导批示，3-决策部署，4-政务督查，5-民生实事，6-两代表一委员建议（议案）、提案，7-其他工作
+        //事项分类：1-重点项目，2-领导批示，3-决策部署，4-政务督查，5-民生实事，6-建议提案、提案，7-其他工作
         this.projectType={
             '88':1,//重点项目统计
             '89':3,//决策部署统计
             '90':2,//领导批示统计
-            '91':6,//两代表一委员”建议（议案）、提案统计
+            '91':6,//建议提案、提案统计
             '92':4,//政务督查统计
             '93':5,//民生实事统计
             '94':7,//其他工作统计

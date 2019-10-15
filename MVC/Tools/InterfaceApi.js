@@ -87,7 +87,7 @@ const URLS = {
     ProjectDelete: HOST + '/projectInfo/deleteProject',
     SysLog: HOST + '/projectInfo/getSystemLog', //立项交办，系统记录
     QueryApproval:HOST + '/projectApproval/queryLogList',//查询审批流程
-    GetParamDept:HOST + '/admin/dept/getParamDept' ,//根据条件获取一级部门 ,查牵头单位或配合单位
+    GetParamDept:HOST + '/admin/dept/getParamDept' ,//根据条件获取一级部门 ,查牵头单位或责任单位
 
 
     ProjectApprovalList:HOST + '/projectApproval/queryList' ,// 意见审批查询列表

@@ -14,7 +14,7 @@ export default class Login extends React.Component {
 
     /**
      *
-     dcjz		123456	督察局局长   内部一级
+     dcjz		123456	督查局局长   内部一级
      dcfjza		123456	督查局副局长  内部二级
      dcfjzb		123456	督查局副局长
      dcdb1		123456	督查一室科长  内部三级
@@ -37,10 +37,10 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            userName: '',
-            password: '',
-            // userName: 'dcdb1',
-            // password: '123456',
+            // userName: '',
+            // password: '',
+            userName: 'dcdb1',
+            password: '123456',
             // userName: 'dcfjza',
             // password: '12345678',
             // userName: 'dcfjzb',
@@ -51,6 +51,8 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'wbthree',
             // password: '123456',
+            // userName: 'wbthree2',
+            // password: 'qaz123',
             // userName: 'wbfive2',
             // password: '123456',
             // userName: 'xzsj',
@@ -213,8 +215,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: unitHeight * 200,
         width: unitWidth * 280,
-        height :unitHeight * 50,
-        padding:4*unitWidth,
+        height :unitHeight * 60,
+        padding:6*unitWidth,
         borderTopRightRadius: unitWidth * 5,
         borderTopLeftRadius: unitWidth * 5,
         borderBottomWidth: unitHeight,
@@ -226,8 +228,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: unitHeight * 200,
         width: unitWidth * 280,
-        height :unitHeight * 50,
-        padding:4*unitWidth,
+        height :unitHeight * 60,
+        padding:6*unitWidth,
         borderBottomLeftRadius: unitWidth * 5,
         borderBottomRightRadius: unitWidth * 5,
     },
@@ -237,12 +239,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         top: unitHeight * 222,
         width: unitWidth * 280,
-        height :unitHeight * 54,
+        height :unitHeight * 60,
         borderRadius: unitWidth * 10,
     },
     loginText: {
         color: '#fff',
-        fontSize: unitWidth * 17,
+        fontSize: unitWidth * 18,
         fontWeight: 'bold',
     },
     forget:{
@@ -255,9 +257,11 @@ const styles = StyleSheet.create({
     },
     TInput: {
         paddingVertical: 0,
+        marginLeft:4*unitWidth,
         width: unitWidth * 200,
         height: unitHeight * 30,
         left: unitWidth * 5,
+        fontSize:unitWidth * 16,
         color: '#022',
     },
 });

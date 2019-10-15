@@ -50,7 +50,7 @@ export default class ProjectList extends React.Component {
             return ;
         }
 
-        let data = {'pageNo':this.pageNo,'pageSize':this.pageSize}
+        let data = {'pageNo':this.pageNo,'pageSize':this.pageSize,'projectTypes':'2'}
 
         if(navigation.state.params.superviseStates != undefined){
             data['superviseStates'] = navigation.state.params.superviseStates
@@ -135,17 +135,17 @@ export default class ProjectList extends React.Component {
                 <PopSearchview dataSource={[
                     {'name':'名称内容', 'type':2, 'postKeyName':'queryStr'},
                     {'name':'编辑人员', 'type':2, 'postKeyName':'creatorName'},
-                    {'name':'事项分类', 'type':3, 'postKeyName':'projectTypes', 'dataSource':
-                            [
-                                {'name': '重点项目', 'id': '1'},
-                                {'name': '领导批示', 'id': '2'},
-                                {'name': '决策部署', 'id': '3'},
-                                {'name': '政务督查', 'id': '4'},
-                                {'name': '民生实事', 'id': '5'},
-                                {'name': '两代表一委员建议（议案）', 'id': '6'},
-                                {'name': '其他工作', 'id': '7'},
-                            ]
-                    },
+                    // {'name':'事项分类', 'type':3, 'postKeyName':'projectTypes', 'dataSource':
+                    //         [
+                    //             {'name': '重点项目', 'id': '1'},
+                    //             {'name': '领导批示', 'id': '2'},
+                    //             {'name': '决策部署', 'id': '3'},
+                    //             {'name': '政务督查', 'id': '4'},
+                    //             {'name': '民生实事', 'id': '5'},
+                    //             {'name': '建议提案', 'id': '6'},
+                    //             {'name': '其他工作', 'id': '7'},
+                    //         ]
+                    // },
                     {'name':'工作属性', 'type':3, 'postKeyName':'workAttrs', 'dataSource':
                             [
                                 {'name': '常规', 'id': '1'},

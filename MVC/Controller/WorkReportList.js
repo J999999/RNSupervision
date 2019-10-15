@@ -126,7 +126,7 @@ export default class WorkReportList extends React.Component{
                                 {'name': '决策部署', 'id': '3'},
                                 {'name': '政务督查', 'id': '4'},
                                 {'name': '民生实事', 'id': '5'},
-                                {'name': '两代表一委员建议（议案）', 'id': '6'},
+                                {'name': '建议提案', 'id': '6'},
                                 {'name': '其他工作', 'id': '7'},
                             ]
                     },

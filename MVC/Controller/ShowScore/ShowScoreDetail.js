@@ -180,192 +180,196 @@ export default class ShowScoreDetail extends React.Component{
                     }}>
                     {data.tableName}
                 </Text>
-                <View style={{marginTop: 5*unitWidth, marginLeft: 5*unitWidth, height: 607*unitHeight}}>
-                    <ScrollView contentContainerStyle={{width: 9999*unitWidth}}>
-                        <View style={{flexDirection: 'row'}}>
-                            <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
-                                <Text>类别</Text>
-                            </View>
-                            <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
-                                <Text>单位</Text>
-                            </View>
-                            <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 50*unitWidth}]}>
-                                <Text>排名</Text>
-                            </View>
-                            <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 60*unitWidth}]}>
-                                <Text>总成绩</Text>
+                <View style={{flex:1,marginTop: 5*unitWidth}}>
+                    <ScrollView style={{flex:1}}   horizontal={true}  contentContainerStyle={{width:9999*unitWidth}} >
+                        <ScrollView style={{flex:1}} >
+                            <View style={{flex:1}}>
+                            <View style={{flexDirection: 'row'}}>
+                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
+                                    <Text>类别</Text>
+                                </View>
+                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
+                                    <Text>单位</Text>
+                                </View>
+                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 50*unitWidth}]}>
+                                    <Text>排名</Text>
+                                </View>
+                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 60*unitWidth}]}>
+                                    <Text>总成绩</Text>
+                                </View>
+                                {
+                                    this.state.KHTypeList.map((i)=>{
+                                        return (
+                                            <View>
+                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                    width: 150*i.data.length*unitWidth+110*unitWidth}]}>
+                                                    <Text>{i.title}</Text>
+                                                </View>
+                                                <View style={{flexDirection: 'row'}}>
+                                                    {
+                                                        i.data.map((j)=>{
+                                                            return (
+                                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                                    width: 150*unitWidth}]}>
+                                                                    <Text>{j}</Text>
+                                                                </View>
+                                                            )
+                                                        })
+                                                    }
+                                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                        width: 60*unitWidth}]}>
+                                                        <Text>小计</Text>
+                                                    </View>
+                                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                        width: 50*unitWidth}]}>
+                                                        <Text>排名</Text>
+                                                    </View>
+                                                </View>
+
+                                            </View>
+                                        )
+                                    })
+                                }
+                                <View>
+                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4', width: 150*this.state.scoreList.length*unitWidth}]}>
+                                        <Text>加分事项</Text>
+                                    </View>
+                                    <View style={{flexDirection: 'row'}}>
+                                        {
+                                            this.state.scoreList.map((j)=>{
+                                                return (
+                                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4', width: 150*unitWidth}]}>
+                                                        <Text>{j}</Text>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                </View>
+
                             </View>
                             {
-                                this.state.KHTypeList.map((i)=>{
+                                this.state.typeList.map((i)=>{
                                     return (
                                         <View>
-                                            <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
-                                                width: 150*i.data.length*unitWidth+110*unitWidth}]}>
-                                                <Text>{i.title}</Text>
-                                            </View>
                                             <View style={{flexDirection: 'row'}}>
-                                                {
-                                                    i.data.map((j)=>{
-                                                        return (
-                                                            <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
-                                                                width: 150*unitWidth}]}>
-                                                                <Text>{j}</Text>
-                                                            </View>
-                                                        )
-                                                    })
-                                                }
-                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
-                                                    width: 60*unitWidth}]}>
-                                                    <Text>小计</Text>
+                                                <View style={[styles.itemView, {height: i.data.length * 25*unitWidth, width: 180*unitWidth}]}>
+                                                    <Text>{i.title}</Text>
                                                 </View>
-                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
-                                                    width: 50*unitWidth}]}>
-                                                    <Text>排名</Text>
+                                                <View>
+                                                    {
+                                                        i.data.map((j)=>{
+                                                            return (
+                                                                <View style={{flexDirection: 'row'}}>
+                                                                    <View style={[styles.itemView, {height: 25*unitWidth, width: 180*unitWidth}]}>
+                                                                        <Text>{j.deptName}</Text>
+                                                                    </View>
+                                                                    <View style={[styles.itemView, {height: 25*unitWidth, width: 50*unitWidth}]}>
+                                                                        <Text>{j.rank}</Text>
+                                                                    </View>
+                                                                    <View style={[styles.itemView, {height: 25*unitWidth, width: 60*unitWidth}]}>
+                                                                        <Text>{j.score}</Text>
+                                                                    </View>
+                                                                    {
+                                                                        j.deptAssessTypeScoreList.map((k)=>{
+                                                                            return (
+                                                                                <View style={{flexDirection: 'row'}}>
+                                                                                    {
+                                                                                        this.state.KHTypeList.map((l)=>{
+
+                                                                                            if (l.title === k.assessTypeName) {
+                                                                                                if (l.data.length === k.deptIndicatorScoreList.length) {
+                                                                                                    return (
+                                                                                                        <View style={{flexDirection: 'row'}}>
+                                                                                                            {
+                                                                                                                l.data.map((m)=>{
+                                                                                                                    return (
+                                                                                                                        <View style={{flexDirection: 'row'}}>
+                                                                                                                            {
+                                                                                                                                k.deptIndicatorScoreList.map((n)=>{
+                                                                                                                                    if (n.indicatorName === m) {
+                                                                                                                                        return (
+                                                                                                                                            <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
+                                                                                                                                                <Text>{n.score}</Text>
+                                                                                                                                            </View>
+                                                                                                                                        )
+                                                                                                                                    }
+                                                                                                                                })
+                                                                                                                            }
+                                                                                                                        </View>
+                                                                                                                    )
+
+                                                                                                                })
+                                                                                                            }
+                                                                                                        </View>
+                                                                                                    )
+                                                                                                } else {
+                                                                                                    return (
+                                                                                                        <View style={{flexDirection: 'row'}}>
+                                                                                                            {
+                                                                                                                l.data.map((m)=>{
+                                                                                                                    return (
+                                                                                                                        <View style={{flexDirection: 'row'}}>
+                                                                                                                            {
+                                                                                                                                k.deptIndicatorScoreList.map((n)=>{
+                                                                                                                                    if (n.indicatorName === m) {
+                                                                                                                                        return (
+                                                                                                                                            <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
+                                                                                                                                                <Text>{n.score}</Text>
+                                                                                                                                            </View>
+                                                                                                                                        )
+                                                                                                                                    } else {
+                                                                                                                                        return (
+                                                                                                                                            <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
+                                                                                                                                                <Text>{'-'}</Text>
+                                                                                                                                            </View>
+                                                                                                                                        )
+                                                                                                                                    }
+                                                                                                                                })
+                                                                                                                            }
+                                                                                                                        </View>
+                                                                                                                    )
+
+                                                                                                                })
+                                                                                                            }
+                                                                                                        </View>
+                                                                                                    )
+                                                                                                }
+                                                                                            }
+                                                                                        })
+                                                                                    }
+                                                                                    <View style={[styles.itemView, {height: 25*unitWidth, width: 60*unitWidth}]}>
+                                                                                        <Text>{k.score}</Text>
+                                                                                    </View>
+                                                                                    <View style={[styles.itemView, {height: 25*unitWidth, width: 50*unitWidth}]}>
+                                                                                        <Text>{k.rank}</Text>
+                                                                                    </View>
+                                                                                </View>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                    {
+                                                                        j.deptPlusesScoreList.map((k)=>{
+                                                                            return (
+                                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
+                                                                                    <Text>{k.score ? k.score : '-'}</Text>
+                                                                                </View>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </View>
+                                                            )
+                                                        })
+                                                    }
                                                 </View>
                                             </View>
-
                                         </View>
                                     )
                                 })
                             }
-                            <View>
-                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4', width: 150*this.state.scoreList.length*unitWidth}]}>
-                                    <Text>加分事项</Text>
-                                </View>
-                                <View style={{flexDirection: 'row'}}>
-                                    {
-                                        this.state.scoreList.map((j)=>{
-                                            return (
-                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4', width: 150*unitWidth}]}>
-                                                    <Text>{j}</Text>
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                </View>
-
                             </View>
-
-                        </View>
-                        {
-                            this.state.typeList.map((i)=>{
-                                return (
-                                    <View>
-                                        <View style={{flexDirection: 'row'}}>
-                                            <View style={[styles.itemView, {height: i.data.length * 25*unitWidth, width: 180*unitWidth}]}>
-                                                <Text>{i.title}</Text>
-                                            </View>
-                                            <View>
-                                                {
-                                                    i.data.map((j)=>{
-                                                        return (
-                                                            <View style={{flexDirection: 'row'}}>
-                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 180*unitWidth}]}>
-                                                                    <Text>{j.deptName}</Text>
-                                                                </View>
-                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 50*unitWidth}]}>
-                                                                    <Text>{j.rank}</Text>
-                                                                </View>
-                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 60*unitWidth}]}>
-                                                                    <Text>{j.score}</Text>
-                                                                </View>
-                                                                {
-                                                                    j.deptAssessTypeScoreList.map((k)=>{
-                                                                        return (
-                                                                            <View style={{flexDirection: 'row'}}>
-                                                                                {
-                                                                                    this.state.KHTypeList.map((l)=>{
-
-                                                                                        if (l.title === k.assessTypeName) {
-                                                                                            if (l.data.length === k.deptIndicatorScoreList.length) {
-                                                                                                return (
-                                                                                                    <View style={{flexDirection: 'row'}}>
-                                                                                                        {
-                                                                                                            l.data.map((m)=>{
-                                                                                                                return (
-                                                                                                                    <View style={{flexDirection: 'row'}}>
-                                                                                                                        {
-                                                                                                                            k.deptIndicatorScoreList.map((n)=>{
-                                                                                                                                if (n.indicatorName === m) {
-                                                                                                                                    return (
-                                                                                                                                        <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
-                                                                                                                                            <Text>{n.score}</Text>
-                                                                                                                                        </View>
-                                                                                                                                    )
-                                                                                                                                }
-                                                                                                                            })
-                                                                                                                        }
-                                                                                                                    </View>
-                                                                                                                )
-
-                                                                                                            })
-                                                                                                        }
-                                                                                                    </View>
-                                                                                                )
-                                                                                            } else {
-                                                                                                return (
-                                                                                                    <View style={{flexDirection: 'row'}}>
-                                                                                                        {
-                                                                                                            l.data.map((m)=>{
-                                                                                                                return (
-                                                                                                                    <View style={{flexDirection: 'row'}}>
-                                                                                                                        {
-                                                                                                                            k.deptIndicatorScoreList.map((n)=>{
-                                                                                                                                if (n.indicatorName === m) {
-                                                                                                                                    return (
-                                                                                                                                        <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
-                                                                                                                                            <Text>{n.score}</Text>
-                                                                                                                                        </View>
-                                                                                                                                    )
-                                                                                                                                } else {
-                                                                                                                                    return (
-                                                                                                                                        <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
-                                                                                                                                            <Text>{'-'}</Text>
-                                                                                                                                        </View>
-                                                                                                                                    )
-                                                                                                                                }
-                                                                                                                            })
-                                                                                                                        }
-                                                                                                                    </View>
-                                                                                                                )
-
-                                                                                                            })
-                                                                                                        }
-                                                                                                    </View>
-                                                                                                )
-                                                                                            }
-                                                                                        }
-                                                                                    })
-                                                                                }
-                                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 60*unitWidth}]}>
-                                                                                    <Text>{k.score}</Text>
-                                                                                </View>
-                                                                                <View style={[styles.itemView, {height: 25*unitWidth, width: 50*unitWidth}]}>
-                                                                                    <Text>{k.rank}</Text>
-                                                                                </View>
-                                                                            </View>
-                                                                        )
-                                                                    })
-                                                                }
-                                                                {
-                                                                    j.deptPlusesScoreList.map((k)=>{
-                                                                        return (
-                                                                            <View style={[styles.itemView, {height: 25*unitWidth, width: 150*unitWidth}]}>
-                                                                                <Text>{k.score ? k.score : '-'}</Text>
-                                                                            </View>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </View>
-                                                        )
-                                                    })
-                                                }
-                                            </View>
-                                        </View>
-                                    </View>
-                                )
-                            })
-                        }
+                        </ScrollView>
                     </ScrollView>
                 </View>
             </View>

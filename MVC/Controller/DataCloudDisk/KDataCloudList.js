@@ -9,6 +9,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import OpenFile from 'react-native-doc-viewer'
 import RNFileSelector from '../../View/RNFileSelector'
 import ImagePicker from 'react-native-image-crop-picker'
+import {FileDir, UploadFileDir} from '../../Tools/Utils';
 
 var drop = false;
 export default class KDataCloudList extends React.Component{
@@ -206,7 +207,7 @@ export default class KDataCloudList extends React.Component{
                     }
                     RNFileSelector.Show(
                         {
-                            path: RNFetchBlob.fs.dirs.DocumentDir,
+                            path: UploadFileDir,
                             filter: filter,
                             title: '选择文件',
                             closeMenu: true,

@@ -119,40 +119,213 @@ class WorkReportDetail extends Component {
                 fileViews.push(view)
             }
         }
-        return <ScrollView style={styles.main}>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>项目名称：{this.bean.projectName}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>项目内容：{this.bean.projectInfo}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
-                <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
-                <Text style={styles.titleInfo}>新开工/续建：{this.bean.projectState&&this.bean.projectState==1 ? '新开工': '续建'}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>
-                <Text style={styles.titleInfo}>督查状态：{DataDictionary.SuperViseStates[this.bean.superviseState]}</Text>
-            </View>
-            <View style={styles.view}>
-                <Text style={styles.titleInfo}>总投资：{this.bean.totalCost}</Text>
-                <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>
-            </View>
-            <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
-            {fileViews}
-            {
-                this.bean.yearlyPlanList!=null && <View style={styles.view}>
-                    <Text style={styles.titleInfo}>序号 </Text>
-                    <Text style={styles.titleInfo}>年度 </Text>
-                    <Text style={styles.titleInfo}>投资额 </Text>
-                </View>
-            }
-            {yearViews}
-        </ScrollView>
+        let mainView = []
+        //事项分类：1-重点项目，2-领导批示，3-决策部署，4-政务督查，5-民生实事，6-两代表一委员建议（议案）、提案，7-其他工作
+        switch (this.bean.projectType) {
+            case 1:
+                mainView = <ScrollView style={styles.main}>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>项目名称：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>项目内容：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
+                        <Text style={styles.titleInfo}>新开工/续建：{this.bean.projectState&&this.bean.projectState==1 ? '新开工': '续建'}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>
+                        <Text style={styles.titleInfo}>督查状态：{DataDictionary.SuperViseStates[this.bean.superviseState]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>总投资：{this.bean.totalCost}</Text>
+                        <Text style={styles.titleInfo}>起止年限：{this.bean.years}</Text>
+                    </View>
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+                    {
+                        this.bean.yearlyPlanList!=null && <View style={styles.view}>
+                            <Text style={styles.titleInfo}>序号 </Text>
+                            <Text style={styles.titleInfo}>年度 </Text>
+                            <Text style={styles.titleInfo}>投资额 </Text>
+                        </View>
+                    }
+                    {yearViews}
+                </ScrollView>
+                break;
+
+            case 2:
+
+                mainView = <ScrollView style={styles.main}>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>批示事项：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>批示内容：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>批示领导：{this.bean.assignLead}</Text>
+                        <Text style={styles.titleInfo}>批示日期：{this.bean.assignTime}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
+                        <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
+                    </View>
+                    {/*<View style={styles.view}>*/}
+                    {/*    <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>*/}
+                    {/*    <Text style={styles.titleInfo}>督查状态：{DataDictionary.SuperViseStates[this.bean.superviseState]}</Text>*/}
+                    {/*</View>*/}
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+                break;
+
+
+            case 3:
+                mainView = <ScrollView style={styles.main}>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>工作名称：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>工作内容：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>交办领导：{this.bean.assignLead}</Text>
+                        <Text style={styles.titleInfo}>交办单位：{this.bean.assignUnit}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>交办时间：{this.bean.assignTime}</Text>
+                        <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
+                    </View>
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+
+                break;
+
+            case 4 :
+                mainView = <ScrollView style={styles.main}>
+
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>重点工作：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>年度目标：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>交办时间：{this.bean.assignTime}</Text>
+                    </View>
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+                break;
+
+            //事项分类：1-重点项目，2-领导批示，3-决策部署，4-政务督查，5-民生实事，6-两代表一委员建议（议案）、提案，7-其他工作
+            case 5:
+                mainView = <ScrollView style={styles.main}>
+
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项名称：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>承担实事具体任务：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
+                        <Text style={styles.titleInfo}>交办时间：{this.bean.assignTime}</Text>
+                    </View>
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+                break;
+
+            case 6:
+                mainView = <ScrollView style={styles.main}>
+
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>编号：{ this.bean.projectCode}</Text>
+                        <Text style={styles.titleInfo}>代表(委员)：{ this.bean.deputy }</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>标题：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>内容：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
+                        <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
+                    </View>
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+                break;
+
+            case 7:
+
+                mainView = <ScrollView style={styles.main}>
+
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>事项分类：{DataDictionary.MatterTypes[this.bean.projectType]}</Text>
+                        <Text style={styles.titleInfo}>工作属性：{DataDictionary.WorkTypes[this.bean.workAttr]}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>标题：{this.bean.projectName}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>内容：{this.bean.projectInfo}</Text>
+                    </View>
+                    <View style={styles.view}>
+                        <Text style={styles.titleInfo}>交办时间：{this.bean.assignTime}</Text>
+                        <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
+                    </View>
+
+                    <View style={{borderBottomWidth: unitWidth , borderColor: '#F4F4F4', height:3*unitWidth}}/>
+                    {fileViews}
+
+                </ScrollView>
+
+                break;
+
+        }
+
+
+        return mainView
     }
 
     renderResponseDepartmentData=()=>{
@@ -182,7 +355,7 @@ class WorkReportDetail extends Component {
             contentview.push(
                 <View >
                     <View style={styles.view}>
-                        <Text style={styles.titleInfo}>{unit.unitType===1?'牵头':'配合'}单位：{unit.unitName}</Text>
+                        <Text style={styles.titleInfo}>{unit.unitType===1?'牵头':'责任'}单位：{unit.unitName}</Text>
                         <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[unit.progress]}</Text>
                     </View>
                     <View style={styles.view}>
