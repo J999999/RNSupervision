@@ -71,6 +71,8 @@ import ApprovalWorkList from './MVC/Controller/SubjectResponsibility/ApprovalWor
 import ApprovalWorkOptions from './MVC/Controller/SubjectResponsibility/ApprovalWorkOptions' //工作审核操作页面
 import KDataCloudList from './MVC/Controller/DataCloudDisk/KDataCloudList'
 import JDataCloudList from './MVC/Controller/DataCloudDisk/JDataCloudList'
+import WorkPracticable from './MVC/Controller/SubjectResponsibility/WorkPracticable'
+import PracticableLog from './MVC/Controller/SubjectResponsibility/PracticableLog'
 
 import CheckList from './MVC/View/CheckList'
 import NoticeList from './MVC/Controller/NoticeList';
@@ -156,6 +158,8 @@ const AppNavigator = createStackNavigator({
     PreviewDeptSetup: {screen: PreviewDeptSetup},
     ShowScoreList: {screen: ShowScoreList},
     ShowScoreDetail: {screen: ShowScoreDetail},
+    WorkPracticable: {screen: WorkPracticable},
+    PracticableLog: {screen: PracticableLog},
 
     InspectionreformList: {screen: InspectionreformList},
     InspectionreformDetail: {screen: InspectionreformDetail},

@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, FlatList, Text, StyleSheet} from 'react-native';
+import {View, FlatList, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import {unitWidth} from "../../Tools/ScreenAdaptation";
+import OpenFile from "react-native-doc-viewer";
 
 export default class DetailedListLuoShi extends React.Component{
     static navigationOptions = {
@@ -9,7 +10,7 @@ export default class DetailedListLuoShi extends React.Component{
     render(): React.ReactNode {
         const {navigation} = this.props;
         let modal = navigation.getParam('LS');
-
+        console.log(modal);
         return(
             <View style={{flex: 1}}>
                 <FlatList
@@ -47,8 +48,40 @@ export default class DetailedListLuoShi extends React.Component{
                       style={styles.textStyle}>{'进展情况: ' + item.progressContent}</Text>
                 <Text numberOfLines={0}
                       style={[styles.textStyle, {marginBottom: 5*unitWidth}]}>{'备注: ' + item.memo}</Text>
+                {
+                    item.fileDTOList ? item.fileDTOList.map((i)=>{
+                        return (
+                            <View style={[styles.textStyle, {flexDirection: 'row', marginBottom: 5*unitWidth}]}>
+                                <Text>附件:</Text>
+                                <TouchableOpacity activeOpacity={.5} onPress={this._clickAttAction.bind(this, i)}>
+                                    <Text style={{color: 'blue', marginLeft: 5*unitWidth}}>{i.name}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }) : null
+                }
             </View>
         )
+    };
+    _clickAttAction = (i) =>{
+        let urls = 'http://221.13.156.198:10008' + i.url;
+        if (Platform.OS === 'ios') {
+            OpenFile.openDoc([{
+                url: urls,
+                fileNameOptional: i.name
+            }], (error, url)=>{
+
+            })
+        }else {
+            let uriSuffix = i.url.substr(i.url.lastIndexOf(".")+1).toLowerCase();
+            OpenFile.openDoc([{
+                url: urls,
+                fileName: i.name,
+                fileType: uriSuffix,
+                cache: true,
+            }], (error, uri)=>{
+            })
+        }
     }
 }
 

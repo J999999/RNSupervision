@@ -128,7 +128,7 @@ export default class PAppraisalList extends React.Component{
                     keyExtractor={(item, index) => index.toString()}
                     removeClippedSubviews={false}
                     ItemSeparatorComponent={() =>
-                        <View style={{height: 1, backgroundColor: '#F4F4F4', marginLeft: 54*unitWidth}}/>}
+                        <View style={{height: 1, backgroundColor: '#F4F4F4'}}/>}
                 />
                 <View style={{position: 'absolute', right: 15*unitWidth, bottom: 50*unitWidth}}>
                     <TouchableOpacity activeOpacity={.5} onPress={()=>{this.popSearchview._show()}}>
@@ -188,11 +188,11 @@ export default class PAppraisalList extends React.Component{
                 <View style={styles.itemStyle}>
                     <View style={styles.itemLeftStyle}>
                         <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.swName}</Text>
-                        <Text>{item.indicatorName}</Text>
+                        <Text style={{marginTop: 5*unitHeight}}>{item.indicatorName}</Text>
                     </View>
                     <View style={styles.itemRightStyle}>
                         <Text style={{textAlign: 'right'}}>{recordState}</Text>
-                        <Text>{item.assignTime}</Text>
+                        <Text style={{marginTop: 5*unitHeight}}>{item.assignTime}</Text>
                     </View>
                     {
                         this.state.isChecks === true ?
@@ -254,7 +254,6 @@ export default class PAppraisalList extends React.Component{
 const styles = StyleSheet.create({
     itemStyle:{
         flexDirection: 'row',
-        height: 812 * unitHeight / 10,
         justifyContent: 'space-between',
     },
     itemLeftStyle:{
@@ -262,6 +261,7 @@ const styles = StyleSheet.create({
         marginTop: 10 * unitWidth,
         marginLeft: 10 * unitWidth,
         marginBottom: 10 * unitWidth,
+        width: '60%',
     },
     itemRightStyle:{
         justifyContent: 'space-between',

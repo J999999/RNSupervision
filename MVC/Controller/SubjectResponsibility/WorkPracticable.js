@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {screenWidth, unitWidth} from "../../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {HttpPost} from "../../Tools/JQFetch";
@@ -7,11 +7,10 @@ import URLS from "../../Tools/InterfaceApi";
 import TextInputWidget from "../../Widget/TextInputWidget";
 import TextInputMultWidget from "../../Widget/TextInputMultWidget";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import OpenFile from "react-native-doc-viewer";
 
 var dutyStr = '';
 var finishStr = '';
-export default class DetailedListDetail extends React.Component{
+export default class WorkPracticable extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: '清单详情',
         headerRight: (<TouchableOpacity activeOpacity={.5}
@@ -29,11 +28,11 @@ export default class DetailedListDetail extends React.Component{
         RRCAlert.alert('请选择', '', alertArr, (index)=>{
             switch (index) {
                 case 0:
-                    this.props.navigation.navigate('DetailedListLog', {id: id});
+                    this.props.navigation.navigate('PracticableLog', {id: id});
                     break;
                 case 1:
                     this.state.luoShiData.length > 0 ?
-                        this.props.navigation.navigate('DetailedListLuoShi', {id: id, LS: this.state.luoShiData}) : null;
+                        this.props.navigation.navigate('PracticableLuoShi', {id: id, LS: this.state.luoShiData}) : null;
                     break;
                 case 2:
                     break;
@@ -56,54 +55,65 @@ export default class DetailedListDetail extends React.Component{
         }
     }
     componentDidMount(): void {
+
         this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
         const {navigation} = this.props;
         let id = navigation.getParam('id');
-        HttpPost(URLS.GetSubjectDutyById, {id:id}, '正在查询...').then((response)=>{
+
+        HttpPost(URLS.GetDutyPracticableById, {id: id}, '正在查询').then((response)=>{
             RRCToast.show(response.msg);
-            if (response.result === 1){
-                let model = response['data'];
-                switch (model.dutyType) {//责任主体：1-领导班子，2-党组织书记，3-班子其他成员
-                    case 1:
-                        dutyStr = '领导班子';
-                        break;
-                    case 2:
-                        dutyStr = '党组织书记';
-                        break;
-                    case 3:
-                        dutyStr = '班子其他成员';
-                        break;
-                }
-                switch (model.progress) {
-                    case 1:
-                        finishStr = '完成';
-                        break;
-                    case 2:
-                        finishStr = '在办';
-                        break;
-                    case 3:
-                        finishStr = '未办';
-                        break;
-                }
-                this.setState({
-                    name: model.name,
-                    unit: model.unit,
-                    duty: model.duty,
-                    chargeWork: model.chargeWork,
-                    content: model.content,
-                    fileDTOList: model.fileDTOList,
-                    createTime: model.createTime,
-                    dutyType: model.dutyType,
+            if (response.result === 1) {
+                HttpPost(URLS.GetSubjectDutyById, {id:response.data.dutyInventoryId}, '正在查询...').then((response)=>{
+                    RRCToast.show(response.msg);
+                    if (response.result === 1){
+                        let model = response['data'];
+                        switch (model.dutyType) {//责任主体：1-领导班子，2-党组织书记，3-班子其他成员
+                            case 1:
+                                dutyStr = '领导班子';
+                                break;
+                            case 2:
+                                dutyStr = '党组织书记';
+                                break;
+                            case 3:
+                                dutyStr = '班子其他成员';
+                                break;
+                        }
+                        switch (model.progress) {
+                            case 1:
+                                finishStr = '完成';
+                                break;
+                            case 2:
+                                finishStr = '在办';
+                                break;
+                            case 3:
+                                finishStr = '未办';
+                                break;
+                        }
+                        this.setState({
+                            name: model.name,
+                            unit: model.unit,
+                            duty: model.duty,
+                            chargeWork: model.chargeWork,
+                            content: model.content,
+                            fileDTOList: model.fileDTOList,
+                            createTime: model.createTime,
+                            dutyType: model.dutyType,
+                        });
+                    }
+                }).catch((err)=>{
+                    RRCAlert.alert('服务器内部错误');
                 });
+                HttpPost(URLS.GetDutyByDutyInventoryId, {dutyInventoryId: response.data.dutyInventoryId}).then((response)=>{
+                    if (response.result === 1){
+                        this.setState({
+                            luoShiData: response['data'],
+                        })
+                    }
+                })
             }
         }).catch((err)=>{
-            RRCAlert.alert('服务器内部错误');
+            RRCAlert.alert('服务器内部错误')
         });
-        HttpPost(URLS.GetDutyByDutyInventoryId, {dutyInventoryId: id}).then((response)=>{
-            this.setState({
-                luoShiData: response['data'],
-            })
-        })
     }
     render(): React.ReactNode {
 
@@ -170,25 +180,7 @@ export default class DetailedListDetail extends React.Component{
         navigation.navigate('ApprovalWorkOptions', {id: id, approveType: type});
     };
     _pressDetail = (attachItem)=> {
-        if (Platform.OS === 'ios') {
-            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : attachItem.uri;
-            OpenFile.openDoc([{
-                url: attUrl,
-                fileNameOptional: '附件'
-            }], (error, url)=>{
-
-            })
-        }else {
-            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : 'file://' + attachItem.uri;
-            let uriSuffix = attUrl.substr(attUrl.lastIndexOf(".")+1).toLowerCase();
-            OpenFile.openDoc([{
-                url: attUrl,
-                fileName: '附件',
-                fileType: uriSuffix,
-                cache: true,
-            }], (error, uri)=>{
-            })
-        }
+        this.props.navigation.navigate('AttachDetail',{item : attachItem});
     };
 }
 const styles = StyleSheet.create({

@@ -14,7 +14,7 @@ export default class Login extends React.Component {
 
     /**
      *
-     dcjz		123456	督查局局长   内部一级
+     dcjz		123456	督察局局长   内部一级
      dcfjza		123456	督查局副局长  内部二级
      dcfjzb		123456	督查局副局长
      dcdb1		123456	督查一室科长  内部三级
@@ -39,8 +39,8 @@ export default class Login extends React.Component {
         this.state = {
             // userName: '',
             // password: '',
-            userName: 'dcdb1',
-            password: '123456',
+            // userName: 'dcdb1',
+            // password: '123456',
             // userName: 'dcfjza',
             // password: '12345678',
             // userName: 'dcfjzb',
@@ -49,11 +49,9 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'xzsz',
             // password: '123456',
-            // userName: 'wbthree',
-            // password: '123456',
-            // userName: 'wbthree2',
-            // password: 'qaz123',
-            // userName: 'wbfive2',
+            userName: 'wbthree',
+            password: '123456',
+            // userName: 'wbfive',
             // password: '123456',
             // userName: 'xzsj',
             // password: '12345678',

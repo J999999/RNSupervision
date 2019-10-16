@@ -79,11 +79,11 @@ export default class Function extends React.Component {
 
                           }}>
             <View>
-                <View style={{height: 44*unitHeight, flexDirection:'row', alignItems: 'center',padding:4}}>
+                <View style={{flexDirection:'row', alignItems: 'center',padding:10*unitWidth}}>
                     <Image source={
                         FunctionEnum.iconMap[rowItem.id]
                     }
-                           style={{width: 30*unitWidth, height: 30*unitWidth, marginLeft: 60*unitWidth,padding:4}}/>
+                           style={{width: 30*unitWidth, height: 30*unitWidth, marginLeft: 50*unitWidth}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>{rowItem.name}</Text>
                 </View>
                 <View style={{height: unitHeight, marginLeft: 100*unitWidth, backgroundColor:'#F4F4F4'}}/>
@@ -95,13 +95,13 @@ export default class Function extends React.Component {
         let sec = this.state.data[sectionId]
 
         return (
-            <View style={{height: 56*unitHeight, borderBottomWidth: unitHeight, flexDirection:'row',
+            <View style={{borderBottomWidth: unitHeight, flexDirection:'row',
                 alignItems: 'center', borderBottomColor: '#F4F4F4', justifyContent: 'space-between'}}>
-                <View style={{flexDirection: 'row', alignItems: 'center',padding:4}}>
+                <View style={{flexDirection: 'row', alignItems: 'center',padding:10*unitWidth}}>
                     <Image source={
                         FunctionEnum.iconMap[sec.id]?FunctionEnum.iconMap[sec.id] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
                     }
-                           style={{width: 35*unitWidth, height: 35*unitWidth, marginLeft: 20*unitWidth}}/>
+                           style={{width: 40*unitWidth, height: 40*unitWidth, marginLeft: 10*unitWidth}}/>
                     <Text style={{marginLeft: 15*unitWidth, fontSize: 17*unitWidth}}>{section}</Text>
                 </View>
                 <Image source={require('../Images/goRight.png')}

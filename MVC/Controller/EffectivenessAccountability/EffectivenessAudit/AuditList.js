@@ -13,7 +13,7 @@ var drop = false;
 
 export default class AuditList extends React.Component{
     static navigationOptions = ({navigation}) => ({
-        title: '效能审核',
+        title: '',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{navigation.state.params.rightOnPress()}}>
             <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{'编辑'}</Text>
@@ -219,7 +219,7 @@ export default class AuditList extends React.Component{
         } else {
             let arr = [];
             let idsArr = [];
-            arr = arr.concat(this.state.data);
+            arr = arr.concat(this.state.dataList);
             idsArr = idsArr.concat(this.state.ids);
             arr.map((i)=>{
                 if (i.id === item.id){
@@ -252,7 +252,7 @@ export default class AuditList extends React.Component{
             if (i.releaseTimeEnd)
                 search['approvalReportTimeEnd'] = i.releaseTimeEnd;
         });
-        this._onRefresh();
+        this._onHeaderRefresh();
     };
 }
 

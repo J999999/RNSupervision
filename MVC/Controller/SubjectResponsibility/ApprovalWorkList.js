@@ -171,28 +171,28 @@ export default class ApprovalWorkList extends React.Component{
         let hasButton = false;
         item.approveState === 1 ? hasButton = true : hasButton = false;
         switch (item.approveType) {
-            case 1:
+            case 1: //清单
                 this.props.navigation.navigate('DetailedListDetail', {
                     id: item.id,
                     hasButton: hasButton,
                     approveType: item.approveType,
                 });
                 break;
-            case 2:
-                this.props.navigation.navigate('PracticableDetail', {
+            case 2: //落实
+                this.props.navigation.navigate('WorkPracticable', {
                     id: item.id,
                     hasButton: hasButton,
                     approveType: item.approveType,
                 });
                 break;
-            case 3:
+            case 3: //巡查整改
                 this.props.navigation.navigate('InspectionreformDetail', {
                     id: item.id,
                     hasButton: hasButton,
                     approveType: item.approveType,
                 });
                 break;
-            case 4:
+            case 4: //经验交流
                 this.props.navigation.navigate('ExchangeexperienceDetail', {
                     id: item.id,
                     hasButton: hasButton,
@@ -224,7 +224,6 @@ export default class ApprovalWorkList extends React.Component{
 const styles = StyleSheet.create({
     itemStyle:{
         flexDirection: 'row',
-        height: 812 * unitHeight / 10,
         justifyContent: 'space-between',
     },
     itemLeftStyle:{

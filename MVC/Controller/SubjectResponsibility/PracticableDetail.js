@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {screenWidth, unitWidth} from "../../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {HttpPost} from "../../Tools/JQFetch";
@@ -7,6 +7,7 @@ import URLS from "../../Tools/InterfaceApi";
 import TextInputWidget from "../../Widget/TextInputWidget";
 import TextInputMultWidget from "../../Widget/TextInputMultWidget";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import OpenFile from "react-native-doc-viewer";
 
 var dutyStr = '';
 var finishStr = '';
@@ -153,7 +154,25 @@ export default class PracticableDetail extends React.Component{
         navigation.navigate('ApprovalWorkOptions', {id: id, approveType: type});
     };
     _pressDetail = (attachItem)=> {
-        this.props.navigation.navigate('AttachDetail',{item : attachItem});
+        if (Platform.OS === 'ios') {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : attachItem.uri;
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileNameOptional: '附件'
+            }], (error, url)=>{
+
+            })
+        }else {
+            let attUrl = attachItem.url ? 'http://221.13.156.198:10008' + attachItem.url : 'file://' + attachItem.uri;
+            let uriSuffix = attUrl.substr(attUrl.lastIndexOf(".")+1).toLowerCase();
+            OpenFile.openDoc([{
+                url: attUrl,
+                fileName: '附件',
+                fileType: uriSuffix,
+                cache: true,
+            }], (error, uri)=>{
+            })
+        }
     };
 }
 const styles = StyleSheet.create({

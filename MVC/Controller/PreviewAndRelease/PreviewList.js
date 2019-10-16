@@ -163,7 +163,7 @@ export default class PreviewList extends React.Component{
                     keyExtractor={(item, index) => index.toString()}
                     removeClippedSubviews={false}
                     ItemSeparatorComponent={() =>
-                        <View style={{height: 1, backgroundColor: '#F4F4F4', marginLeft: 54*unitWidth}}/>}
+                        <View style={{height: 1, backgroundColor: '#F4F4F4'}}/>}
                 />
                 <View style={{position: 'absolute', right: 15*unitWidth, bottom: 50*unitWidth}}>
                     <TouchableOpacity activeOpacity={.5} onPress={()=>{this.popSearchview._show()}}>
@@ -214,7 +214,8 @@ export default class PreviewList extends React.Component{
             <TouchableOpacity activeOpacity={.5} onPress={this._clickCellAction.bind(this, item)}>
                 <View style={styles.itemStyle}>
                     <View style={styles.itemLeftStyle}>
-                        <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.swName}</Text>
+                        <Text numberOfLines={0}
+                            style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.swName}</Text>
                         <Text>{item.publishName}</Text>
                     </View>
                     <View style={styles.itemRightStyle}>
@@ -278,7 +279,6 @@ export default class PreviewList extends React.Component{
 const styles = StyleSheet.create({
     itemStyle:{
         flexDirection: 'row',
-        height: 812 * unitHeight / 10,
         justifyContent: 'space-between',
     },
     itemLeftStyle:{
@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
         marginTop: 10 * unitWidth,
         marginLeft: 10 * unitWidth,
         marginBottom: 10 * unitWidth,
+        width: '60%'
     },
     itemRightStyle:{
         justifyContent: 'space-between',

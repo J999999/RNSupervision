@@ -59,12 +59,14 @@ const URLS = {
     QueryLogByExchangeexperience: HOST + 'exchangeexperience/queryLog', //经验交流系统记录
     QueryPartyInfoByParam : HOST + 'partyOrganizationInfo/queryPartyInfoByParam', //获取党组织信息
     QueryPageList : HOST + 'subjectDutyInventory/queryPageList', //主体责任清单列表
-    GetSubjectDutyById : HOST + 'subjectDutyInventory/getSubjectDutyById', //主体责任清单详情
+    GetSubjectDutyById : HOST + 'subjectDutyInventory/getSubjectDutyById', //主体责任
     GetSubjectDutyLogById : HOST + 'subjectDutyInventory/getSubjectDutyLogById', //主体责任清单系统记录
     GetDutyByDutyInventoryId: HOST + 'subjectDutyPracticable/getDutyByDutyInventoryId', //获取主体责任清单落实
     QueryListByDutyPracticable: HOST + 'subjectDutyPracticable/queryPageList', //获取主体责任落实情况列表
     QueryListByApprovalWork : HOST + 'approvalWork/queryPageList', //主体责任 工作审核
     ApproveBatch : HOST + 'approvalWork/approveBatch', //工作审核 审核
+    GetDutyPracticableById : HOST + 'subjectDutyPracticable/getDutyPracticableById', //根据id获取主体责任落实
+    GetDutyPracticableLogById : HOST + 'subjectDutyPracticable/getDutyPracticableLogById', //根据id获取主体责任落实日志
     //资料云盘
     GetDataCloud : HOST + 'cloudDisk/queryList',  //获取资料云盘列表
     SaveDataCloud : HOST + 'cloudDisk/save', //上传资料云盘
