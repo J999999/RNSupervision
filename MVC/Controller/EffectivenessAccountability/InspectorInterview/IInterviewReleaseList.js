@@ -67,7 +67,6 @@ export default class IInterviewReleaseList extends React.Component{
         HttpPost(URLS.QueryReleaseInterview,
             search).then((response)=>{
             RRCToast.show(response.msg);
-            console.log(response);
             if (response.result === 1){
                 const item = response.data.records;
                 if (refresh){

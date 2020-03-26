@@ -27,7 +27,6 @@ export default class BatchForms extends React.Component{
         const {navigation} = this.props;
         let id = navigation.getParam('id');
         HttpPost(URLS.QueryTPIAApplicationById,{id: id}, '正在查询...').then((response)=>{
-            console.log(response);
             RRCToast.show(response.msg);
             if (response.result === 1){
                 this.setState({

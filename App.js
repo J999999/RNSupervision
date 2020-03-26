@@ -25,6 +25,7 @@ import BatchForms from './MVC/Controller/EffectivenessAccountability/InspectorIn
 import AccountabilityList from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityList'//效能问责列表
 import AccountabilityAdd from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityAdd' //新增效能问责
 import RecallOption from './MVC/Controller/EffectivenessAccountability/EA/RecallOption' //撤回操作
+import GetDeptInfo from './MVC/Controller/EffectivenessAccountability/InspectorInterview/GetDeptInfo' //可视范围
 import AccountabilityDetail from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityDetail' //效能问责详情
 import AuditList from './MVC/Controller/EffectivenessAccountability/EffectivenessAudit/AuditList' //效能问责审核列表
 import AuditDetail from './MVC/Controller/EffectivenessAccountability/EffectivenessAudit/AuditDetail' //效能问责审核详情
@@ -36,6 +37,9 @@ import AccountabilityReleaseDetail from './MVC/Controller/EffectivenessAccountab
 import PAppraisalList from './MVC/Controller/PerformanceAppraisal/PAppraisalList' //绩效考核列表
 import PAppraisalDetail from './MVC/Controller/PerformanceAppraisal/PAppraisalDetail' //绩效考核详情
 import PAppraisalViewLog from './MVC/Controller/PerformanceAppraisal/PAppraisalViewLog' //绩效考核系统记录
+import SubjectDutyNoticeList from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeList'//清单通知
+import SubjectDutyNoticeDetail from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeDetail'
+import SubjectDutyNoticeRead from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeRead'
 import PAppraisalApproval from './MVC/Controller/PerformanceAppraisal/PAppraisalApproval'
 import FillAuditList from './MVC/Controller/PerformanceAppraisal/FillAuditList'
 import FillInAuditDetail from './MVC/Controller/PerformanceAppraisal/FillInAuditDetail'
@@ -160,7 +164,10 @@ const AppNavigator = createStackNavigator({
     ShowScoreDetail: {screen: ShowScoreDetail},
     WorkPracticable: {screen: WorkPracticable},
     PracticableLog: {screen: PracticableLog},
-
+    GetDeptInfo: {screen: GetDeptInfo},
+    SubjectDutyNoticeList: {screen: SubjectDutyNoticeList},
+    SubjectDutyNoticeDetail: {screen: SubjectDutyNoticeDetail},
+    SubjectDutyNoticeRead: {screen: SubjectDutyNoticeRead},
     InspectionreformList: {screen: InspectionreformList},
     InspectionreformDetail: {screen: InspectionreformDetail},
     InspectionreformLog: {screen: InspectionreformLog},

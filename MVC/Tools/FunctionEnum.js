@@ -13,9 +13,9 @@ const  FunctionEnum = {
         21:'FillAuditList',
         22:'PreviewList',
         23:'ShowScoreList',
-        25:'AccountabilityList',
-        26:'IInterviewList',
-        27:'AuditList',
+        102:'AccountabilityList',
+        101:'IInterviewList',
+        103:'AuditList',
 
         31:'ExchangeexperienceList',
         32:'ApprovalWorkList',
@@ -37,6 +37,7 @@ const  FunctionEnum = {
         84:'InspectionreformInformation',
 
         100:'KDataCloudList',
+        112:'SubjectDutyNoticeList',
     },
 
     /**
@@ -77,9 +78,9 @@ const  FunctionEnum = {
         23:require('../Images/kaohechengjizhanshi.png'),//考核成绩展示
 
         24:require('../Images/xiaonengwenze.png'),//效能问责
-        25:require('../Images/xiaonengwenze.png'),//效能问责
-        26:require('../Images/duchayuetan.png'),//督查约谈
-        27:require('../Images/xiaonengshenhe.png'),//效能审核
+        102:require('../Images/xiaonengwenze.png'),//效能问责
+        101:require('../Images/duchayuetan.png'),//督查约谈
+        103:require('../Images/xiaonengshenhe.png'),//效能审核
         68:require('../Images/yuetanshixiang.png'),//约谈事项
         69:require('../Images/wenzeshixiang.png'),//问责事项
 
@@ -103,7 +104,7 @@ const  FunctionEnum = {
         100:require('../Images/ziliaoyunpan.png'),//资料云盘
      }
 
-}
+};
 
 
 export default FunctionEnum

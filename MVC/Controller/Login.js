@@ -49,14 +49,16 @@ export default class Login extends React.Component {
             // password: '123456',
             // userName: 'xzsz',
             // password: '123456',
-            userName: 'wbthree',
-            password: '123456',
+            // userName: 'wbthree',
+            // password: '123456',
             // userName: 'wbfive',
             // password: '123456',
             // userName: 'xzsj',
             // password: '12345678',
             // userName: 'jxky',
             // password: '123456',
+            userName: 'wbfive',
+            password: 'a123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -179,6 +181,7 @@ export default class Login extends React.Component {
             'imsi': this.state.imsi,
         },'正在登录...',).then((response)=>{
             RRCToast.show(response.msg);
+            console.log(response);
             if (response.result === 1){
                 AsyncStorage.setItem('token', response.data.token);
                 this.props.navigation.navigate('Home');

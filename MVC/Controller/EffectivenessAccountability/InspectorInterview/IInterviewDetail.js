@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image, Button} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Image, Button, TextInput} from 'react-native';
 import {screenWidth, unitWidth} from "../../../Tools/ScreenAdaptation";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TextInputWidget from "../../../Widget/TextInputWidget";
@@ -25,7 +25,8 @@ var options = {
 };
 
 var sourceTypeStr = '';
-
+var releaseTypeStr = '';
+var _that;
 export default class IInterviewDetail extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: '约谈详情',
@@ -72,10 +73,27 @@ export default class IInterviewDetail extends React.Component{
                 } else if (model.sourceType === 3){
                     sourceTypeStr = '临时交办'
                 }
+                let kkk;
+                if (model.releaseType === 1){
+                    releaseTypeStr = '发布';
+                    kkk = '1';
+                } else {
+                    releaseTypeStr = '未发布';
+                    kkk = '2';
+                }
+                let nameArr = [];
+                if (model.visualRangeDeptList) {
+                    let tempA = [];
+                    tempA = tempA.concat(model.visualRangeDeptList);
+                    tempA.map((i)=>{
+                        nameArr.push(i.deptName);
+                    });
+                }
                 this.setState({
                     id : id,
                     billCode: model.billCode,
-                    filesList: model.filesList,
+                    filesList: model.filesList ? model.filesList : [],
+                    reFilesList: model.reFilesList ? model.reFilesList : [],
                     userName: model.userName,
                     keywordStr: model.keywordStr,
                     sourceType: model.sourceType.toString(),
@@ -86,6 +104,12 @@ export default class IInterviewDetail extends React.Component{
                     userDeptName: model.userDeptName,
                     reportTimeStr: model.reportTime,
                     finishTimeStr: model.finishTime,
+                    interviewList: model.interviewList,
+                    symbolCode: model.symbolCode,
+                    releaseType: kkk,
+                    visualRange: nameArr.join(','),
+                    releaseTime: model.releaseTime,
+                    visualRangeList: model.visualRangeList,
                 });
             }
         }).catch((err)=>{
@@ -94,13 +118,16 @@ export default class IInterviewDetail extends React.Component{
     }
     constructor (props) {
         super(props);
+        _that = this;
         this.state = {
             id: '',                    // 提交修改时，需要用到
             enabledEdit: false,        // 页面中组件是否可编辑
             xgIdentifier: '修改',       // 修改按钮标识，修改时: 可编辑   提交修改: 可上传
             buttons: [],               // 可操作按钮
+            symbolCode: '',            // 文号
             billCode: '',              // 编号  文本输入框，必填。
             filesList: [],             // 附件  非必填
+            reFilesList: [],
             userName: '',              // 提交人     文本输入框，必填。
             keywordStr: '',            // 关键字     文本输入框，必填。
             sourceType: '',            // 事项来源    底部弹出框，必选。
@@ -110,35 +137,117 @@ export default class IInterviewDetail extends React.Component{
             processingResults: '',     // 办理结果    文本输入框，必填。
             userDeptName: '',          // 提交科室    文本输入框，必填。
             reportTimeStr: '',         // 提交时间    日期选择框，必填。
-            finishTimeStr: '',         // 约谈完成时间  日期选择框，非必填。（ 不填，提请发布审核框不可选 ）
+            finishTimeStr: '',         // 发文时间  日期选择框，非必填。（ 不填，提请发布审核框不可选 ）
             hasAttach:false,           // 附件相关，与上传数据无关
+            reAttach: false,
+            interviewList: [],
+            releaseType: '',
+            visualRange: '',
+            visualRangeList: [],
+            releaseTime: '',
         };
     }
     render(): React.ReactNode {
-
+        var reFileButtons = [];
         var fileButtons = [] ;
-
-        for(let i in this.state.filesList){
-            let nameStr = this.state.filesList[i].name ? this.state.filesList[i].name : this.state.filesList[i].fileName;
-            var button = (
+        var ss = [];
+        this.state.reFilesList.map((i, key) => {
+            let nameStr = i.name ? i.name : i.fileName;
+            var reButton = (
                 <View
-                    key = {i}
+                    key={key}
                     style= {styles.attach} >
                     <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ nameStr} </Text>
                     <TouchableOpacity style={styles.rightIcon} onPress={()=>{
-                        this._pressDelAttach(this.state.filesList[i]);
+                        this.rePressDelAttach(i);
                     }}>
                         <Image style={styles.delete} source={require('../../../Images/sc_delete.png')}/>
                     </TouchableOpacity>
 
                     <View style={styles.rightIcon}>
                         <Button title="查看" onPress={ ()=>{
-                            this._pressDetail(this.state.filesList[i])
+                            this.rePressDetail(i)
+                        }}   />
+                    </View>
+                </View>
+            );
+            reFileButtons.push(reButton);
+        });
+
+        this.state.filesList.map((i, key) => {
+            let nameStr = i.name ? i.name : i.fileName;
+            var button = (
+                <View
+                    key={key}
+                    style= {styles.attach} >
+                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ nameStr} </Text>
+                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
+                        this._pressDelAttach(i);
+                    }}>
+                        <Image style={styles.delete} source={require('../../../Images/sc_delete.png')}/>
+                    </TouchableOpacity>
+
+                    <View style={styles.rightIcon}>
+                        <Button title="查看" onPress={ ()=>{
+                            this._pressDetail(i)
                         }}   />
                     </View>
                 </View>
             );
             fileButtons.push(button);
+        });
+
+        for (let j=0; j<this.state.interviewList.length; j++){
+            var aa = (
+                <View style={{flexDirection: 'row', height: 54*unitWidth, alignItems: 'center', borderBottomWidth: unitWidth , borderColor: '#F4F4F4'}}>
+                    <Text style={{width: 80*unitWidth, fontSize: 15*unitWidth, color: '#333', marginLeft: 15*unitWidth}}>
+                        {j === 0 ? '约谈对象:' : ''}
+                    </Text>
+                    <View style={{width: 245*unitWidth}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 15*unitWidth, color: '#333'}}>单位:</Text>
+                            <TextInput numberOfLines={1}
+                                       editable={this.state.enabledEdit}
+                                       underlineColorAndroid='transparent'
+                                       value={this.state.interviewList[j].deptName}
+                                       placeholder = {'请输入单位名称'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['deptName'] : text} : item)
+                                       })}}
+                            />
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 15*unitWidth, color: '#333'}}>职务:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       editable={this.state.enabledEdit}
+                                       value={this.state.interviewList[j].dutyName}
+                                       placeholder = {'请输入职务名称'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['dutyName'] : text} : item)
+                                       })}}
+                            />
+                            <Text style={{fontSize: 15*unitWidth, marginLeft: 10*unitWidth, color: '#333'}}>姓名:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       editable={this.state.enabledEdit}
+                                       value={this.state.interviewList[j].staffName}
+                                       placeholder = {'请输入姓名'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['staffName'] : text} : item)
+                                       })}}
+                            />
+                        </View>
+                    </View>
+                </View>
+            );
+            ss.push(aa);
         }
         return (
             <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
@@ -160,10 +269,11 @@ export default class IInterviewDetail extends React.Component{
                     this.setState({billCode: text});
                 }}
                 />
-                <TextInputWidget editable={this.state.enabledEdit} value={this.state.interviewName}  title='约谈对象:'  placeholder='请输入约谈对象' onChangeText={(text)=>{
-                    this.setState({interviewName: text});
-                }}
-                />
+                {
+                    this.state.reFilesList.length > 0 ?  reFileButtons  :  null
+                }
+                <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.reTakePicture.bind(this)}/>
+                {ss}
                 <TextInputMultWidget editable={this.state.enabledEdit} value={this.state.matter} title='约谈事项:'  placeholder='请输入约谈事项' onChangeText={(text)=>{
                     this.setState({matter: text});
                 }}/>
@@ -174,12 +284,16 @@ export default class IInterviewDetail extends React.Component{
                     this.setState({processingResults: text});
                 }}/>
                 {
-                    this.state.hasAttach === true ?  fileButtons  :  null
+                    this.state.filesList.length > 0 ?  fileButtons  :  null
                 }
                 <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.takePicture.bind(this)}/>
+                <TextInputWidget editable={this.state.enabledEdit} value={this.state.symbolCode}  title='文号:'  placeholder='请输入文号' onChangeText={(text)=>{
+                    this.setState({symbolCode: text});
+                }}
+                />
                 <View style={{flexDirection: 'row', alignItems: 'center', padding: 15*unitWidth,
                     borderBottomWidth: unitWidth, borderBottomColor:'#F4F4F4', height: 54*unitWidth}}>
-                    <Text style={{fontSize: 15*unitWidth}}>{'约谈完成时间:'}</Text>
+                    <Text style={{fontSize: 15*unitWidth}}>{'发文时间:'}</Text>
                     <DataPicker style={{width: 200*unitWidth, marginLeft: 5*unitWidth}}
                                 date={this.state.finishTimeStr}
                                 mode="date"
@@ -218,6 +332,53 @@ export default class IInterviewDetail extends React.Component{
                             />
                         </View> : null
                 }
+                <JQAlertBottomView leftName={'是否发布'}
+                                   enabledEdit={this.state.enabledEdit}
+                                   dataSource={
+                                       [
+                                           {'name':'发布', 'id':'1'},
+                                           {'name':'不发布', 'id':'2'},
+                                       ]
+                                   }
+                                   alertTitle={releaseTypeStr}
+                                   callBack={(item) => {
+                                       this.setState({releaseType: item.id});
+                                   }}
+                />
+                {
+                    this.state.releaseType === '1' ? (this.state.enableEdit === false ?
+                        <TextInputWidget    title='可视范围:'  placeholder='请选择可视范围' editable={false} value={this.state.visualRange}/> :
+                        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('GetDeptInfo',{callback: function (data) {
+                                let nameArr = [];
+                                let idsArr = [];
+                                for (let i = 0; i < data.length; i++){
+                                    nameArr.push(data[i].deptName);
+                                    idsArr.push(data[i].id);
+                                }
+                                let nameStr = nameArr.join(',');
+                                _that.setState({
+                                    visualRange: nameStr,
+                                    visualRangeList: idsArr,
+                                })
+                            }})}}>
+                            <TextInputWidget    title='可视范围:'  placeholder='请选择可视范围' editable={false} value={this.state.visualRange}/>
+                        </TouchableOpacity>) : null
+                }
+                <View style={{flexDirection: 'row', alignItems: 'center', padding: 15*unitWidth,
+                    borderBottomWidth: unitWidth, borderBottomColor:'#F4F4F4', height: 54*unitWidth}}>
+                    <Text style={{fontSize: 15*unitWidth}}>{'发布时间:'}</Text>
+                    <DataPicker style={{width: 200*unitWidth, marginLeft: 5*unitWidth}}
+                                date={this.state.releaseTime}
+                                mode="date"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                confirmBtnText="确定"
+                                cancelBtnText="取消"
+                                disabled={!this.state.enabledEdit}
+                                showIcon={false}
+                                onDateChange={(dateTime) =>{this.setState({releaseTime: dateTime})}}
+                                placeholder={this.state.releaseTime}
+                    />
+                </View>
                 {
                     this.state.sourceType === '2'?
                         <TextInputWidget editable={this.state.enabledEdit} value={this.state.userName} title='交办领导:' placeholder='请输入交办领导' onChangeText={(text)=>{this.setState({userName: text});}}/> : null
@@ -268,7 +429,7 @@ export default class IInterviewDetail extends React.Component{
                 {
                     this.state.buttons && this.state.buttons.map((i)=>{
                         return (
-                            <TouchableOpacity style={styles.button} onPress={()=>this._pressSumbit(i.name)} >
+                            <TouchableOpacity style={styles.button} onPress={()=>this.pressSumbit(i.name)} >
                                 <Text style={styles.buttonText}>
                                     {i.title}
                                 </Text>
@@ -279,6 +440,87 @@ export default class IInterviewDetail extends React.Component{
             </KeyboardAwareScrollView>
         )
     }
+
+    reTakePicture = async function() {
+
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                for(let i in this.state.reFilesList){
+                    if(this.state.reFilesList[i].uri === response.uri){
+                        alert('不能重复添加');
+                        return;
+                    }
+                }
+                let tempArr = [];
+                tempArr = tempArr.concat(this.state.reFilesList);
+                let index = response.uri.indexOf('/images/') + 8;
+                response['fileName'] = response.uri.substr(index, response.uri.length - index);
+                tempArr.push(response);
+
+                this.setState({
+                    reFilesList: tempArr,
+                    reAttach:true,
+                });
+            }
+        });
+    };
+    rePressDelAttach = (item)=>{
+        if (this.state.enabledEdit === false){
+            return;
+        }
+        let has = false;
+        for(let i in this.state.reFilesList){
+            if(this.state.reFilesList[i] === item){
+                this.state.reFilesList.pop(item);
+                has = true;
+            }
+        }
+        if(has){
+            if(this.state.reFilesList.length>0){
+                this.setState({
+                    reAttach:true
+                });
+            }else{
+                this.setState({
+                    reAttach:false,
+                });
+            }
+        }
+    };
+    rePressDetail = (attachItem)=> {
+        if (attachItem.uri) {
+            this.props.navigation.navigate('AttachDetail',{item : attachItem})
+        } else {
+            if (Platform.OS === 'ios') {
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileNameOptional: attachItem.name
+                }], (error, url)=>{
+
+                })
+            }else {
+                let uriSuffix = attachItem.url.substr(attachItem.url.lastIndexOf(".")+1).toLowerCase();
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileName: attachItem.name,
+                    fileType: uriSuffix,
+                    cache: true,
+                }], (error, uri)=>{
+                })
+            }
+        }
+    };
 
     takePicture = async function() {
 
@@ -342,20 +584,36 @@ export default class IInterviewDetail extends React.Component{
         }
     };
     _pressDetail = (attachItem)=> {
-        this.props.navigation.navigate('AttachDetail',{item : attachItem});
+        if (attachItem.uri) {
+            this.props.navigation.navigate('AttachDetail',{item : attachItem})
+        } else {
+            if (Platform.OS === 'ios') {
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileNameOptional: attachItem.name
+                }], (error, url)=>{
+
+                })
+            }else {
+                let uriSuffix = attachItem.url.substr(attachItem.url.lastIndexOf(".")+1).toLowerCase();
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileName: attachItem.name,
+                    fileType: uriSuffix,
+                    cache: true,
+                }], (error, uri)=>{
+                })
+            }
+        }
     };
 
-    _pressSumbit = (type) => {
+    async pressSumbit (type) {
         if(this.state.sourceType === ''){
             RRCToast.show('请选择事项来源');
             return;
         }
         if(this.state.billCode === ''){
             RRCToast.show('请输入编号');
-            return;
-        }
-        if(this.state.interviewName === ''){
-            RRCToast.show('请输入约谈对象');
             return;
         }
         if(this.state.situation === ''){
@@ -368,6 +626,10 @@ export default class IInterviewDetail extends React.Component{
         }
         if (this.state.keywordStr === ''){
             RRCToast.show('请输入关键字');
+            return;
+        }
+        if (this.state.releaseType === '1' && this.state.visualRangeList.length === 0) {
+            RRCToast.show('请选择可视范围');
             return;
         }
         if (this.state.sourceType === '1'){
@@ -404,34 +666,45 @@ export default class IInterviewDetail extends React.Component{
             this.setState({enabledEdit: true});
             return;
         }
-        var files = [];
-
-        if(this.state.filesList &&  this.state.filesList.length>0){
-            var formData = new FormData();
-            for(let i  in this.state.filesList){
-                let nameStr = this.state.filesList[i].name ? this.state.filesList[i].name : this.state.filesList[i].fileName;
-                let urlStr = this.state.filesList[i].url ? this.state.filesList[i].url : this.state.filesList[i].uri;
-                let file = {uri:urlStr,type:'multipart/form-data',name:nameStr};
-                formData.append('files',file);
-            }
-            HttpPostFile(URLS.FileUploads,formData,"正在上传文件...").then((response)=>{
-                if(response.result === 1){
-                    files = response.data;
-                    this.uploadNoticeInfo(files, type)
+        if (type === 'EDIT'){
+            try {
+                var files = [];
+                var reFiles = [];
+                if(this.state.filesList &&  this.state.filesList.length>0){
+                    var formData = new FormData();
+                    for(let i  in this.state.filesList){
+                        let file = {uri:this.state.filesList[i].uri,type:'multipart/form-data',name:this.state.filesList[i].fileName};
+                        formData.append('files',file);
+                    }
+                    let res = await HttpPostFile(URLS.FileUploads,formData,"正在上传文件..");
+                    files = await res.data;
                 }
-            }).catch((error)=>{
-                RRCToast.show(error);
-            });
-        }else{
-            this.uploadNoticeInfo([], type)
-        }
-    };
+                if (this.state.reFilesList && this.state.reFilesList.length > 0) {
+                    let reFormData = new FormData();
+                    for (let i = 0; i < this.state.reFilesList.length; i++){
+                        let file = {uri:this.state.reFilesList[i].uri,type:'multipart/form-data',name:this.state.reFilesList[i].fileName};
+                        reFormData.append('files',file);
+                    }
+                    let res = await HttpPostFile(URLS.FileUploads,reFormData,"正在上传文件..");
+                    reFiles = await res.data;
+                }
+                this.uploadNoticeInfo(files, reFiles, type);
 
-    uploadNoticeInfo=(files, type)=> {
+            } catch (e) {
+                console.error(e);
+            }
+        } else {
+            this.uploadNoticeInfo([],[],type);
+        }
+
+    }
+
+    uploadNoticeInfo=(files, reFiles, type)=> {
         if (type === 'EDIT'){
             let requestData = {};
             requestData = this.state;
             requestData['filesList'] = files;
+            requestData['reFilesList'] = reFiles;
             requestData['recordType'] = 1;// 1，约谈  2，问责
             HttpPost(URLS.ModifyIAImplementInfo,requestData,"正在保存..").then((response)=>{
                 RRCToast.show(response.msg);
@@ -465,8 +738,17 @@ export default class IInterviewDetail extends React.Component{
             });
         } else if (type === 'RECALL' && this.state.enabledEdit === false) {
             this.props.navigation.navigate('RecallOption', {ids: this.props.navigation.getParam('id')});
+        } else if (type === 'DELETE' && this.state.enabledEdit === false) {
+            HttpPost(URLS.DeleteImplementInfo,{id: this.props.navigation.getParam('id')},"正在删除...").then((response)=>{
+                RRCToast.show(response.msg);
+                if(response.result === 1){
+                    this.setState({enabledEdit: false});
+                    this.props.navigation.goBack();
+                }
+            }).catch((err)=>{
+                RRCAlert.alert(err);
+            });
         }
-
     };
 };
 const styles = StyleSheet.create({

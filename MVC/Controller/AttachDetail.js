@@ -11,7 +11,6 @@ class AttachDetail extends Component {
 
     constructor(props){
         super(props);
-
     };
 
     static  navigationOptions = ({navigation}) =>({
@@ -21,7 +20,7 @@ class AttachDetail extends Component {
 
     render(){
         const { params } = this.props.navigation.state;
-        let uriStr  = params.item.uri.indexOf('/upload/files/')==-1  ? params.item.uri : (FILE_HOST+ params.item.uri)
+        let uriStr  = params.item.uri.indexOf('/upload/files/')===-1  ? params.item.uri : (FILE_HOST+ params.item.uri);
         return(
             <View style={styles.main}>
                 <Image style={styles.image} source={ {uri : uriStr } }  />

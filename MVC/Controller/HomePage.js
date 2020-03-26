@@ -31,8 +31,8 @@ export default class HomePage extends React.Component {
 
     getLoginInfo(){
         HttpPost(URLS.LoginUser,{},'').then((response)=>{
-            if (response.result == 1){
-                this.internal = response.data.internal
+            if (response.result === 1){
+                this.internal = response.data.internal;
                 AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
                 AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
             }
@@ -44,6 +44,7 @@ export default class HomePage extends React.Component {
             if (response.result !== 1) {
                 RRCToast.show(response.msg);
             }else {
+                console.log(response.data);
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
@@ -67,7 +68,7 @@ export default class HomePage extends React.Component {
     }
     constructor(props){
         super(props);
-        this.internal = null
+        this.internal = null;
         this.state = {
             data:[],
             deleteBtnHidden: false,
@@ -140,7 +141,7 @@ export default class HomePage extends React.Component {
      * 绩效考核
      *      20.考核填报 21.填报审核 22.考核成绩预览 23.考核成绩展示
      * 效能问责
-     *      25.效能问责 26.督查约谈 27.效能审核 68.约谈事项 69.问责事项
+     *      102.效能问责 101.督查约谈 103.效能审核 68.约谈事项 69.问责事项
      * 主体责任
      *      31.经验交流 32.工作审核 81.党组织信息维护 82.主体责任清单 83.主体责任落实情况 84.巡察整改完成情况
      * 市长热线
@@ -165,7 +166,7 @@ export default class HomePage extends React.Component {
                 },
             });
         }else{
-            let func = FunctionEnum.actionMap[item.id]
+            let func = FunctionEnum.actionMap[item.id];
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         }
 

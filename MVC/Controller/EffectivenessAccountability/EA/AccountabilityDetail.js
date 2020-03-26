@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image, Button} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Image, Button, TextInput, Platform} from 'react-native';
 import {screenWidth, unitWidth} from "../../../Tools/ScreenAdaptation";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TextInputWidget from "../../../Widget/TextInputWidget";
@@ -8,9 +8,11 @@ import TextFileSelectWidget from "../../../Widget/TextFileSelectWidget";
 import JQAlertBottomView from '../../../View/JQAlertBottomView';
 import DataPicker from 'react-native-datepicker'
 import {HttpPost, HttpPostFile} from "../../../Tools/JQFetch";
-import URLS from "../../../Tools/InterfaceApi";
+import URLS, {FILE_HOST} from "../../../Tools/InterfaceApi";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import ImagePicker from "react-native-image-picker";
+import OpenFile from "react-native-doc-viewer";
+import RNFetchBlob from "rn-fetch-blob";
 
 //附件弹出框选项
 var options = {
@@ -25,7 +27,9 @@ var options = {
 };
 
 var sourceTypeStr = '';
-
+var releaseTypeStr = '';
+var interviewTypeStr = '';
+var _that;
 export default class AccountabilityDetail extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: '问责详情',
@@ -62,7 +66,6 @@ export default class AccountabilityDetail extends React.Component{
         let buttons = navigation.getParam('buttons');
         this.setState({buttons: buttons});
         HttpPost(URLS.QueryInfoById, {id:id}, '正在查询...').then((response)=>{
-            console.log('问责详情 = ', response);
             RRCToast.show(response.msg);
             if (response.result === 1){
                 let model = response['data'];
@@ -73,11 +76,33 @@ export default class AccountabilityDetail extends React.Component{
                 } else if (model.sourceType === 3){
                     sourceTypeStr = '临时交办'
                 }
+                let kkk;
+                if (model.releaseType === 1){
+                    releaseTypeStr = '发布';
+                    kkk = '1';
+                } else {
+                    releaseTypeStr = '未发布';
+                    kkk = '2';
+                }
+                let nameArr = [];
+                if (model.visualRangeDeptList) {
+                    let tempA = [];
+                    tempA = tempA.concat(model.visualRangeDeptList);
+                    tempA.map((i)=>{
+                        nameArr.push(i.deptName);
+                    });
+                }
+                if (model.interviewList[0].interviewType === 1) {
+                    interviewTypeStr = '问责单位';
+                } else if (model.interviewList[0].interviewType === 2) {
+                    interviewTypeStr = '问责对象';
+                }
                 this.setState({
                     id : id,
                     billCode: model.billCode,
                     symbolCode: model.symbolCode,
-                    filesList: model.filesList,
+                    filesList: model.filesList ? model.filesList : [],
+                    reFilesList: model.reFilesList ? model.reFilesList : [],
                     userName: model.userName,
                     keywordStr: model.keywordStr,
                     sourceType: model.sourceType.toString(),
@@ -88,6 +113,12 @@ export default class AccountabilityDetail extends React.Component{
                     userDeptName: model.userDeptName,
                     reportTimeStr: model.reportTime,
                     finishTimeStr: model.finishTime,
+                    interviewList: model.interviewList ? model.interviewList : [],
+                    releaseType: kkk,           // 是否发布  1-发布   2-不发布
+                    interviewType: model.interviewList[0].interviewType,
+                    visualRange: nameArr.join(','),
+                    releaseTime: model.releaseTime,
+                    visualRangeList: model.visualRangeList,
                 });
             }
         }).catch((err)=>{
@@ -104,6 +135,7 @@ export default class AccountabilityDetail extends React.Component{
             billCode: '',              // 编号  文本输入框，必填。
             symbolCode: '',            // 文号  文本输入框，必填。
             filesList: [],             // 附件  非必填
+            reFilesList: [],
             userName: '',              // 提交人     文本输入框，必填。
             keywordStr: '',            // 关键字     文本输入框，必填。
             sourceType: '',            // 事项来源    底部弹出框，必选。
@@ -115,12 +147,17 @@ export default class AccountabilityDetail extends React.Component{
             reportTimeStr: '',         // 提交时间    日期选择框，必填。
             finishTimeStr: '',         // 约谈完成时间  日期选择框，非必填。（ 不填，提请发布审核框不可选 ）
             hasAttach:false,           // 附件相关，与上传数据无关
+            reAttach: false,
+            interviewType: '',         // 问责类型 1-单位  2-个人
+            interviewList: [],
+            releaseType: '',           // 是否发布  1-发布   2-不发布
+            visualRange: '',             // 可视范围名字显示
+            visualRangeList: '',             // 可视范围ids
+            releaseTime: '',       //发布时间
         };
     }
     render(): React.ReactNode {
-
         var fileButtons = [] ;
-
         for(let i in this.state.filesList){
             let nameStr = this.state.filesList[i].name ? this.state.filesList[i].name : this.state.filesList[i].fileName;
             var button = (
@@ -143,8 +180,134 @@ export default class AccountabilityDetail extends React.Component{
             );
             fileButtons.push(button);
         }
+
+        var reFileButtons = [];
+        for (let i = 0; i < this.state.reFilesList.length; i++){
+            let nameStr = this.state.reFilesList[i].name ? this.state.reFilesList[i].name : this.state.reFilesList[i].fileName;
+            var reButton = (
+                <View
+                    key = {i}
+                    style= {styles.attach} >
+                    <Text numberOfLines={1} style={styles.attachText}> {'附件：'+ nameStr} </Text>
+                    <TouchableOpacity style={styles.rightIcon} onPress={()=>{
+                        this.rePressDelAttach(this.state.reFilesList[i]);
+                    }}>
+                        <Image style={styles.delete} source={require('../../../Images/sc_delete.png')}/>
+                    </TouchableOpacity>
+
+                    <View style={styles.rightIcon}>
+                        <Button title="查看" onPress={ ()=>{
+                            this._pressDetail(this.state.reFilesList[i])
+                        }}   />
+                    </View>
+                </View>
+            );
+            reFileButtons.push(reButton);
+        }
+
+        var deptButtons = [];
+        for (let j=0; j<this.state.interviewList.length; j++) {
+
+            let dept = (
+                <View style={{flexDirection: 'row', height: 54*unitWidth, alignItems: 'center', borderBottomWidth: unitWidth , borderColor: '#F4F4F4'}}>
+                    <Text style={{width: 80*unitWidth, fontSize: 15*unitWidth, color: '#333', marginLeft: 15*unitWidth}}>
+                        {j === 0 ? '问责单位:' : ''}
+                    </Text>
+                    <View style={{width: 245*unitWidth}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 15*unitWidth, color: '#333'}}>单位:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       value={this.state.interviewList[j].deptName}
+                                       editable={this.state.enabledEdit}
+                                       placeholder = {'请输入单位名称'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['deptName'] : text} : item)
+                                       })}}/>
+                        </View>
+                    </View>
+                    {
+                        j === 0 ?
+                            <TouchableOpacity onPress={()=>{this._addDept()}}>
+                                <Image style={{marginRight: 10*unitWidth, width:25*unitWidth, height:25*unitWidth}}
+                                       source={require('../../../Images/up.png')}/>
+                            </TouchableOpacity> : null
+                    }
+                </View>
+            );
+            deptButtons.push(dept);
+        }
+
+        var interButtons = [];
+        for (let j=0; j<this.state.interviewList.length; j++) {
+
+            let inter = (
+                <View style={{flexDirection: 'row', height: 54*unitWidth, alignItems: 'center', borderBottomWidth: unitWidth , borderColor: '#F4F4F4'}}>
+                    <Text style={{width: 80*unitWidth, fontSize: 15*unitWidth, color: '#333', marginLeft: 15*unitWidth}}>
+                        {j === 0 ? '问责对象:' : ''}
+                    </Text>
+                    <View style={{width: 245*unitWidth}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 15*unitWidth, color: '#333'}}>单位:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       value={this.state.interviewList[j].deptName}
+                                       editable={this.state.enabledEdit}
+                                       placeholder = {'请输入单位名称'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['deptName'] : text} : item)
+                                       })}}/>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 15*unitWidth, color: '#333'}}>职务:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       value={this.state.interviewList[j].dutyName}
+                                       editable={this.state.enabledEdit}
+                                       placeholder = {'请输入职务名称'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['dutyName'] : text} : item)
+                                       })}}/>
+                            <Text style={{fontSize: 15*unitWidth, marginLeft: 10*unitWidth, color: '#333'}}>姓名:</Text>
+                            <TextInput numberOfLines={1}
+                                       underlineColorAndroid='transparent'
+                                       value={this.state.interviewList[j].staffName}
+                                       editable={this.state.enabledEdit}
+                                       placeholder = {'请输入姓名'}
+                                       onChangeText={(text)=>{this.setState({
+                                           interviewList: this.state.interviewList.map(
+                                               (item, index)=>index === j ?
+                                                   {...item, ['staffName'] : text} : item)
+                                       })}}/>
+                        </View>
+                    </View>
+                    {
+                        j === 0 ?
+                            <TouchableOpacity onPress={()=>{this._addDept()}}>
+                                <Image style={{marginRight: 10*unitWidth, width:25*unitWidth, height:25*unitWidth}}
+                                       source={require('../../../Images/up.png')}/>
+                            </TouchableOpacity> : null
+                    }
+                </View>
+            );
+            interButtons.push(inter);
+        }
         return (
             <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <TextInputWidget editable={this.state.enabledEdit} value={this.state.billCode}  title='编号:'  placeholder='请输入编号' onChangeText={(text)=>{
+                    this.setState({billCode: text});
+                }}
+                />
+                {
+                    this.state.reFilesList.length > 0 ?  reFileButtons  :  null
+                }
+                <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.reTakePicture.bind(this)}/>
                 <JQAlertBottomView leftName={'事项来源'}
                                    dataSource={
                                        [
@@ -159,18 +322,32 @@ export default class AccountabilityDetail extends React.Component{
                                        this.setState({sourceType: item.id});
                                    }}
                 />
-                <TextInputWidget editable={this.state.enabledEdit} value={this.state.billCode}  title='编号:'  placeholder='请输入编号' onChangeText={(text)=>{
-                    this.setState({billCode: text});
-                }}
+                <JQAlertBottomView leftName={'问责类型'}
+                                   alertTitle={interviewTypeStr}
+                                   enabledEdit={this.state.enabledEdit}
+                                   dataSource={
+                                       [
+                                           {'name':'问责单位', 'id':'1'},
+                                           {'name':'问责对象', 'id':'2'},
+                                       ]
+                                   }
+                                   key={'问责类型'}
+                                   callBack={(item) => {
+                                       this.setState({
+                                           interviewType: item.id,
+                                           interviewList: [{
+                                               deptName:'',
+                                               dutyName:'',
+                                               interviewType: item.id,
+                                               staffName: '',
+                                           }],
+                                       });
+                                   }}
                 />
-                <TextInputWidget editable={this.state.enabledEdit} value={this.state.symbolCode}  title='文号:'  placeholder='请输入文号' onChangeText={(text)=>{
-                    this.setState({symbolCode: text});
-                }}
-                />
-                <TextInputWidget editable={this.state.enabledEdit} value={this.state.interviewName}  title='问责对象:'  placeholder='请输入问责对象' onChangeText={(text)=>{
-                    this.setState({interviewName: text});
-                }}
-                />
+                {
+                    this.state.interviewType === '' ? null :
+                        (this.state.interviewType === 1 ? deptButtons : interButtons)
+                }
                 <TextInputMultWidget editable={this.state.enabledEdit} value={this.state.matter} title='问责事项:'  placeholder='请输入问责事项' onChangeText={(text)=>{
                     this.setState({matter: text});
                 }}/>
@@ -180,13 +357,17 @@ export default class AccountabilityDetail extends React.Component{
                 <TextInputMultWidget editable={this.state.enabledEdit} value={this.state.processingResults} title='办理结果:'  placeholder='请输入办理结果' onChangeText={(text)=>{
                     this.setState({processingResults: text});
                 }}/>
+                <TextInputWidget editable={this.state.enabledEdit} value={this.state.symbolCode}  title='文号:'  placeholder='请输入文号' onChangeText={(text)=>{
+                    this.setState({symbolCode: text});
+                }}
+                />
                 {
-                    this.state.hasAttach === true ?  fileButtons  :  null
+                    this.state.filesList.length > 0 ?  fileButtons  :  null
                 }
                 <TextFileSelectWidget  fileName = '点 击 选 择 文 件 '  onPress={this.takePicture.bind(this)}/>
                 <View style={{flexDirection: 'row', alignItems: 'center', padding: 15*unitWidth,
                     borderBottomWidth: unitWidth, borderBottomColor:'#F4F4F4', height: 54*unitWidth}}>
-                    <Text style={{fontSize: 15*unitWidth}}>{'问责完成时间:'}</Text>
+                    <Text style={{fontSize: 15*unitWidth}}>{'发文时间:'}</Text>
                     <DataPicker style={{width: 200*unitWidth, marginLeft: 5*unitWidth}}
                                 date={this.state.finishTimeStr}
                                 mode="date"
@@ -225,6 +406,53 @@ export default class AccountabilityDetail extends React.Component{
                             />
                         </View> : null
                 }
+                <JQAlertBottomView leftName={'是否发布'}
+                                   enabledEdit={this.state.enabledEdit}
+                                   alertTitle={releaseTypeStr}
+                                   dataSource={
+                                       [
+                                           {'name':'发布', 'id':'1'},
+                                           {'name':'不发布', 'id':'2'},
+                                       ]
+                                   }
+                                   key={'是否发布'}
+                                   callBack={(item) => {
+                                       this.setState({releaseType: item.id});
+                                   }}
+                />
+                {
+                    this.state.releaseType === '1' ? (this.state.enableEdit === false ?
+                        <TextInputWidget    title='可视范围:'  placeholder='请选择可视范围' editable={false} value={this.state.visualRange}/> :
+                        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('GetDeptInfo',{callback: function (data) {
+                                let nameArr = [];
+                                let idsArr = [];
+                                for (let i = 0; i < data.length; i++){
+                                    nameArr.push(data[i].deptName);
+                                    idsArr.push(data[i].id);
+                                }
+                                let nameStr = nameArr.join(',');
+                                _that.setState({
+                                    visualRange: nameStr,
+                                    visualRangeList: idsArr,
+                                })
+                            }})}}>
+                            <TextInputWidget    title='可视范围:'  placeholder='请选择可视范围' editable={false} value={this.state.visualRange}/>
+                        </TouchableOpacity>) : null
+                }
+                <View style={{flexDirection: 'row', alignItems: 'center', padding: 15*unitWidth,
+                    borderBottomWidth: unitWidth, borderBottomColor:'#F4F4F4', height: 54*unitWidth}}>
+                    <Text style={{fontSize: 15*unitWidth}}>{'发布时间:'}</Text>
+                    <DataPicker style={{width: 200*unitWidth, marginLeft: 5*unitWidth}}
+                                date={this.state.releaseTime}
+                                mode="date"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                confirmBtnText="确定"
+                                cancelBtnText="取消"
+                                showIcon={false}
+                                onDateChange={(dateTime) =>{this.setState({releaseTime: dateTime})}}
+                                placeholder={'请选择发布时间'}
+                    />
+                </View>
                 {
                     this.state.sourceType === '2'?
                         <TextInputWidget editable={this.state.enabledEdit} value={this.state.userName} title='交办领导:' placeholder='请输入交办领导' onChangeText={(text)=>{this.setState({userName: text});}}/> : null
@@ -275,7 +503,7 @@ export default class AccountabilityDetail extends React.Component{
                 {
                     this.state.buttons && this.state.buttons.map((i)=>{
                         return (
-                            <TouchableOpacity style={styles.button} onPress={()=>this._pressSumbit(i.name)} >
+                            <TouchableOpacity style={styles.button} onPress={()=>this.pressSumbit(i.name)} >
                                 <Text style={styles.buttonText}>
                                     {i.title}
                                 </Text>
@@ -286,6 +514,66 @@ export default class AccountabilityDetail extends React.Component{
             </KeyboardAwareScrollView>
         )
     }
+
+    reTakePicture = async function() {
+        if (this.state.enabledEdit === false){
+            return;
+        }
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                for(let i in this.state.reFileList){
+                    if(this.state.reFileList[i].uri === response.uri){
+                        alert('不能重复添加');
+                        return;
+                    }
+                }
+                let tempArr = [];
+                tempArr = tempArr.concat(this.state.reFileList);
+                let index = response.uri.indexOf('/images/') + 8;
+                response['fileName'] = response.uri.substr(index, response.uri.length - index);
+                tempArr.push(response);
+
+                this.setState({
+                    reFileList: tempArr,
+                    reAttach:true,
+                });
+            }
+        });
+    };
+    rePressDelAttach = (item)=>{
+        if (this.state.enabledEdit === false){
+            return;
+        }
+        let has = false;
+        for(let i in this.state.reFileList){
+            if(this.state.reFileList[i] === item){
+                this.state.reFileList.pop(item);
+                has = true;
+            }
+        }
+        if(has){
+            if(this.state.reFileList.length>0){
+                this.setState({
+                    reAttach:true
+                });
+            }else{
+                this.setState({
+                    reAttach:false,
+                });
+            }
+        }
+    };
 
     takePicture = async function() {
 
@@ -349,13 +637,30 @@ export default class AccountabilityDetail extends React.Component{
         }
     };
     _pressDetail = (attachItem)=> {
-        if (this.state.enabledEdit === false){
-            return;
+        if (attachItem.uri) {
+            this.props.navigation.navigate('AttachDetail',{item : attachItem})
+        } else {
+            if (Platform.OS === 'ios') {
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileNameOptional: attachItem.name
+                }], (error, url)=>{
+
+                })
+            }else {
+                let uriSuffix = attachItem.url.substr(attachItem.url.lastIndexOf(".")+1).toLowerCase();
+                OpenFile.openDoc([{
+                    url: FILE_HOST + attachItem.url,
+                    fileName: attachItem.name,
+                    fileType: uriSuffix,
+                    cache: true,
+                }], (error, uri)=>{
+                })
+            }
         }
-        this.props.navigation.navigate('AttachDetail',{item : attachItem});
     };
 
-    _pressSumbit = (type) => {
+    async pressSumbit (type) {
         if(this.state.sourceType === ''){
             RRCToast.show('请选择事项来源');
             return;
@@ -364,12 +669,8 @@ export default class AccountabilityDetail extends React.Component{
             RRCToast.show('请输入编号');
             return;
         }
-        if(this.state.interviewName === ''){
-            RRCToast.show('请输入问责对象');
-            return;
-        }
         if(this.state.situation === ''){
-            RRCToast.show('请输入问责内容');
+            RRCToast.show('请输入约谈内容');
             return;
         }
         if(this.state.processingResults === ''){
@@ -378,6 +679,10 @@ export default class AccountabilityDetail extends React.Component{
         }
         if (this.state.keywordStr === ''){
             RRCToast.show('请输入关键字');
+            return;
+        }
+        if (this.state.releaseType === '1' && this.state.visualRangeList.length === 0) {
+            RRCToast.show('请选择可视范围');
             return;
         }
         if (this.state.sourceType === '1'){
@@ -414,37 +719,62 @@ export default class AccountabilityDetail extends React.Component{
             this.setState({enabledEdit: true});
             return;
         }
-        var files = [];
-
-        if(this.state.filesList &&  this.state.filesList.length>0){
-            var formData = new FormData();
-            for(let i  in this.state.filesList){
-                let nameStr = this.state.filesList[i].name ? this.state.filesList[i].name : this.state.filesList[i].fileName;
-                let urlStr = this.state.filesList[i].url ? this.state.filesList[i].url : this.state.filesList[i].uri;
-                let file = {uri:urlStr,type:'multipart/form-data',name:nameStr};
-                formData.append('files',file);
-            }
-            HttpPostFile(URLS.FileUploads,formData,"正在上传文件...").then((response)=>{
-                if(response.result === 1){
-                    files = response.data;
-                    this.uploadNoticeInfo(files, type)
-                }else{
-                    alert(response.msg);
+        if (type === 'EDIT'){
+            try {
+                var files = [];
+                var reFiles = [];
+                if(this.state.filesList &&  this.state.filesList.length>0){
+                    var formData = new FormData();
+                    for(let i  in this.state.filesList){
+                        let file = {uri:this.state.filesList[i].uri,type:'multipart/form-data',name:this.state.filesList[i].fileName};
+                        formData.append('files',file);
+                    }
+                    let res = await HttpPostFile(URLS.FileUploads,formData,"正在上传文件..");
+                    files = await res.data;
                 }
+                if (this.state.reFilesList && this.state.reFilesList.length > 0) {
+                    let reFormData = new FormData();
+                    for (let i = 0; i < this.state.reFilesList.length; i++){
+                        let file = {uri:this.state.reFilesList[i].uri,type:'multipart/form-data',name:this.state.reFilesList[i].fileName};
+                        reFormData.append('files',file);
+                    }
+                    let res = await HttpPostFile(URLS.FileUploads,reFormData,"正在上传文件..");
+                    reFiles = await res.data;
+                }
+                this.uploadNoticeInfo(files, reFiles, type);
 
-            }).catch((error)=>{
-                RRCToast.show(error);
-            });
-        }else{
-            this.uploadNoticeInfo([], type)
+            } catch (e) {
+                console.error(e);
+            }
+        } else {
+            this.uploadNoticeInfo([],[],type);
         }
+
+    }
+
+    _addDept = () => {
+        if (this.state.enabledEdit === false){
+            return;
+        }
+        let arr = [];
+        arr = arr.concat(this.state.interviewList);
+        arr.push({
+            deptName:'',
+            dutyName:'',
+            interviewType: this.state.interviewType,
+            staffName: '',
+        });
+        this.setState({
+            interviewList: arr,
+        })
     };
 
-    uploadNoticeInfo=(files, type)=> {
+    uploadNoticeInfo=(files, reFiles, type)=> {
         if (type === 'EDIT'){
             let requestData = {};
             requestData = this.state;
             requestData['filesList'] = files;
+            requestData['reFilesList'] = reFiles;
             requestData['recordType'] = 2;// 1，约谈  2，问责
             HttpPost(URLS.ModifyIAImplementInfo,requestData,"正在保存..").then((response)=>{
                 RRCToast.show(response.msg);
@@ -480,6 +810,16 @@ export default class AccountabilityDetail extends React.Component{
             });
         } else if (type === 'RECALL' && this.state.enabledEdit === false) {
             this.props.navigation.navigate('RecallOption', {ids: this.props.navigation.getParam('id')});
+        } else if (type === 'DELETE' && this.state.enabledEdit === false) {
+            HttpPost(URLS.DeleteImplementInfo,{id: this.props.navigation.getParam('id')},"正在删除...").then((response)=>{
+                RRCToast.show(response.msg);
+                if(response.result === 1){
+                    this.setState({enabledEdit: false});
+                    this.props.navigation.goBack();
+                }
+            }).catch((err)=>{
+                RRCAlert.alert(err);
+            });
         }
 
     };

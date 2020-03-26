@@ -1,4 +1,4 @@
-// const HOST = 'http://192.168.2.40:8081/'; //岳毅
+//const HOST = 'http://192.168.2.40:8081/'; //岳毅
 // const HOST = 'http://192.168.2.48:8081/'; //小好
 export const FILE_HOST = 'http://221.13.156.198:10008/';
 const HOST = 'http://221.13.156.198:10008/api/';
@@ -19,12 +19,14 @@ const URLS = {
     ApplyReleaseInfo : HOST + '/implementForIA/applyReleaseInfo', //提请发布审核
     RecallInfo : HOST + '/implementForIA/recallInfo', //撤回发布
     ReleaseInfo :HOST + '/implementForIA/releaseInfo', //发布内容
+    DeleteImplementInfo : HOST + '/implementForIA/deleteImplementInfo', //删除
     QueryListByAccountability : HOST + '/implementForIA/queryListByAccountability', //问责查询
     QueryList : HOST + '/implementForIA/queryList', //效能审核列表
     AgreeApproval : HOST + '/implementForIAForApproval/agreeApproval', //审批同意
     RejectApproval : HOST + '/implementForIAForApproval/rejectApproval', //审批驳回
     QueryReleaseAccountability : HOST + '/implementForIA/queryReleaseAccountability', //问责事项查询
     QueryReleaseInterview : HOST + '/implementForIA/queryReleaseInterview', //约谈事项查询
+    GetInternalDept : HOST + '/admin/dept/getInternalDept', //根据条件获取部门
     //绩效考核
     ListPageFillin: HOST + 'assess/fillin/listPage', //绩效考核列表
     ListDetailFillin : HOST + 'assess/fillin/listDetailInfo', //绩效考核详情
@@ -71,7 +73,9 @@ const URLS = {
     GetDataCloud : HOST + 'cloudDisk/queryList',  //获取资料云盘列表
     SaveDataCloud : HOST + 'cloudDisk/save', //上传资料云盘
     DeleteDataCloud : HOST + 'cloudDisk/delete', //删除资料云盘
-
+    //清单通知
+    SubjectDutyNoticeList : HOST + '/subjectDutyNotice/queryList',
+    SubjectDutyNoticeDetail : HOST + '/subjectDutyNotice/queryDetail',
 
     QueryNoticeList: HOST + '/notice/queryList',
     AddNotice: HOST + '/notice/save',
