@@ -177,7 +177,7 @@ export default class WorkPracticable extends React.Component{
         const {navigation} = this.props;
         let id = navigation.getParam('id');
         let type = navigation.getParam('approveType');
-        navigation.navigate('ApprovalWorkOptions', {id: id, approveType: type});
+        navigation.navigate('ApprovalWorkOptions', {id: id, approveType: type, key: navigation.state.key});
     };
     _pressDetail = (attachItem)=> {
         this.props.navigation.navigate('AttachDetail',{item : attachItem});

@@ -11,6 +11,7 @@ import {HttpPost, HttpPostFile} from "../../../Tools/JQFetch";
 import URLS from "../../../Tools/InterfaceApi";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import ImagePicker from "react-native-image-picker";
+import OpenFile from 'react-native-doc-viewer';
 
 //附件弹出框选项
 var options = {
@@ -504,7 +505,7 @@ export default class IInterviewDetail extends React.Component{
         } else {
             if (Platform.OS === 'ios') {
                 OpenFile.openDoc([{
-                    url: FILE_HOST + attachItem.url,
+                    url: URLS.FileHost + attachItem.url,
                     fileNameOptional: attachItem.name
                 }], (error, url)=>{
 
@@ -512,7 +513,7 @@ export default class IInterviewDetail extends React.Component{
             }else {
                 let uriSuffix = attachItem.url.substr(attachItem.url.lastIndexOf(".")+1).toLowerCase();
                 OpenFile.openDoc([{
-                    url: FILE_HOST + attachItem.url,
+                    url: URLS.FileHost + attachItem.url,
                     fileName: attachItem.name,
                     fileType: uriSuffix,
                     cache: true,
@@ -589,7 +590,7 @@ export default class IInterviewDetail extends React.Component{
         } else {
             if (Platform.OS === 'ios') {
                 OpenFile.openDoc([{
-                    url: FILE_HOST + attachItem.url,
+                    url: URLS.FileHost + attachItem.url,
                     fileNameOptional: attachItem.name
                 }], (error, url)=>{
 
@@ -597,7 +598,7 @@ export default class IInterviewDetail extends React.Component{
             }else {
                 let uriSuffix = attachItem.url.substr(attachItem.url.lastIndexOf(".")+1).toLowerCase();
                 OpenFile.openDoc([{
-                    url: FILE_HOST + attachItem.url,
+                    url: URLS.FileHost + attachItem.url,
                     fileName: attachItem.name,
                     fileType: uriSuffix,
                     cache: true,

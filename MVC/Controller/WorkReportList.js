@@ -17,11 +17,11 @@ export default class WorkReportList extends React.Component{
 
     constructor(props){
         super (props);
-        this.internal =  '' //是否内部角色 1=是 、0=否
+        this.internal =  ''; //是否内部角色 1=是 、0=否
 
-        context = this
+        context = this;
 
-        this.filter = {}
+        this.filter = {};
         this.state = {
             dataList:[],
             pageSize: 20,
@@ -35,7 +35,7 @@ export default class WorkReportList extends React.Component{
     }
 
     componentDidMount(): void {
-        this.internal = this.props.navigation.getParam('internal')
+        this.internal = this.props.navigation.getParam('internal');
         drop = false;
         this._onHeaderRefresh();
      }
@@ -69,13 +69,11 @@ export default class WorkReportList extends React.Component{
             this.filter).then((response)=>{
             RRCToast.show(response.msg);
             if (response.result === 1){
-                console.log(response.data.records)
                 const item = response.data.records;
-
                 if (refresh){
                     this.setState({dataList: item, refreshState: RefreshState.Idle});
                 } else {
-                    if (item < pageSize){
+                    if (item < this.state.pageSize){
                         this.setState({refreshState: RefreshState.NoMoreData})
                     } else {
                         this.setState({

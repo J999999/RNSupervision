@@ -488,7 +488,7 @@ class WorkReportDetail extends Component {
                 <View style={{flexDirection: 'row'}}>
                     {this.renderTabItem("1", '基本信息')}
                     {this.renderTabItem("2", '责任单位')}
-                    {this.renderTabItem("3", '系统记录')}
+                    {/*{this.renderTabItem("3", '系统记录')}*/}
                 </View>
 
                 <View style={{height: 10*unitWidth, backgroundColor: '#f5f5f5'}}/>

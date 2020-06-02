@@ -1,17 +1,23 @@
 //const HOST = 'http://192.168.2.40:8081/'; //岳毅
 // const HOST = 'http://192.168.2.48:8081/'; //小好
-export const FILE_HOST = 'http://221.13.156.198:10008/';
+export const FILE_HOST = 'http://221.13.156.198:10008';
 const HOST = 'http://221.13.156.198:10008/api/';
+// export const FILE_HOST = 'http://47.105.25.238/';
+// const HOST = 'http://47.105.25.238/api';
 
 const URLS = {
+    FileHost: FILE_HOST,
     Login: HOST + 'login',
     UserMenu: HOST + 'admin/menu/getUserMenu',
     MailList: HOST + '/user/getUserList',
     LoginUser: HOST + '/user/getLoginUser',
     //效能问责相关接口
-    QueryListByInterview: HOST + '/implementForIA/queryListByInterview', //约谈查询
+    QueryListByInterview: HOST + '/implementForIA/queryListByInterview', //约谈发布列表
+    InterMentionListApi: HOST + '/requestForIA/queryList', //约谈提起列表
     AddIAImplementInfo: HOST + '/implementForIA/addIAImplementInfo', //新增约谈实施事项
+    InterMentionAddApi: HOST + '/requestForIA/addRequestInfo', //新增约谈提起
     QueryInfoById : HOST + '/implementForIA/queryInfoById', //查询单个约谈详情
+    InterMentionDetailApi: HOST + '/requestForIA/queryInfoById', //查询单个约谈提起详情
     ModifyIAImplementInfo : HOST + '/implementForIA/modifyIAImplementInfo', //修改约谈问责实施事项
     QueryLogList : HOST + '/implementForIAForApproval/queryLogList', //约谈审批流程
     QueryInfoLogById : HOST + '/implementForIA/queryInfoLogById', //约谈系统记录
@@ -20,6 +26,8 @@ const URLS = {
     RecallInfo : HOST + '/implementForIA/recallInfo', //撤回发布
     ReleaseInfo :HOST + '/implementForIA/releaseInfo', //发布内容
     DeleteImplementInfo : HOST + '/implementForIA/deleteImplementInfo', //删除
+    InterMentionDelete: HOST + '/requestForIA/delete',//删除约谈提请
+    InterMentionApproval: HOST + '/requestForIA/approvalInfo', // 约谈/问责 提请审批
     QueryListByAccountability : HOST + '/implementForIA/queryListByAccountability', //问责查询
     QueryList : HOST + '/implementForIA/queryList', //效能审核列表
     AgreeApproval : HOST + '/implementForIAForApproval/agreeApproval', //审批同意

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View, DeviceEventEmitter} from 'react-native';
 import {HttpPost} from "../../Tools/JQFetch";
 import URLS from "../../Tools/InterfaceApi";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
@@ -9,6 +9,8 @@ import PopSearchview from '../../View/PopSearchview'
 
 var search = {}; //查询参数
 var drop = false;
+const _that = this;
+var refreshSubScription;
 export default class ApprovalWorkList extends React.Component{
     static navigationOptions = {
         title: '工作审核',
@@ -19,13 +21,14 @@ export default class ApprovalWorkList extends React.Component{
         this.state = {
             dataList: [],
             refreshState: 0,
-            pageSize: 11,
+            pageSize: 20,
             pageNo: 1,
         }
     }
     componentWillUnmount(): void {
         search = {};
         drop = false;
+        this.refreshSubScription.remove();
     }
 
     componentDidMount(): void {
@@ -65,6 +68,7 @@ export default class ApprovalWorkList extends React.Component{
         HttpPost(URLS.QueryListByApprovalWork,
             search).then((response)=>{
             RRCToast.show(response.msg);
+            console.log('---------', response);
             if (response.result === 1){
                 const item = response.data.records;
                 if (refresh){
@@ -152,17 +156,32 @@ export default class ApprovalWorkList extends React.Component{
                 progressStr = '经验交流';
                 break;
         }
+        let stateStr = '';
+        switch (item.approveState) {
+            case 0:
+                stateStr = '已保存';
+                break;
+            case 1:
+                stateStr = '待审核';
+                break;
+            case 2:
+                stateStr = '审核通过';
+                break;
+            case 99:
+                stateStr = '驳回';
+                break;
+        }
         return (
             <TouchableOpacity activeOpacity={.5} onPress={this._clickCellAction.bind(this, item)}>
                 <View style={styles.itemStyle}>
                     <View style={styles.itemLeftStyle}>
-                        <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{item.creatorName}</Text>
+                        <Text style={{fontSize: 16 * unitWidth, fontWeight: 'bold'}}>{progressStr}</Text>
                         <Text
                             style={{marginTop: 5*unitHeight}}
-                            numberOfLines={0}>{item.itemContent}</Text>
+                            numberOfLines={0}>{item.creatorName}</Text>
                     </View>
                     <View style={styles.itemRightStyle}>
-                        <Text style={{textAlign: 'right'}}>{progressStr}</Text>
+                        <Text style={{textAlign: 'right'}}>{stateStr}</Text>
                         <Text style={{textAlign: 'right', marginTop: 5*unitHeight}}>{item.createTime}</Text>
                     </View>
                 </View>
@@ -170,6 +189,9 @@ export default class ApprovalWorkList extends React.Component{
         )
     };
     _clickCellAction = (item) => {
+        this.refreshSubScription = DeviceEventEmitter.addListener('ZTZRrefresh', ()=>{
+            this._onHeaderRefresh();
+        });
         let hasButton = false;
         item.approveState === 1 ? hasButton = true : hasButton = false;
         switch (item.approveType) {

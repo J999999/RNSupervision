@@ -13,9 +13,9 @@ const  FunctionEnum = {
         21:'FillAuditList',
         22:'PreviewList',
         23:'ShowScoreList',
-        102:'AccountabilityList',
-        101:'IInterviewList',
-        103:'AuditList',
+        25:'AccountabilityList',
+        26:'IInterviewList',
+        27:'AuditList',
 
         31:'ExchangeexperienceList',
         32:'ApprovalWorkList',
@@ -38,6 +38,10 @@ const  FunctionEnum = {
 
         100:'KDataCloudList',
         112:'SubjectDutyNoticeList',
+        107: 'InterMentionList',//约谈提起
+        108: 'AccMentionList',//问责提起
+        109: 'InterMentionAuditList',//约谈审核
+        110: 'AccMentionAuditList',//问责审核
     },
 
     /**

@@ -3,7 +3,7 @@ import {View, Text, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from 'react-navigation';
 
 import HomePage from '../Controller/HomePage'
-import MailList from '../Controller/MailList'
+//import MailList from '../Controller/MailList'
 import Function from '../Controller/Function'
 import Mine from '../Controller/Mine'
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
@@ -24,21 +24,21 @@ const RootTabs = createMaterialTopTabNavigator({
                     )
         }
     },
-    MailList:{
-        screen: MailList,
-        navigationOptions:{
-            title:'通讯录',
-            tabBarIcon:({tintColor, focused}) => (
-                focused ?
-                    <Image
-                        source={require('../Images/main_contacts_1.png')}
-                        style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
-                    <Image
-                        source={require('../Images/main_contacts_0.png')}
-                        style={{width: 25*unitWidth, height: 25*unitWidth}}/>
-            )
-        }
-    },
+    // MailList:{
+    //     screen: MailList,
+    //     navigationOptions:{
+    //         title:'通讯录',
+    //         tabBarIcon:({tintColor, focused}) => (
+    //             focused ?
+    //                 <Image
+    //                     source={require('../Images/main_contacts_1.png')}
+    //                     style={{width: 25*unitWidth, height: 25*unitWidth}}/> :
+    //                 <Image
+    //                     source={require('../Images/main_contacts_0.png')}
+    //                     style={{width: 25*unitWidth, height: 25*unitWidth}}/>
+    //         )
+    //     }
+    // },
     Function:{
         screen: Function,
         navigationOptions:{

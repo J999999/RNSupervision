@@ -13,7 +13,7 @@ var drop = false;
 
 export default class AuditList extends React.Component{
     static navigationOptions = ({navigation}) => ({
-        title: '',
+        title: '发布审核',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{navigation.state.params.rightOnPress()}}>
             <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{'编辑'}</Text>

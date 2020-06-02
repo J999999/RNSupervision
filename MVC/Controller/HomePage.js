@@ -16,19 +16,53 @@ const hMargin = 25;
 export default class HomePage extends React.Component {
 
     async componentDidMount(): void {
-        // const xx = await AsyncStorage.getItem('homePageFunc');
-        // console.log(JSON.stringify(xx));
-        // if (xx) {
-        //     this.setState({
-        //         data: JSON.parse(xx),
-        //     })
-        // } else {
+        const xx = await AsyncStorage.getItem('homePageFunc');
+        if (xx) {
+            this.setState({
+                data: JSON.parse(xx),
+            })
+        } else {
             this._getFunctionAction();
-        // }
+        }
 
-        this.getLoginInfo()
+        this.getLoginInfo();
+        this._getDBNum();
+        this._getGGNum();
     }
+    _getDBNum() {
+        HttpPost(URLS.WorkBenchQueryTodoList,{},"正在加载").then((response)=>{
+            if(response.result === 1){
+                if(response.data==null || response.data.length <1){
+                    this.setState({hasData:false})
+                }else{
+                    //待办事项，去掉客户端没有的数据
+                    response.data.map((item)=>{
+                        if(item.todoType!==1 && item.todoType!==9 && item.todoType!==10&& item.todoType!==11){
+                            return item
+                        }
+                    });
+                    let num = 0;
+                    for (let i=0; i<response.data.length; i++){
+                        let model = response.data[i];
+                        num += model['num'];
+                    }
+                    this.setState({ DBNum: num })
+                }
+            }else{
+                alert(response.msg);
+            }
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
+    }
+    _getGGNum() {
+        HttpPost(URLS.QueryNoticeList,{pageNo: 1, pageSize: 9999999, queryState: 3}).then((response)=>{
+            this.setState({ GGNum: response.data.records.length })
 
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
+    }
     getLoginInfo(){
         HttpPost(URLS.LoginUser,{},'').then((response)=>{
             if (response.result === 1){
@@ -44,14 +78,21 @@ export default class HomePage extends React.Component {
             if (response.result !== 1) {
                 RRCToast.show(response.msg);
             }else {
-                console.log(response.data);
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
                     if(oneLevel.isDefault===0){
                         for (let j = 0; j < oneLevel.children.length; j++){
                             let twoLevel = oneLevel.children[j];
-                            functions.push(twoLevel);
+                            if (twoLevel.children.length === 0) {
+                                functions.push(twoLevel);
+                            } else {
+                                for (let k = 0; k < twoLevel.children.length; k++){
+                                    let three = twoLevel.children[k];
+                                    functions.push(three);
+                                }
+                            }
+
                         }
                     }else{
                         functions.push(oneLevel);
@@ -72,6 +113,8 @@ export default class HomePage extends React.Component {
         this.state = {
             data:[],
             deleteBtnHidden: false,
+            DBNum: 0,   //待办事项数量
+            GGNum: 0,   //公告通知数量
         };
     }
 
@@ -90,7 +133,7 @@ export default class HomePage extends React.Component {
         );
     }
     renderItem({item, index})  {
-        let icon   = FunctionEnum.iconMap[item.id]
+        let icon   = FunctionEnum.iconMap[item.id];
         if(!icon){
             icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
         }
@@ -109,8 +152,27 @@ export default class HomePage extends React.Component {
                         {this.state.deleteBtnHidden === true?<Image source={require('../Images/deleteicon.png')}
                                                                     style={{width: 20*unitWidth, height: 20*unitWidth, marginLeft: 85*unitWidth}}/>:null}
                     </TouchableOpacity>
-                    <Image source={icon}
-                           style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}/>
+                    <View style={{flexDirection: 'row'}}>
+                        <Image source={icon}
+                               style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}
+                        />
+                        {
+                            this.state.DBNum !== 0 && item.id === 51 ? <View style={{width: 26*unitWidth, height: 26*unitWidth, borderRadius: 13*unitWidth,
+                                backgroundColor: 'red', marginLeft: -10*unitWidth, marginTop: -5*unitWidth,
+                                alignItems: 'center', justifyContent: 'center',
+                            }}>
+                                <Text style={{color: 'white', fontWeight: 'bold'}}>{this.state.DBNum}</Text>
+                            </View> : null
+                        }
+                        {
+                            this.state.GGNum !== 0 && item.id === 8 ? <View style={{width: 26*unitWidth, height: 26*unitWidth, borderRadius: 13*unitWidth,
+                                backgroundColor: 'red', marginLeft: -10*unitWidth, marginTop: -5*unitWidth,
+                                alignItems: 'center', justifyContent: 'center',
+                            }}>
+                                <Text style={{color: 'white', fontWeight: 'bold'}}>{this.state.GGNum}</Text>
+                            </View> : null
+                        }
+                    </View>
                     <Text style={{marginTop: 15, textAlign: 'center'}}
                           numberOfLines={0}>{item.name}</Text>
                 </View>}

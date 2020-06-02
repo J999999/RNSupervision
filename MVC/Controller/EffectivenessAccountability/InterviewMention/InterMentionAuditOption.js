@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, DeviceEventEmitter} from 'react-native';
-import TextInputMultWidget from "../../Widget/TextInputMultWidget";
-import {screenWidth, unitWidth} from "../../Tools/ScreenAdaptation";
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import TextInputMultWidget from "../../../Widget/TextInputMultWidget";
+import {screenWidth, unitWidth} from "../../../Tools/ScreenAdaptation";
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
-import {HttpPost} from "../../Tools/JQFetch";
-import URLS from "../../Tools/InterfaceApi";
+import {HttpPost} from "../../../Tools/JQFetch";
+import URLS from "../../../Tools/InterfaceApi";
 
-export default class ApprovalWorkOptions extends React.Component{
+export default class InterMentionAuditOption extends React.Component{
     static navigationOptions = {
         title: '请审核',
     };
@@ -16,17 +16,22 @@ export default class ApprovalWorkOptions extends React.Component{
             text: '',
         }
     }
+    componentDidMount(): void {
+        const {navigation} = this.props;
+        let ids = navigation.getParam('ids');
+        console.log('ids = ', ids);
+    }
 
     render(): React.ReactNode {
         return(
             <View style={{flex: 1}}>
-                <TextInputMultWidget title='审核意见:'
-                                     placeholder='请输入审核意见'
+                <TextInputMultWidget title='审批意见:'
+                                     placeholder='请输入审批意见'
                                      onChangeText={(text)=>{this.setState({text: text})}}
                 />
                 <TouchableOpacity style={styles.button} onPress={()=>this.uploadNoticeInfo(1)} >
                     <Text style={styles.buttonText}>
-                        {'通过'}
+                        {'同意'}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={()=>this.uploadNoticeInfo(2)} >
@@ -39,17 +44,13 @@ export default class ApprovalWorkOptions extends React.Component{
     }
     uploadNoticeInfo=(type)=> {
         const {navigation} = this.props;
-        let id = navigation.getParam('id');
-        let approveType = navigation.getParam('approveType');
-        let approveJsonArray = [];
-        approveJsonArray.push({id: id, approveType: approveType, result: 2, suggestion: this.state.text});
+        let ids = navigation.getParam('ids');
         if (type === 1){
             //同意
-            HttpPost(URLS.ApproveBatch, {approveJsonArray: approveJsonArray}, '正在提交...').then((response) =>{
+            HttpPost(URLS.InterMentionApproval, {recordIds: ids, opinion: this.state.text, approvalType: '1'}, '正在提交...').then((response) =>{
                 RRCToast.show(response.msg);
                 if (response.result === 1){
-                    DeviceEventEmitter.emit('ZTZRrefresh');
-                    navigation.goBack(navigation.getParam('key'));
+                    navigation.goBack();
                 }
             }).catch((error)=>{
                 RRCAlert.alert('服务器内部错误')
@@ -57,22 +58,13 @@ export default class ApprovalWorkOptions extends React.Component{
         } else if (type === 2){
             //驳回
             if (this.state.text === ''){
-                RRCToast.show('请填写审核意见后驳回');
+                RRCToast.show('请填写审批意见后驳回');
                 return;
             }
-
-            HttpPost(URLS.ApproveBatch,
-                {
-                    approveJsonArray:[{
-                        id: id,
-                        approveType: approveType,
-                        result: 99,
-                        suggestion: this.state.text
-                    }]}, '正在提交...').then((response) =>{
+            HttpPost(URLS.InterMentionApproval, {recordIds: ids, opinion: this.state.text, approvalType: '2'}, '正在提交...').then((response) =>{
                 RRCToast.show(response.msg);
                 if (response.result === 1){
-                    DeviceEventEmitter.emit('ZTZRrefresh');
-                    navigation.goBack(navigation.getParam('key'));
+                    navigation.goBack();
                 }
             }).catch((error)=>{
                 RRCAlert.alert('服务器内部错误')

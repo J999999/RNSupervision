@@ -54,7 +54,7 @@ export default class NoticeList extends React.Component {
             Object.assign(data,this.filter)
         }
         HttpPost(URLS.QueryNoticeList,data,"获取公告通知").then((response)=>{
-            console.log(response.data)
+            console.log(response.data);
 
             if(!response || !response.data && response.data.result != 1){
                 RRCToast.show(response.msg);

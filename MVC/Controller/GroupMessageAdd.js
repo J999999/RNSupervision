@@ -35,7 +35,7 @@ class GroupMessageAdd  extends React.Component {
 
      getDeptInfo(){
          HttpPost(URLS.SmsGetDeptUser,{},"").then((response)=>{
-             if(response.result == 1){
+             if(response.result === 1){
                  this.deptData = response.data
              }else{
                  alert(response.msg);

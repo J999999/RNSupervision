@@ -11,16 +11,16 @@ import {forInStatement} from "@babel/types";
 
 var search = {}; //查询参数
 var drop = false;
-export default class AccountabilityList extends React.Component{
+export default class AccMentionList extends React.Component{
     static navigationOptions = ({navigation}) => ({
-        title: '问责发布',
+        title: '问责提起',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{navigation.state.params.rightOnPress()}}>
             <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{'新增'}</Text>
         </TouchableOpacity>)
     });
     _ClickHeaderRightAction = () => {
-        this.props.navigation.navigate('AccountabilityAdd');
+        this.props.navigation.navigate('AccMentionAdd');
     };
     constructor(props){
         super (props);
@@ -65,30 +65,32 @@ export default class AccountabilityList extends React.Component{
     _getListData = (refresh) => {
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
-        let states = this.props.navigation.getParam('states')
-        if(states!=undefined){
+        search['queryType'] = '1'; //普通列表
+        search['recordType'] = '2'; //问责
+        let states = this.props.navigation.getParam('states');
+        if(states !== undefined){
             search['states'] = states ;
         }
-        HttpPost(URLS.QueryListByAccountability,
+        HttpPost(URLS.InterMentionListApi,
             search).then((response)=>{
-                RRCToast.show(response.msg);
-                if (response.result === 1){
-                    const item = response.data.records;
-                    if (refresh){
-                        this.setState({dataList: item, refreshState: RefreshState.Idle});
+            RRCToast.show(response.msg);
+            if (response.result === 1){
+                const item = response.data.records;
+                if (refresh){
+                    this.setState({dataList: item, refreshState: RefreshState.Idle});
+                } else {
+                    if (item < 10){
+                        this.setState({refreshState: RefreshState.NoMoreData})
                     } else {
-                        if (item < 10){
-                            this.setState({refreshState: RefreshState.NoMoreData})
-                        } else {
-                            this.setState({
-                                dataList: this.state.dataList.concat(item),
-                                refreshState: RefreshState.Idle,
-                            })
-                        }
+                        this.setState({
+                            dataList: this.state.dataList.concat(item),
+                            refreshState: RefreshState.Idle,
+                        })
                     }
-                }else {
-                    this.setState({refreshState: RefreshState.Failure});
                 }
+            }else {
+                this.setState({refreshState: RefreshState.Failure});
+            }
         }).catch((err)=>{
             RRCAlert.alert('服务器内部错误');
         })
@@ -119,32 +121,17 @@ export default class AccountabilityList extends React.Component{
                     </TouchableOpacity>
                 </View>
                 <PopSearchview dataSource={[
-                    {'name':'查询编号', 'type':2, 'postKeyName':'billCode'},
-                    {'name':'查询文号', 'type':2, 'postKeyName':'symbolCode'},
-                    {'name':'事项来源', 'type':3, 'postKeyName':'sourceTypes', 'dataSource':
-                            [
-                                {'name': '内部转办', 'id': 1},
-                                {'name': '领导交办', 'id': 2},
-                                {'name': '临时交办', 'id': 3},
-                            ]
-                    },
-                    {'name':'问责对象', 'type':2, 'postKeyName':'interviewName'},
+                    {'name':'事项来源', 'type':2, 'postKeyName':'sourceStr'},
                     {'name':'问责事项', 'type':2, 'postKeyName':'matter'},
                     {'name':'状态查询', 'type':3, 'postKeyName':'states', 'dataSource':
                             [
-                                {'name': '待问责', 'id': '1'},
-                                {'name': '已保存', 'id': '2'},
-                                {'name': '发布待审核', 'id': '3'},
+                                {'name': '待审核', 'id': '3'},
                                 {'name': '审核中', 'id': '4'},
-                                {'name': '已发布', 'id': '5'},
-                                {'name': '已撤回', 'id': '6'},
-                                {'name': '驳回', 'id': '7'},
+                                {'name': '审核通过', 'id': '5'},
+                                {'name': '驳回', 'id': '6'},
                             ]
                     },
-                    {'name':'发布时间', 'type':1, 'postKeyName':'releaseTimeStart', 'postKeyNameEnd':'releaseTimeEnd'},
-                    {'name':'提交时间', 'type':1, 'postKeyName':'reportTimeStart', 'postKeyNameEnd':'reportTimeEnd'},
-                    {'name':'问责完成时间', 'type':1, 'postKeyName':'finishTimeStart', 'postKeyNameEnd':'finishTimeEnd'},
-                ]}
+                    {'name':'提起时间', 'type':1, 'postKeyName':'approvalReportTimeStart', 'postKeyNameEnd':'approvalReportTimeEnd'}]}
                                ref={ref => this.popSearchview = ref}
                                callback={(c)=>{this._searchAction(c)}}
                 />
@@ -154,27 +141,18 @@ export default class AccountabilityList extends React.Component{
     _renderItemAction = ({item}) =>{
         let recordState = '';
         switch (item.recordState) {
-            case 1:
-                recordState = '待约谈';
-                break;
-            case 2:
-                recordState = '已保存';
-                break;
             case 3:
-                recordState = '发布待审核';
+                recordState = '待审核';
                 break;
             case 4:
                 recordState = '审核中';
                 break;
             case 5:
-                recordState = '已发布';
+                recordState = '审核通过';
                 break;
             case 6:
-                recordState = '已撤回';
-                break;
-            case 7:
                 recordState = '驳回';
-                break
+                break;
         }
         return (
             <TouchableOpacity activeOpacity={.5} onPress={this._clickCellAction.bind(this, item)}>
@@ -185,44 +163,30 @@ export default class AccountabilityList extends React.Component{
                     </View>
                     <View style={styles.itemRightStyle}>
                         <Text style={{textAlign: 'right'}}>{recordState}</Text>
-                        <Text>{'问责对象:'+item.interviewName}</Text>
+                        <Text>{'提交时间:'+item.approvalReportTime}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
         )
     };
     _clickCellAction = (item) => {
-        this.props.navigation.navigate('AccountabilityDetail', {id: item.id, buttons: item.buttons});
+        this.props.navigation.navigate('AccMentionDetail', {id: item.id, buttons: item.buttons});
     };
     _searchAction = (info) => {
         search = {};
         let searchArr = [];
         searchArr = searchArr.concat(info);
         searchArr.map((i)=>{
-            if (i.billCode)
-                search['billCode'] = i.billCode;
-            if (i.symbolCode)
-                search['symbolCode'] = i.symbolCode;
-            if (i.sourceTypes)
-                search['sourceTypes'] = i.sourceTypes;
-            if (i.interviewName)
-                search['interviewName'] = i.interviewName;
-            if (i.matter)
-                search['matter'] = i.matter;
+            if (i.sourceStr)
+                search['sourceStr'] = i.sourceStr;
             if (i.states)
                 search['states'] = i.states;
-            if (i.releaseTimeStart)
-                search['releaseTimeStart'] = i.releaseTimeStart;
-            if (i.releaseTimeEnd)
-                search['releaseTimeEnd'] = i.releaseTimeEnd;
-            if (i.reportTimeStart)
-                search['reportTimeStart'] = i.reportTimeStart;
-            if (i.reportTimeEnd)
-                search['reportTimeEnd'] = i.reportTimeEnd;
-            if (i.finishTimeStart)
-                search['finishTimeStart'] = i.finishTimeStart;
-            if (i.finishTimeEnd)
-                search['finishTimeEnd'] = i.finishTimeEnd;
+            if (i.matter)
+                search['matter'] = i.matter;
+            if (i.approvalReportTimeStart)
+                search['approvalReportTimeStart'] = i.approvalReportTimeStart;
+            if (i.approvalReportTimeEnd)
+                search['approvalReportTimeEnd'] = i.approvalReportTimeEnd;
         });
         this._onHeaderRefresh();
     };

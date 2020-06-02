@@ -13,7 +13,7 @@ var drop = false;
 
 export default class AccountabilityReleaseList extends React.Component{
     static navigationOptions = {
-        title: '问责事项'
+        title: '问责查看'
     };
     constructor(props){
         super (props);

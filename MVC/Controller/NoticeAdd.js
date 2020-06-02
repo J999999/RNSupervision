@@ -42,16 +42,29 @@ class NoticeAdd  extends React.Component {
 
         navigation = this.props.navigation;
         this.state = {
+            selectValue: '',
+            deptData: [],
             hasAttach:false,
         }
      }
 
      componentDidMount(): void {
+        this._getDeptInfo();
         if(this.bean!=null){
             this.getNoticeInfo()
         }
      }
-
+    _getDeptInfo () {
+        HttpPost(URLS.SmsGetDeptUser,{},"").then((response)=>{
+            if(response.result === 1){
+                this.setState({ deptData: response.data })
+            }else{
+                alert(response.msg);
+            }
+        }).catch((err)=>{
+            RRCToast.show(err);
+        });
+    }
     getNoticeInfo(){
         HttpPost(URLS.NoticeDetail,{id:this.bean.id},"").then((response)=>{
             // RRCToast.show(response.msg);
@@ -80,7 +93,7 @@ class NoticeAdd  extends React.Component {
         }
         HttpPost(URLS.AddNotice,requestData,"正在保存..").then((response)=>{
             RRCToast.show(response.msg);
-            if(response.result == 1){
+            if(response.result === 1){
                 navigation.state.params.callback()
                 navigation.goBack();
             }else{
@@ -281,7 +294,15 @@ class NoticeAdd  extends React.Component {
                     <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.bean.content :''}  title='内    容：'  placeholder='请输入' onChangeText={(text)=>{
                             this.content = text;
                     }}/>
-
+                    <TouchableOpacity onPress={()=>{
+                        this.props.navigation.navigate('EmpSelectList', {data:this.state.deptData,value:this.state.selectValue,callback:function (select) {
+                                console.log('.......... ', select);
+                            }})
+                    }}>
+                        <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.bean.content :''}  title='下发对象：'  placeholder='请选择下发对象' onChangeText={(text)=>{
+                            this.content = text;
+                        }}/>
+                    </TouchableOpacity>
                     {
                         this.state.hasAttach == true ?  fileButtons  :  null
                     }

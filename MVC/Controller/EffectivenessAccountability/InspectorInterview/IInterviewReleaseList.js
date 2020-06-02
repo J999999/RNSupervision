@@ -19,7 +19,7 @@ var drop = false;
 
 export default class IInterviewReleaseList extends React.Component{
     static navigationOptions = {
-        title: '约谈事项'
+        title: '约谈查看'
     };
     constructor(props){
         super (props);

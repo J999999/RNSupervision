@@ -27,10 +27,28 @@ export default class EmpSelectList extends React.Component{
     componentDidMount(): void {
         this.props.navigation.setParams({rightOnPress: this._ClickHeaderRightAction});
         const {navigation} = this.props;
-        let data = navigation.getParam('data')
-        this.allData = data
+        let data = navigation.getParam('data');
+        console.log('data = ', data);
+        let xx = [];
+        for (let i=0; i<data.length; i++){
+            let one = data[i];
+            xx.push({key: one.deptId, label: one.deptName, children: []});
+            for (let j=0; j<one.deptUserList.length; j++){
+                let two = one.deptUserList[j];
+                xx[i].children.push({key: two.deptId, label: two.deptName, children: []});
+                for (let k=0; k<two.userList.length; k++){
+                    let three = two.userList[k];
+                    xx[i].children[j].children.push({key: three.id, label: three.username});
+                }
+            }
+        }
+        console.log('...........', xx);
+
+
+
+        this.allData = xx;
         this.setState({
-            treeData: data,
+            treeData: xx,
             value : navigation.getParam('value')
         })
     }
@@ -52,7 +70,7 @@ export default class EmpSelectList extends React.Component{
 
             for(let j in dept.children){
                 let user = dept.children[j]
-                if(user.label.indexOf(text)!= -1){
+                if(user.deptName.indexOf(text)!= -1){
                     have = true
                     tempdept.children.push(user)
                 }
