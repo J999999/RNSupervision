@@ -58,7 +58,7 @@ export default class DetailedList extends React.Component{
         let deptId = navigation.getParam('deptId');
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
-        search['partyInfoId'] = deptId;
+        deptId ? search['partyInfoId'] = deptId : null;
         search['approveStates'] = 2;
         HttpPost(URLS.QueryPageList,
             search).then((response)=>{

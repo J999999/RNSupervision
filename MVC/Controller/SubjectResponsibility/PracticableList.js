@@ -58,8 +58,12 @@ export default class PracticableList extends React.Component{
         let deptId = navigation.getParam('deptId');
         search['pageNo'] = this.state.pageNo;
         search['pageSize'] = this.state.pageSize;
-        search['partyInfoId'] = deptId;
-        HttpPost(URLS.QueryListByDutyPracticable,
+        deptId !== '' ? search['partyInfoId'] = deptId : null;
+        let url = null;
+        deptId !== '' ? url = URLS.QueryListByDutyPracticable : url = URLS.WBTFFList;
+        console.log('url = ', url);
+        console.log('deptId', deptId);
+        HttpPost(url,
             search).then((response)=>{
             RRCToast.show(response.msg);
             if (response.result === 1){

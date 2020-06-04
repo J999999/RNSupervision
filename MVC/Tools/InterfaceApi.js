@@ -73,6 +73,7 @@ const URLS = {
     GetSubjectDutyLogById : HOST + 'subjectDutyInventory/getSubjectDutyLogById', //主体责任清单系统记录
     GetDutyByDutyInventoryId: HOST + 'subjectDutyPracticable/getDutyByDutyInventoryId', //获取主体责任清单落实
     QueryListByDutyPracticable: HOST + 'subjectDutyPracticable/queryPageList', //获取主体责任落实情况列表
+    WBTFFList: HOST + 'subjectDutyPracticable/queryAddPageList', //外部3 4 5 查询本单位落实列表
     QueryListByApprovalWork : HOST + 'approvalWork/queryPageList', //主体责任 工作审核
     ApproveBatch : HOST + 'approvalWork/approveBatch', //工作审核 审核
     GetDutyPracticableById : HOST + 'subjectDutyPracticable/getDutyPracticableById', //根据id获取主体责任落实

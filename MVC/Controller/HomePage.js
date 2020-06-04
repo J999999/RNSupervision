@@ -71,6 +71,7 @@ export default class HomePage extends React.Component {
         HttpPost(URLS.LoginUser,{},'').then((response)=>{
             if (response.result === 1){
                 this.internal = response.data.internal;
+                this.roleLevel = response.data.role.level;
                 AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
                 AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
             }
@@ -115,6 +116,7 @@ export default class HomePage extends React.Component {
     constructor(props){
         super(props);
         this.internal = null;
+        this.roleLevel = null;
         this.state = {
             data:[],
             deleteBtnHidden: false,
@@ -330,8 +332,23 @@ export default class HomePage extends React.Component {
      94: '', //其他工作统计
      */
     _ClickItemAction(item){
+        console.log(item);
+        console.log('internal = ' , this.state.internal);
+        console.log('roleLevel = ', this.state.roleLevel);
         if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
             this.props.navigation.navigate('StatisticsCharts',{bean : item})
+        } else if (item.id === 82) {
+            if (this.internal === 0) {
+                if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+                    this.props.navigation.navigate('DetailedList')
+                }
+            }
+        } else if (item.id === 83) {
+            if (this.internal === 0) {
+                if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+                    this.props.navigation.navigate('PracticableList', {deptId: ''})
+                }
+            }
         } else {
             let func = FunctionEnum.actionMap[item.id];
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
