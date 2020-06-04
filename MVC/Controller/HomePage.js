@@ -337,15 +337,12 @@ export default class HomePage extends React.Component {
         console.log('roleLevel = ', this.state.roleLevel);
         if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
             this.props.navigation.navigate('StatisticsCharts',{bean : item})
-        } else if (item.id === 82) {
-            if (this.internal === 0) {
-                if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+        }
+        if (this.internal === 0) {
+            if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+                if (item.id === 82) {
                     this.props.navigation.navigate('DetailedList')
-                }
-            }
-        } else if (item.id === 83) {
-            if (this.internal === 0) {
-                if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+                } else if (item.id === 83) {
                     this.props.navigation.navigate('PracticableList', {deptId: ''})
                 }
             }
