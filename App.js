@@ -16,14 +16,24 @@ import Home from './MVC/Controller/Home'
 import {unitWidth} from "./MVC/Tools/ScreenAdaptation";
 import Mine from './MVC/Controller/Mine'
 import AddFunction from './MVC/Controller/AddFunction'
-import AddIInterview from './MVC/Controller/EffectivenessAccountability/InspectorInterview/AddIInterview'//新增督查约谈
-import IInterviewList from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewList'//督查约谈列表
-import IInterviewDetail from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewDetail'//督查约谈详情
+import AddIInterview from './MVC/Controller/EffectivenessAccountability/InspectorInterview/AddIInterview'//新增约谈发布
+import IInterviewList from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewList'//约谈发布列表
+import IInterviewDetail from './MVC/Controller/EffectivenessAccountability/InspectorInterview/IInterviewDetail'//约谈发布详情
 import ApprovalProcess from './MVC/Controller/EffectivenessAccountability/InspectorInterview/ApprovalProcess' //约谈审批流程
 import SystemRecording from './MVC/Controller/EffectivenessAccountability/InspectorInterview/SystemRecording' //约谈系统记录
 import BatchForms from './MVC/Controller/EffectivenessAccountability/InspectorInterview/BatchForms' //约谈呈批表
-import AccountabilityList from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityList'//效能问责列表
-import AccountabilityAdd from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityAdd' //新增效能问责
+import InterMentionList from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionList' //约谈提起列表
+import InterMentionAdd from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionAdd' //新增约谈提起
+import InterMentionDetail from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionDetail' //约谈提起详情
+import InterMentionAuditList from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionAuditList' //约谈提请审核列表
+import InterMentionAuditDetail from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionAuditDetail' //约谈提请审核详情
+import InterMentionAuditOption from './MVC/Controller/EffectivenessAccountability/InterviewMention/InterMentionAuditOption' //约谈提请审核操作页面
+import AccountabilityList from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityList'//问责发布列表
+import AccountabilityAdd from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityAdd' //新增问责发布
+import AccMentionList from './MVC/Controller/EffectivenessAccountability/AccMention/AccMentionList'//问责提起列表
+import AccMentionAdd from './MVC/Controller/EffectivenessAccountability/AccMention/AccMentionAdd' //新增问责提起
+import AccMentionDetail from './MVC/Controller/EffectivenessAccountability/AccMention/AccMentionDetail'//问责提起详情
+import AccMentionAuditList from './MVC/Controller/EffectivenessAccountability/AccMention/AccMentionAuditList' //问责提起审核列表
 import RecallOption from './MVC/Controller/EffectivenessAccountability/EA/RecallOption' //撤回操作
 import GetDeptInfo from './MVC/Controller/EffectivenessAccountability/InspectorInterview/GetDeptInfo' //可视范围
 import AccountabilityDetail from './MVC/Controller/EffectivenessAccountability/EA/AccountabilityDetail' //效能问责详情
@@ -38,6 +48,8 @@ import PAppraisalList from './MVC/Controller/PerformanceAppraisal/PAppraisalList
 import PAppraisalDetail from './MVC/Controller/PerformanceAppraisal/PAppraisalDetail' //绩效考核详情
 import PAppraisalViewLog from './MVC/Controller/PerformanceAppraisal/PAppraisalViewLog' //绩效考核系统记录
 import SubjectDutyNoticeList from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeList'//清单通知
+import IMApprovalProcess from './MVC/Controller/EffectivenessAccountability/InterviewMention/IMApprovalProcess'//约谈提请审批流程
+import IMSystemRecording from './MVC/Controller/EffectivenessAccountability/InterviewMention/IMSystemRecording' //约谈提请系统记录
 import SubjectDutyNoticeDetail from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeDetail'
 import SubjectDutyNoticeRead from './MVC/Controller/SubjectDutyNotice/SubjectDutyNoticeRead'
 import PAppraisalApproval from './MVC/Controller/PerformanceAppraisal/PAppraisalApproval'
@@ -131,6 +143,9 @@ const AppNavigator = createStackNavigator({
     IInterviewList: {screen: IInterviewList},
     AddIInterview: {screen: AddIInterview},
     IInterviewDetail: {screen: IInterviewDetail},
+    InterMentionAuditList: {screen: InterMentionAuditList},
+    InterMentionAuditDetail: {screen: InterMentionAuditDetail},
+    InterMentionAuditOption: {screen: InterMentionAuditOption},
     CheckList: {screen: CheckList},
     ApprovalProcess: {screen: ApprovalProcess},
     SystemRecording: {screen: SystemRecording},
@@ -144,8 +159,17 @@ const AppNavigator = createStackNavigator({
     RecallOption: {screen: RecallOption},
     IInterviewReleaseList: {screen: IInterviewReleaseList},
     IInterviewReleaseDetail: {screen: IInterviewReleaseDetail},
+    InterMentionAdd: {screen: InterMentionAdd},
+    InterMentionList: {screen: InterMentionList},
+    InterMentionDetail: {screen: InterMentionDetail},
+    IMApprovalProcess: {screen: IMApprovalProcess},
+    IMSystemRecording: {screen: IMSystemRecording},
     AccountabilityReleaseList: {screen: AccountabilityReleaseList},
     AccountabilityReleaseDetail: {screen: AccountabilityReleaseDetail},
+    AccMentionList: {screen: AccMentionList},
+    AccMentionAdd: {screen: AccMentionAdd},
+    AccMentionDetail: {screen: AccMentionDetail},
+    AccMentionAuditList: {screen: AccMentionAuditList},
     PAppraisalList: {screen: PAppraisalList},
     PAppraisalDetail: {screen: PAppraisalDetail},
     PAppraisalViewLog: {screen: PAppraisalViewLog},

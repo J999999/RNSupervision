@@ -14,7 +14,7 @@ var drop = false;
 
 export default class IInterviewList extends React.Component{
     static navigationOptions = ({navigation}) => ({
-        title: '督查约谈',
+        title: '约谈发布',
         headerRight: (<TouchableOpacity activeOpacity={.5}
                                         onPress={()=>{navigation.state.params.rightOnPress()}}>
             <Text style={{color: '#fff', marginRight: 10*unitWidth}}>{'新增'}</Text>

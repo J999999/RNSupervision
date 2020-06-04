@@ -39,17 +39,23 @@ export default class AddFunction extends React.Component{
         for (let j=0; j<sectionsArr.length; j++){
             let cellFuncs = sectionsArr[j].data;
             for (let k=0; k<cellFuncs.length; k++){
-                for (let l=0; l<homeFuncArr.length; l++){
-                    if (cellFuncs[k].id === homeFuncArr[l].id){
-                        cellFuncs[k]['isXianShi'] = true;
+                if (cellFuncs[k].children.length === 0){
+                    for (let l=0; l<homeFuncArr.length; l++){
+                        if (cellFuncs[k].id === homeFuncArr[l].id){
+                            cellFuncs[k]['isXianShi'] = true;
+                        }
+                    }
+                }else {
+                    for (let m = 0; m < cellFuncs[k].children.length; m++) {
+                        for (let l=0; l<homeFuncArr.length; l++){
+                            if (cellFuncs[k].children[m].id === homeFuncArr[l].id){
+                                cellFuncs[k].children[m]['isXianShi'] = true;
+                            }
+                        }
                     }
                 }
             }
         }
-
-
-        console.log('sectionsArr:'+JSON.stringify(homeFuncArr));
-
 
         this.setState({
             sections: sectionsArr, //列表数据（登录人全部功能）
@@ -63,7 +69,7 @@ export default class AddFunction extends React.Component{
                 {this.state.sections.map((i) => {
                     return (
                         <View>
-                            <View style={{backgroundColor: '#F4F4F4', height: 30*unitHeight, justifyContent: 'center'}}>
+                            <View style={{backgroundColor: '#DCDCDC', height: 30*unitHeight, justifyContent: 'center'}}>
                                 <Text style={{marginLeft: 10*unitWidth, fontSize: 17*unitWidth,
                                     fontWeight: 'bold'}}>{i.title}</Text>
                             </View>
@@ -71,17 +77,52 @@ export default class AddFunction extends React.Component{
                                 scrollEnabled={false}
                                 extraData={this.state}
                                 renderItem={({item})=>
-                                    <TouchableOpacity activeOpacity={.5} onPress={()=>{this._itemOnPressAction(item)}}>
-                                        <View style={{width: 375*unitWidth/3.6, margin: 10*unitWidth, height: 40*unitWidth, borderRadius: 3*unitWidth,
-                                            justifyContent: 'center', alignItems: 'center',
-                                            backgroundColor: item.isXianShi === true?'#38ADFF':'#F4F4F4'}}>
-                                            <Text style={{fontSize: 14*unitWidth, color: item.isXianShi === true?'#fff':'black'}}>{item.name}</Text>
-                                        </View>
-                                    </TouchableOpacity>
+                                    {
+                                        return (
+                                            item.children.length === 0 ?
+                                                <TouchableOpacity activeOpacity={.5} onPress={()=>{this._itemOnPressAction(item)}}>
+                                                    <View style={{width: 375*unitWidth/3.6, margin: 10*unitWidth, height: 40*unitWidth, borderRadius: 3*unitWidth,
+                                                        justifyContent: 'center', alignItems: 'center',
+                                                        backgroundColor: item.isXianShi === true?'#38ADFF':'#F4F4F4'}}>
+                                                        <Text style={{fontSize: 14*unitWidth, color: item.isXianShi === true?'#fff':'black'}}>{item.name}</Text>
+                                                    </View>
+                                                </TouchableOpacity> : null
+                                        )
+                                    }
+
                                 }
                                 data={i.data}
                                 numColumns={3}
                             />
+                            {
+                                i.data.map((k)=>{
+                                    return(
+                                        k.children.length > 0 ?
+                                            <View>
+                                                <View style={{backgroundColor: '#F4F4F4', height: 25*unitHeight, alignItems: 'center',
+                                                    justifyContent: 'center', marginLeft: 20*unitWidth, marginRight: 20*unitWidth}}>
+                                                    <Text style={{fontSize: 15*unitWidth,
+                                                        fontWeight: 'bold'}}>{k.name}</Text>
+                                                </View>
+                                                <FlatList
+                                                    scrollEnabled={false}
+                                                    extraData={this.state}
+                                                    renderItem={({item})=>
+                                                        <TouchableOpacity activeOpacity={.5} onPress={()=>{this._itemOnPressAction(item)}}>
+                                                            <View style={{width: 375*unitWidth/3.6, margin: 10*unitWidth, height: 40*unitWidth, borderRadius: 3*unitWidth,
+                                                                justifyContent: 'center', alignItems: 'center',
+                                                                backgroundColor: item.isXianShi === true?'#38ADFF':'#F4F4F4'}}>
+                                                                <Text style={{fontSize: 14*unitWidth, color: item.isXianShi === true?'#fff':'black'}}>{item.name}</Text>
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    }
+                                                    data={k.children}
+                                                    numColumns={3}
+                                                />
+                                            </View> : null
+                                    )
+                                })
+                            }
                         </View>
                     )
                 })}
@@ -122,17 +163,33 @@ export default class AddFunction extends React.Component{
         for (let i=0; i<sectionArr.length; i++){
             for (let j=0; j<sectionArr[i].data.length; j++){
                 let func = sectionArr[i]['data'][j];
-                if (item.id === func.id){
-                    if (func.isXianShi){
-                        sectionArr[i]['data'][j].isXianShi = !sectionArr[i]['data'][j].isXianShi;
-                        this._deleteHomeFunc(item);
-                    }else {
-                        sectionArr[i]['data'][j]['isXianShi'] = true;
-                        this._addHomeFunc(item);
+                if (func.children.length === 0){
+                    if (item.id === func.id){
+                        if (func.isXianShi){
+                            sectionArr[i]['data'][j].isXianShi = !sectionArr[i]['data'][j].isXianShi;
+                            this._deleteHomeFunc(item);
+                        }else {
+                            sectionArr[i]['data'][j]['isXianShi'] = true;
+                            this._addHomeFunc(item);
+                        }
+                    }
+                }else {
+                    for (let k=0; k<func.children.length; k++){
+                        let funxx = func.children[k];
+                        if (item.id === funxx.id){
+                            if (funxx.isXianShi) {
+                                sectionArr[i]['data'][j]['children'][k].isXianShi = !sectionArr[i]['data'][j]['children'][k].isXianShi;
+                                this._deleteHomeFunc(item);
+                            }else {
+                                sectionArr[i]['data'][j]['children'][k]['isXianShi'] = true;
+                                this._addHomeFunc(item);
+                            }
+                        }
                     }
                 }
             }
         }
+        console.log('00000000 ----- ', sectionArr);
         this.setState({
             sections: sectionArr,
         })

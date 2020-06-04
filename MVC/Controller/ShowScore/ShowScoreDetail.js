@@ -185,16 +185,16 @@ export default class ShowScoreDetail extends React.Component{
                         <ScrollView style={{flex:1}} >
                             <View style={{flex:1}}>
                             <View style={{flexDirection: 'row'}}>
-                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
+                                <View style={[styles.itemView, {height: 85*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
                                     <Text>类别</Text>
                                 </View>
-                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
+                                <View style={[styles.itemView, {height: 85*unitWidth, backgroundColor: '#F4F4F4', width: 180*unitWidth}]}>
                                     <Text>单位</Text>
                                 </View>
-                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 50*unitWidth}]}>
+                                <View style={[styles.itemView, {height: 85*unitWidth, backgroundColor: '#F4F4F4', width: 50*unitWidth}]}>
                                     <Text>排名</Text>
                                 </View>
-                                <View style={[styles.itemView, {height: 50*unitWidth, backgroundColor: '#F4F4F4', width: 60*unitWidth}]}>
+                                <View style={[styles.itemView, {height: 85*unitWidth, backgroundColor: '#F4F4F4', width: 60*unitWidth}]}>
                                     <Text>总成绩</Text>
                                 </View>
                                 {
@@ -209,18 +209,18 @@ export default class ShowScoreDetail extends React.Component{
                                                     {
                                                         i.data.map((j)=>{
                                                             return (
-                                                                <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                                <View style={[styles.itemView, {height: 60*unitWidth, backgroundColor: '#F4F4F4',
                                                                     width: 150*unitWidth}]}>
                                                                     <Text>{j}</Text>
                                                                 </View>
                                                             )
                                                         })
                                                     }
-                                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                    <View style={[styles.itemView, {height: 60*unitWidth, backgroundColor: '#F4F4F4',
                                                         width: 60*unitWidth}]}>
                                                         <Text>小计</Text>
                                                     </View>
-                                                    <View style={[styles.itemView, {height: 25*unitWidth, backgroundColor: '#F4F4F4',
+                                                    <View style={[styles.itemView, {height: 60*unitWidth, backgroundColor: '#F4F4F4',
                                                         width: 50*unitWidth}]}>
                                                         <Text>排名</Text>
                                                     </View>
