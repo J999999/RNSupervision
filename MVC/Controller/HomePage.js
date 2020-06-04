@@ -332,9 +332,6 @@ export default class HomePage extends React.Component {
      94: '', //其他工作统计
      */
     _ClickItemAction(item){
-        console.log(item);
-        console.log('internal = ' , this.state.internal);
-        console.log('roleLevel = ', this.state.roleLevel);
         if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
             this.props.navigation.navigate('StatisticsCharts',{bean : item})
         }
@@ -346,6 +343,8 @@ export default class HomePage extends React.Component {
                     this.props.navigation.navigate('PracticableList', {deptId: ''})
                 }
             }
+            let func = FunctionEnum.actionMap[item.id];
+            this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         } else {
             let func = FunctionEnum.actionMap[item.id];
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
