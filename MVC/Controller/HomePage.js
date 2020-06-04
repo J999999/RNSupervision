@@ -1,20 +1,24 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Image} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Image, ScrollView} from 'react-native';
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {HttpGet, HttpPost} from "../Tools/JQFetch";
 import URLS from "../Tools/InterfaceApi";
 import AsyncStorage from '@react-native-community/async-storage'
 import FunctionEnum from '../Tools/FunctionEnum';
+import {DragSortableView} from 'react-native-drag-sort'
 
 const {width, height} = Dimensions.get('window');
 const cols = 3;
 const vMargin = 20;
-const cellWH = (width-vMargin-120)/cols;
+const cellWH = (width-vMargin-100)/cols;
 const hMargin = 25;
 
-export default class HomePage extends React.Component {
+const parentWidth = width
+const childrenWidth = width / 3;
+const childrenHeight = 48*unitWidth*2.5
 
+export default class HomePage extends React.Component {
     async componentDidMount(): void {
         const xx = await AsyncStorage.getItem('homePageFunc');
         if (xx) {
@@ -78,6 +82,7 @@ export default class HomePage extends React.Component {
             if (response.result !== 1) {
                 RRCToast.show(response.msg);
             }else {
+                console.log('...........', response.data);
                 AsyncStorage.setItem('userMenu',JSON.stringify(response.data));
                 for (let i = 0; i < response.data.length; i++){
                     let oneLevel = response.data[i];
@@ -99,7 +104,7 @@ export default class HomePage extends React.Component {
                     }
                 }
                 //展示在首页的功能数组,获取之后保存在本地(添加删除功能对 homePageFunc 进行操作)
-                functions.push({'name':'添加功能'});
+                // functions.push({'name':'添加功能'});
                 AsyncStorage.setItem('homePageFunc', JSON.stringify(functions));
                 this.setState({
                     data: functions,
@@ -115,43 +120,140 @@ export default class HomePage extends React.Component {
             deleteBtnHidden: false,
             DBNum: 0,   //待办事项数量
             GGNum: 0,   //公告通知数量
+            scrollEnabled: true,
+            isEnterEdit: false,
         };
+        this.index = 1;
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <FlatList
-                    extraData={this.state}
-                    data={this.state.data}
-                    renderItem={this.renderItem.bind(this)}
-                    keyExtractor={(item, index) => index}
-                    //contentContainerStyle={styles.list_container}
-                    numColumns={cols}
-                />
-            </View>
+            <ScrollView>
+                <View style={styles.container}>
+                    <DragSortableView
+                        dataSource={this.state.data}
+                        parentWidth={parentWidth}
+                        childrenWidth= {childrenWidth}
+                        childrenHeight={childrenHeight}
+                        onDragStart={(startIndex,endIndex)=>{
+                            if (!this.state.isEnterEdit) {
+                                this.setState({
+                                    isEnterEdit: true,
+                                    scrollEnabled: false
+                                })
+                            } else {
+                                this.setState({
+                                    scrollEnabled: false
+                                })
+                            }
+                        }}
+                        onDragEnd={(startIndex)=>{
+                            this.setState({
+                                scrollEnabled: true
+                            })
+                        }}
+                        onDataChange = {(data)=>{
+                            // delete or add data to refresh
+                            AsyncStorage.setItem('homePageFunc', JSON.stringify(data));
+                            this.setState({
+                                data: data
+                            })
+                        }}
+                        onClickItem={(data,item,index)=>{
+                            // click delete
+                            if (this.state.isEnterEdit) {
+                                this._deleteFuncAction(item)
+                            }else {
+                                this._ClickItemAction(item)
+                            }
+                        }}
+                        keyExtractor={(item,index)=> item.id} // FlatList作用一样，优化
+                        renderItem={(item,index)=>{
+                            return this.renderItem(item,index)
+                        }}
+                    />
+                    <View style={[
+                        {
+                            width: childrenWidth,
+                            height: childrenHeight,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        },
+                        this.state.data.length % 3 !== 0 ? {
+                            position: 'absolute',
+                            zIndex: 999,
+                            top: parseInt(this.state.data.length / 3) * (childrenHeight),
+                            left: parseInt(this.state.data.length % 3) * (childrenWidth)
+                        } : {}
+                    ]}>
+                        <TouchableOpacity
+                            style={styles.item_children}
+                            onPress={()=> {
+                                if (this.state.isEnterEdit) {
+                                    this.setState({ isEnterEdit: false })
+                                    return;
+                                }
+                                //this.index = this.index + 1;
+                                this.props.navigation.navigate('AddFunction',{
+                                    refresh: (homeFuncs) => {
+                                        this.setState({
+                                            data: homeFuncs,
+                                        })
+                                    },
+                                });
+                            }}
+                        >
+                            {
+                                this.state.isEnterEdit ?
+                                    <Text style={{fontSize: 30,color: '#000'}}>完成</Text> :
+                                    <Text style={{fontSize: 30,color: '#000'}}>+</Text>
+                            }
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
         );
     }
-    renderItem({item, index})  {
+    renderItem(item, index)  {
         let icon   = FunctionEnum.iconMap[item.id];
         if(!icon){
             icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
         }
-
-        return (
-            <TouchableOpacity activeOpacity={.75}
-                              onPress={()=>{this._ClickItemAction(item)}}
-                              onLongPress={()=>{this.setState({deleteBtnHidden: !this.state.deleteBtnHidden})}}>
-                {index===this.state.data.length-1?<View style={styles.item}>
-                    <Image source={require('../Images/addIcon.png')}
-                           style={{width: 70*unitWidth, height: 70*unitWidth, borderRadius: 5,
-                               marginTop: 15*unitWidth, marginLeft: 15*unitWidth}}/>
-                </View>:<View style={styles.item}>
-                    <TouchableOpacity activeOpacity={.75}
-                                      onPress={()=>{this._deleteFuncAction(item)}}>
-                        {this.state.deleteBtnHidden === true?<Image source={require('../Images/deleteicon.png')}
-                                                                    style={{width: 20*unitWidth, height: 20*unitWidth, marginLeft: 85*unitWidth}}/>:null}
-                    </TouchableOpacity>
+        if (this.state.isEnterEdit){
+            return (
+                <View style={styles.item}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Image
+                            style={styles.item_delete_icon}
+                            source={require('../Images/clear.png')}
+                        />
+                        <Image source={icon}
+                               style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}
+                        />
+                        {
+                            this.state.DBNum !== 0 && item.id === 51 ? <View style={{width: 26*unitWidth, height: 26*unitWidth, borderRadius: 13*unitWidth,
+                                backgroundColor: 'red', marginLeft: -10*unitWidth, marginTop: -5*unitWidth,
+                                alignItems: 'center', justifyContent: 'center',
+                            }}>
+                                <Text style={{color: 'white', fontWeight: 'bold'}}>{this.state.DBNum}</Text>
+                            </View> : null
+                        }
+                        {
+                            this.state.GGNum !== 0 && item.id === 8 ? <View style={{width: 26*unitWidth, height: 26*unitWidth, borderRadius: 13*unitWidth,
+                                backgroundColor: 'red', marginLeft: -10*unitWidth, marginTop: -5*unitWidth,
+                                alignItems: 'center', justifyContent: 'center',
+                            }}>
+                                <Text style={{color: 'white', fontWeight: 'bold'}}>{this.state.GGNum}</Text>
+                            </View> : null
+                        }
+                    </View>
+                    <Text style={{marginTop: 15, textAlign: 'center'}}
+                          numberOfLines={0}>{item.name}</Text>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.item}>
                     <View style={{flexDirection: 'row'}}>
                         <Image source={icon}
                                style={{width: 60 * unitWidth,height:60 * unitWidth, borderRadius: 5, marginLeft: 20*unitWidth}}
@@ -175,9 +277,10 @@ export default class HomePage extends React.Component {
                     </View>
                     <Text style={{marginTop: 15, textAlign: 'center'}}
                           numberOfLines={0}>{item.name}</Text>
-                </View>}
-            </TouchableOpacity>
-        )
+                </View>
+            )
+        }
+
     }
     _deleteFuncAction(item){
         if (item.isDefault === 1){
@@ -217,21 +320,22 @@ export default class HomePage extends React.Component {
      * 待办事项
      * 通知公告
      * 预警信息
+     *       86: '', //责任单位统计
+     88: '', //重点项目统计
+     89: '', //决策部署统计
+     90: '', //领导批示统计
+     91: '', //提案统计
+     92: '', //政务督查统计
+     93: '', //民生实事统计
+     94: '', //其他工作统计
      */
     _ClickItemAction(item){
-        if(item.id===undefined){
-            this.props.navigation.navigate('AddFunction',{
-                refresh: (homeFuncs) => {
-                    this.setState({
-                        data: homeFuncs,
-                    })
-                },
-            });
-        }else{
+        if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+            this.props.navigation.navigate('StatisticsCharts',{bean : item})
+        } else {
             let func = FunctionEnum.actionMap[item.id];
             this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         }
-
     }
 }
 
@@ -255,5 +359,21 @@ const styles = StyleSheet.create({
         //justifyContent: 'center',
         //alignItems: 'center',
         marginLeft: 15*unitWidth,
+    },
+    item_children: {
+        width: childrenWidth-8,
+        height: childrenHeight-8,
+        backgroundColor: '#f0ffff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4,
+        marginTop: 8
+    },
+    item_delete_icon: {
+        width: 20*unitWidth,
+        height: 20*unitWidth,
+        position: 'absolute',
+        right: 1,
+        top: 1,
     },
 });

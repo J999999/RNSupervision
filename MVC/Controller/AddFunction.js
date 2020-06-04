@@ -132,13 +132,7 @@ export default class AddFunction extends React.Component{
     _addHomeFunc(item){
         let funArr = [];
         funArr = funArr.concat(this.state.HomePageArr);
-        for (let i=0; i<funArr.length; i++){
-            if (funArr[i].name === '添加功能'){
-                funArr.splice(i,1);
-            }
-        }
         funArr.push(item);
-        funArr.push({'name':'添加功能'});
         this.setState({
             HomePageArr: funArr,
         })
@@ -189,7 +183,6 @@ export default class AddFunction extends React.Component{
                 }
             }
         }
-        console.log('00000000 ----- ', sectionArr);
         this.setState({
             sections: sectionArr,
         })

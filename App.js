@@ -65,7 +65,7 @@ import PreviewSetupDetail from './MVC/Controller/PreviewAndRelease/PreviewSetupD
 import PreviewDeptSetup from './MVC/Controller/PreviewAndRelease/PreviewDeptSetup' //评分
 import ShowScoreList from './MVC/Controller/ShowScore/ShowScoreList' //成绩展示列表
 import ShowScoreDetail from './MVC/Controller/ShowScore/ShowScoreDetail' //成绩展示详情
-
+import ZYTreeSelect from './MVC/View/ZYTreeSelect' //通知公告选择对象
 import InspectionreformInformation from './MVC/Controller/SubjectResponsibility/InspectionreformInformation' //巡查整改党组信息
 import InspectionreformList from './MVC/Controller/SubjectResponsibility/InspectionreformList' //巡查整改列表
 import InspectionreformDetail from './MVC/Controller/SubjectResponsibility/InspectionreformDetail' //巡查整改详情
@@ -182,6 +182,7 @@ const AppNavigator = createStackNavigator({
     PreviewDetail: {screen: PreviewDetail},
     PreviewLog: {screen: PreviewLog},
     PreviewSetup: {screen: PreviewSetup},
+    ZYTreeSelect: {screen: ZYTreeSelect},
     PreviewSetupDetail: {screen: PreviewSetupDetail},
     PreviewDeptSetup: {screen: PreviewDeptSetup},
     ShowScoreList: {screen: ShowScoreList},

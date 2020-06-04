@@ -70,7 +70,7 @@ export default class EmpSelectList extends React.Component{
 
             for(let j in dept.children){
                 let user = dept.children[j]
-                if(user.deptName.indexOf(text)!= -1){
+                if(user.label.indexOf(text)!= -1){
                     have = true
                     tempdept.children.push(user)
                 }

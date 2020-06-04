@@ -49,6 +49,7 @@ export default class ProjectStatisticsList extends React.Component {
     }
 
     _renderItem = ({item}) =>{
+        console.log(item);
         return(
             <TouchableOpacity onPress={() => {
                 this.props.navigation.navigate('StatisticsCharts',{bean : item})

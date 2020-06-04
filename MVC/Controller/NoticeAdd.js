@@ -30,6 +30,7 @@ var options = {
 var screenWidth = Dimensions.get('window').width;
 var navigation = null;
 var attachItem = null;
+var _that = null;
 class NoticeAdd  extends React.Component {
 
     constructor(props){
@@ -39,12 +40,15 @@ class NoticeAdd  extends React.Component {
         this.fileList = [];
         this.fileUrlList =[];
         this.bean = null;
+        _that = this;
 
         navigation = this.props.navigation;
         this.state = {
             selectValue: '',
             deptData: [],
             hasAttach:false,
+            ids: [],
+            names: '',
         }
      }
 
@@ -86,8 +90,7 @@ class NoticeAdd  extends React.Component {
     uploadNoticeInfo=(files)=> {
         let filesss = this.fileUrlList&&this.fileUrlList.length>0 ? this.fileUrlList :[]
         filesss = filesss.concat(files)
-        console.log(filesss)
-        let requestData = {"title":this.title,"content":this.content,"fileList":filesss};
+        let requestData = {"title":this.title,"content":this.content,"fileList":filesss, "userIds": this.state.ids};
         if(this.bean !=null){
             requestData['id']= this.bean.id
         }
@@ -116,8 +119,11 @@ class NoticeAdd  extends React.Component {
             RRCToast.show("请输入内容");
             return ;
         }
-
-        var files = []
+        if (this.state.ids.length === 0) {
+            RRCToast.show("请选择下发对象");
+            return ;
+        }
+        var files = [];
 
         if(this.fileList &&  this.fileList.length>0){
             var formData = new FormData();
@@ -128,7 +134,7 @@ class NoticeAdd  extends React.Component {
 
              HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
                 if(response.result == 1){
-                    files = response.data
+                    files = response.data;
                     this.uploadNoticeInfo(files)
                  }else{
                     alert(response.msg);
@@ -295,13 +301,14 @@ class NoticeAdd  extends React.Component {
                             this.content = text;
                     }}/>
                     <TouchableOpacity onPress={()=>{
-                        this.props.navigation.navigate('EmpSelectList', {data:this.state.deptData,value:this.state.selectValue,callback:function (select) {
-                                console.log('.......... ', select);
+                        this.props.navigation.navigate('ZYTreeSelect', {data:this.state.deptData ,callback:function (ids, names) {
+                                _that.setState({
+                                    ids: ids,
+                                    names: names.join(',')
+                                })
                             }})
                     }}>
-                        <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.bean.content :''}  title='下发对象：'  placeholder='请选择下发对象' onChangeText={(text)=>{
-                            this.content = text;
-                        }}/>
+                        <TextInputMultWidget defaultValue={this.state.names}  title='下发对象：'  placeholder='请选择下发对象' editable={false}/>
                     </TouchableOpacity>
                     {
                         this.state.hasAttach == true ?  fileButtons  :  null

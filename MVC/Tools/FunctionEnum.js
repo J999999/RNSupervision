@@ -82,12 +82,15 @@ const  FunctionEnum = {
         23:require('../Images/kaohechengjizhanshi.png'),//考核成绩展示
 
         24:require('../Images/xiaonengwenze.png'),//效能问责
-        102:require('../Images/xiaonengwenze.png'),//效能问责
-        101:require('../Images/duchayuetan.png'),//督查约谈
-        103:require('../Images/xiaonengshenhe.png'),//效能审核
+        25:require('../Images/xiaonengwenze.png'),//效能问责
+        26:require('../Images/duchayuetan.png'),//督查约谈
+        27:require('../Images/xiaonengshenhe.png'),//效能审核
         68:require('../Images/yuetanshixiang.png'),//约谈事项
         69:require('../Images/wenzeshixiang.png'),//问责事项
-
+        107: require('../Images/tianbaoshenhe.png'),
+        108: require('../Images/kaohechengjizhanshi.png'),
+        109: require('../Images/wodeyijianjianyi.png'),
+        110: require('../Images/wodeguanzhu.png'),
         46:require('../Images/wodeguanzhu.png') ,//我的关注
         47:require('../Images/wodepishi.png') ,//我的批示
         49:require('../Images/lingdaopishiyijian.png'),//领导批示意见
@@ -104,8 +107,19 @@ const  FunctionEnum = {
         83:require('../Images/zhutizerenluoshiqingkuang.png'),//主体责任落实情况
         84:require('../Images/xunchazhenggaiwanchengqingkuang.png'),//巡察整改完成情况
 
+        86:require('../Images/wodeyijianjianyi.png'),
+        87:require('../Images/dangzuzhixinxiweihu.png'),
+        88:require('../Images/wenzeshixiang.png'),
+        89:require('../Images/lingdaopishiyijian.png'),
+        90:require('../Images/jingyanjiaoliu.png'),
+        91:require('../Images/zhutizerenluoshiqingkuang.png'),
+        92:require('../Images/tianbaoshenhe.png'),
+        93:require('../Images/wenzeshixiang.png'),
+        94:require('../Images/xunchazhenggaiwanchengqingkuang.png'),
+
         44:require('../Images/ziliaoyunpan.png'),//资料云盘
         100:require('../Images/ziliaoyunpan.png'),//资料云盘
+        112: require('../Images/wodeyijianjianyi.png'),
      }
 
 };

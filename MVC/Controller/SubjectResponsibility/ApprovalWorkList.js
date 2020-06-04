@@ -68,7 +68,6 @@ export default class ApprovalWorkList extends React.Component{
         HttpPost(URLS.QueryListByApprovalWork,
             search).then((response)=>{
             RRCToast.show(response.msg);
-            console.log('---------', response);
             if (response.result === 1){
                 const item = response.data.records;
                 if (refresh){
