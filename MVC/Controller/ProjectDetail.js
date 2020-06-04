@@ -144,8 +144,13 @@ class ProjectDetail extends Component {
             </View>
             <View style={styles.view}>
                 <Text style={styles.titleInfo}>所属类别：{DataDictionary.BelongTypes[this.bean.belongType]}</Text>
-                <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
                 {/*<Text style={styles.titleInfo}>新开工/续建：{this.bean.projectState&&this.bean.projectState==1 ? '新开工': '续建'}</Text>*/}
+            </View>
+            <View style={styles.view}>
+                <Text style={styles.titleInfo}>临期时限：{this.bean.adventTime}</Text>
+            </View>
+            <View style={styles.view}>
+                <Text style={styles.titleInfo}>完成时限：{this.bean.finishTime}</Text>
             </View>
             {/*<View style={styles.view}>*/}
             {/*    <Text style={styles.titleInfo}>进展情况：{DataDictionary.ProgressTypes[this.bean.progress]}</Text>*/}
@@ -199,6 +204,9 @@ class ProjectDetail extends Component {
                 <View style={styles.view}>
                     <Text style={styles.titleInfo}>督办状态：{DataDictionary.SuperViseStates[unit.superviseState]} </Text>
                     <Text style={styles.titleInfo}>汇报时间设定：{unit.reportTimeSet === 1 ? '单独设置':'与牵头单位一致'} </Text>
+                </View>
+                <View style={styles.view}>
+                    <Text style={styles.titleInfo}>任务内容：{unit.taskContent} </Text>
                 </View>
                 <View style={styles.view}>
                     <Text style={styles.titleInfo}>汇报模式：{unit.reportMode === 1 ? '周期汇报':'固定时间点汇报'} </Text>

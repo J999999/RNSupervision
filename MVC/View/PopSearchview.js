@@ -43,6 +43,7 @@ export default class PopSearchview extends React.Component{
         this.popSearch.show();
     }
     _addSearchInfo(info){
+        // console.log(info);
         let map = [];
         map = map.concat(this.state.searchInfo);
         let stateArr = [];

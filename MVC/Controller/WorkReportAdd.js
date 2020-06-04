@@ -4,7 +4,7 @@ import {
     Text,
     View,
     Button,
-    Image, Dimensions, PixelRatio, TouchableOpacity, TouchableWithoutFeedback,
+    Image, Dimensions, PixelRatio, TouchableOpacity, TouchableWithoutFeedback, TextInput,
 } from 'react-native';
 import TextInputWidget from "../Widget/TextInputWidget";
 import TextInputMultWidget from "../Widget/TextInputMultWidget";
@@ -61,6 +61,7 @@ class WorkReportAdd  extends React.Component {
         "reportUserId": '',
         "reportUserName": "",
         "suggestion": "",
+        "completionProgress":"",
     };
 
     constructor(props){
@@ -76,7 +77,8 @@ class WorkReportAdd  extends React.Component {
             bean: null,
             timeNodes:[],
             hasAttach:false,
-            isShowPick:false
+            isShowPick:false,
+            percentage:0
         }
      }
 
@@ -86,7 +88,8 @@ class WorkReportAdd  extends React.Component {
             this.workReport = params.bean
             this.fileUrlList = params.bean.fileList
             this.setState({
-                hasAttach :true
+                hasAttach :true,
+                percentage:this.workReport.completionProgress
             })
         }
          this.setState({
@@ -154,6 +157,13 @@ class WorkReportAdd  extends React.Component {
         if(this.workReport.reportTitle == ""){
             RRCToast.show("请输入汇报标题");
             return ;
+        }
+
+        if(this.state.percentage == ""){
+            RRCToast.show("请输入完成百分比");
+            return ;
+        }else{
+            this.workReport.completionProgress = this.state.percentage
         }
 
         if(this.workReport.reportContent == ""){
@@ -359,6 +369,8 @@ class WorkReportAdd  extends React.Component {
         }
 
         return (
+
+
             <View style = {styles.all}>
             <KeyboardAwareScrollView style = {styles.all}>
 
@@ -380,6 +392,18 @@ class WorkReportAdd  extends React.Component {
 
                     <TextInputWidget  defaultValue={ this.workReport!=null ? this.workReport.reportTitle :'' }  title='汇报标题：'  placeholder='请输入' onChangeText={(text)=>{
                         this.workReport.reportTitle = text;
+                    }}/>
+
+                    <TextInputWidget    keyboardType ='numeric'   value={ this.state.percentage }  title='完成百分比'  placeholder='请输入0~100之间的数值' onChangeText={(text)=>{
+
+                        const newText = text.replace(/[^\d]+/, '');
+                        let xx = "";
+                        if (newText =="" || newText >100 || newText < 0 ) {
+                            RRCToast.show('请输入0~100之间的数值');
+                        } else {
+                            xx = newText;
+                        }
+                        this.setState({percentage : xx  })
                     }}/>
 
                     <TextInputMultWidget  defaultValue={ this.workReport!=null ? this.workReport.reportContent :'' }  title='汇报内容：'  placeholder='请输入' onChangeText={(text)=>{

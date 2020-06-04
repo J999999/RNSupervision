@@ -38,6 +38,7 @@ class TextInputWidget extends Component{
                                    defaultValue={this.props.defaultValue}
                                    value = {this.props.value}
                                    editable={this.props.editable}
+                                   keyboardType = {this.props.keyboardType == undefined ? 'default'  : this.props.keyboardType  }
                       />
                     </View>
                 </View>

@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image,TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import {HttpPost} from "../Tools/JQFetch";
 import URLS from "../Tools/InterfaceApi";
-import {RRCToast} from "react-native-overlayer/src";
+import {RRCAlert, RRCToast} from 'react-native-overlayer/src';
+import AsyncStorage from '@react-native-community/async-storage'
 
 export default class Mine extends React.Component {
     static navigationOptions = {
@@ -68,6 +69,43 @@ export default class Mine extends React.Component {
                     <Image source={require('../Images/goRight.png')}
                            style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>
                 </TouchableOpacity>
+
+
+                <TouchableOpacity style={{flexDirection: 'row', backgroundColor: '#fff', height: 64*unitHeight,
+                    justifyContent: 'space-between', alignItems: 'center'}}
+                                  onPress={() => {
+                                      RRCAlert.alert("提示","是否确定要退出登录？",[{
+                                          text: '是' ,style:{color:'#38ADFF', fontWeight: 'bold'}}
+                                          ,{
+                                              text: '否',style:{color:'#38ADFF', fontWeight: 'bold'}
+                                          }
+                                      ],(index)=>{
+
+                                          switch (index) {
+                                              case 0:
+                                                  AsyncStorage.removeItem('loginData', (error) => {
+                                                      if (error) {
+                                                          RRCToast.show('退出失败，请重试')
+                                                      } else {
+                                                          this.props.navigation.navigate('Login')
+                                                      }
+                                                  })
+                                                  break;
+
+                                          }
+                                      })
+
+                                  }}
+                >
+                    <View style={{flexDirection: 'row', alignItems: 'center', height: 64*unitHeight}}>
+                        <Image source={require('../Images/main_home1.png')}
+                               style={{width: 25*unitWidth, height: 25*unitWidth, marginLeft: 10*unitWidth}}/>
+                        <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>退出登录</Text>
+                    </View>
+                    <Image source={require('../Images/goRight.png')}
+                           style={{height: 10*unitWidth, width: 10*unitWidth, marginRight: 10*unitWidth}}/>
+                </TouchableOpacity>
+
             </View>
         );
     }

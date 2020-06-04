@@ -116,7 +116,7 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ()=>({
-      headerTitle: '云督考',
+      headerTitle: '新正督',
       headerLeft: <View/>,
     })
   },

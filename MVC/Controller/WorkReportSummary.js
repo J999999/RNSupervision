@@ -228,6 +228,9 @@ class WorkReportSummary extends Component {
                             <Text style={styles.titleInfo}>汇报单位：{item.reportUnitName}</Text>
                         </View>
                         <View style={styles.view}>
+                            <Text style={styles.titleInfo}>完成百分比：{item.completionProgress}%</Text>
+                        </View>
+                        <View style={styles.view}>
                             <Text style={styles.titleInfo}>汇报内容：{item.reportContent}</Text>
                         </View>
                         {approveView}

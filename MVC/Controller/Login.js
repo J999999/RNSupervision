@@ -37,28 +37,30 @@ export default class Login extends React.Component {
     constructor(){
         super();
         this.state = {
-            // userName: '',
-            // password: '',
+            userName: '',
+            passWord: '',
+            // userName: 'ZH',
+            // passWord: '052398',
             // userName: 'dcdb1',
-            // password: '123456',
+            // passWord: '123456',
             // userName: 'dcfjza',
-            // password: '12345678',
+            // passWord: '12345678',
             // userName: 'dcfjzb',
-            // password: '12345678',
+            // passWord: '12345678',
             // userName: 'dcjz',
-            // password: '123456',
+            // passWord: '123456',
             // userName: 'xzsz',
-            // password: '123456',
+            // passWord: '123456',
             // userName: 'wbthree',
-            // password: '123456',
+            // passWord: '123456',
             // userName: 'wbfive',
-            // password: '123456',
+            // passWord: '123456',
             // userName: 'xzsj',
-            // password: '12345678',
+            // passWord: '12345678',
             // userName: 'jxky',
-            // password: '123456',
-            userName: 'wbfive',
-            password: 'a123456',
+            // passWord: '123456',
+            // userName: 'wbfive',
+            // passWord: 'a123456',
             keyboardShown: false,
             imsi: '',
         };
@@ -76,6 +78,8 @@ export default class Login extends React.Component {
             "keyboardDidHide",
             this.keyboardDidHideHandler.bind(this)
         );
+
+        this.getData()
     }
     componentWillUnmount(): void {
         if (this.keyboardDidShowListener != null){
@@ -85,6 +89,17 @@ export default class Login extends React.Component {
             this.keyboardDidHideListener.remove();
         }
     }
+
+    getData = async () => {
+        let info = await AsyncStorage.getItem('loginData');
+        if (info != null) {
+            let loginData = JSON.parse(info);
+            this.setState({
+                userName: loginData.userName,
+                passWord: loginData.passWord
+            })
+        }
+    };
 
     //键盘弹出事件响应
     keyboardDidShowHandler(event) {
@@ -125,8 +140,8 @@ export default class Login extends React.Component {
                                style={{width: unitWidth * 28, height: unitWidth * 28,padding:4}}/>
                         <TextInput style={styles.TInput}
                                    placeholder={'请输入密码'}
-                                   onChangeText={(text)=>{this.setState({password:text})}}
-                                   value={this.state.password}
+                                   onChangeText={(text)=>{this.setState({passWord:text})}}
+                                   value={this.state.passWord}
                                    secureTextEntry={true}>
                         </TextInput>
                     </View>
@@ -167,7 +182,7 @@ export default class Login extends React.Component {
             RRCToast.show('请输入用户名');
             return
         }
-        if (!this.state.password){
+        if (!this.state.passWord){
             RRCToast.show('请输入密码');
             return
         }
@@ -177,14 +192,18 @@ export default class Login extends React.Component {
         // }
         HttpPost(URLS.Login,{
             'username': this.state.userName,
-            'password': this.state.password,
+            'password': this.state.passWord,
             'imsi': this.state.imsi,
         },'正在登录...',).then((response)=>{
             RRCToast.show(response.msg);
             console.log(response);
             if (response.result === 1){
                 AsyncStorage.setItem('token', response.data.token);
-                this.props.navigation.navigate('Home');
+                AsyncStorage.setItem("loginData", JSON.stringify({
+                    userName: this.state.userName,
+                    passWord: this.state.passWord
+                }));
+                this.props.navigation.replace('Home');
             }else {
                 this.props.navigation.popToTop();
             }

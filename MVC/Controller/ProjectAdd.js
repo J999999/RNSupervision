@@ -61,6 +61,7 @@ class ProjectAdd  extends React.Component {
         assignUnit:"",//交办单位
 
         finishTime: "",//完成时限
+        adventTime: "",//临期时间
         id:null ///id
     };
 
@@ -71,6 +72,7 @@ class ProjectAdd  extends React.Component {
         this.reportMode = 1;//汇报模式：1-周期汇报，2-固定时间点汇报
         this.reportTimeSet = 1;//汇报时间设定：1-单独设置，2-与牵头单位一致
         this.reportTimeList = [];//时间设置数据
+        this.taskContent = '',//任务内容
         this.superviseState = '';//
         this.unitId = '';//
         this.unitName = '';//
@@ -84,6 +86,7 @@ class ProjectAdd  extends React.Component {
         deptType:"",// 部门分类
         id	: "" //部门id
     };
+
 
     reportTimes() {
         this.id = '';
@@ -207,7 +210,7 @@ class ProjectAdd  extends React.Component {
 
         this.bean.fileDTOList = filesss
 
-        // let requestData = {"projectInfo":JSON.stringify(this.bean)};
+        let requestData = {"projectInfo":JSON.stringify(this.bean)};
 
         HttpPost(URLS.SaveProject, this.bean,"正在保存..").then((response)=>{
             RRCToast.show(response.msg);
@@ -278,27 +281,27 @@ class ProjectAdd  extends React.Component {
 
         var files = []
 
-        // if(this.fileList &&  this.fileList.length>0){
-        //     var formData = new FormData();
-        //     for(let i  in this.fileList){
-        //         let file = {uri:this.fileList[i].uri,type:'multipart/form-data',name:this.fileList[i].fileName};
-        //         formData.append('files',file);
-        //     }
-        //
-        //      HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
-        //         if(response.result == 1){
-        //             files = response.data
-        //             this.uploadProjectInfo(files)
-        //          }else{
-        //             alert(response.msg);
-        //         }
-        //
-        //     }).catch((error)=>{
-        //         RRCToast.show(err);
-        //     });
-        // }else{
-        //     this.uploadProjectInfo([])
-        // }
+        if(this.fileList &&  this.fileList.length>0){
+            var formData = new FormData();
+            for(let i  in this.fileList){
+                let file = {uri:this.fileList[i].uri,type:'multipart/form-data',name:this.fileList[i].fileName};
+                formData.append('files',file);
+            }
+
+             HttpPostFile(URLS.FileUploads,formData,"正在上传文件..").then((response)=>{
+                if(response.result == 1){
+                    files = response.data
+                    this.uploadProjectInfo(files)
+                 }else{
+                    alert(response.msg);
+                }
+
+            }).catch((error)=>{
+                RRCToast.show(err);
+            });
+        }else{
+            this.uploadProjectInfo([])
+        }
 
     };
 
@@ -411,7 +414,7 @@ class ProjectAdd  extends React.Component {
                         }
                         break;
                         case 2:{
-                            if(param == 'unitId'){
+                            if(param == 'unitId' || param == 'timeUnit'){
                                 for(let i in listData){
                                     if (listData[i] == data){
                                         unit[param] = i
@@ -552,6 +555,11 @@ class ProjectAdd  extends React.Component {
                     this.bean.projectInfo = text;
                 }}/>
 
+                <TextDateSelectWidget  date={this.bean!=null ? this.bean.adventTime :''}  title='临期时限：'  placeholder='请输入'
+                                       onDateChange={(date)=>{
+                                           this.bean.adventTime = date
+                                       }}/>
+
                 <TextDateSelectWidget  date={this.bean!=null ? this.bean.finishTime :''}  title='完成时限：'  placeholder='请输入'
                                        onDateChange={(date)=>{
                                            this.bean.finishTime = date
@@ -583,7 +591,7 @@ class ProjectAdd  extends React.Component {
         var views = []
         for(let i in this.dutyUnitList){
             if(this.dutyUnitList[i].unitType == 2){
-                var view  = this.renderOrgNode(this.dutyUnitList[i],isEditable)
+                var view  = this.renderOrgNode(i,isEditable)
                 views.push(view)
             }
         }
@@ -635,6 +643,10 @@ class ProjectAdd  extends React.Component {
                                       }
                 }}/>
 
+                <TextInputMultWidget defaultValue={ this.bean!=null  ?  this.dutyUnitUser.taskContent :''}  title='任务内容：'  placeholder='请输入' onChangeText={(text)=>{
+                    this.dutyUnitUser.taskContent = text;
+                }}/>
+
                 {
                    this.dutyUnitUser.reportMode === 1 ? this.renderPeroidNode(this.dutyUnitUser,isEditable):this.renderFixTimeNode(this.dutyUnitUser,isEditable)
                 }
@@ -674,7 +686,8 @@ class ProjectAdd  extends React.Component {
     }
 
     //责任单位
-    renderOrgNode(unit,isEditable){
+    renderOrgNode(i,isEditable){
+        let unit = this.dutyUnitList[i]
         if(unit.unitId !=''){
             unit.unitName = this.deptAllUserDic[unit.unitId]
         }
@@ -693,7 +706,9 @@ class ProjectAdd  extends React.Component {
                                           let ids = []
                                           for(let i in this.dutyUnitList){
                                               let unit = this.dutyUnitList[i]
-                                              ids.push(unit.unitId)
+                                              if(unit.unitId != ""){
+                                                  ids.push(unit.unitId)
+                                              }
                                           }
 
                                           if(this.dutyUnitUser.unitId != ''){
@@ -708,7 +723,7 @@ class ProjectAdd  extends React.Component {
                                               }
                                           }
 
-                                          console.log(JSON.stringify(this.deptUserDic))
+                                          // console.log(JSON.stringify(this.deptUserDic))
 
                                           this.showPicker(this.deptUserDic,'unitId',2,unit)
                                       }
@@ -722,6 +737,11 @@ class ProjectAdd  extends React.Component {
                                           this.showPicker(DataDictionary.ReportTimeSet,'reportTimeSet',2,unit)
                                       }
                                   }}/>
+
+                <TextInputMultWidget defaultValue={ unit == null  ? unit.taskContent :''}  title='任务内容：'  placeholder='请输入' onChangeText={(text)=>{
+                    unit.taskContent = text;
+                }}/>
+
                 {unit.reportTimeSet === 1 && <View >
                     <TextSelectWidget title='汇报模式：' placehodler=''  value = { DataDictionary.ReportModes[unit.reportMode] }
                                       onPress={()=>{
@@ -735,6 +755,7 @@ class ProjectAdd  extends React.Component {
                     }
 
                 </View>}
+
 
             </View>
 
