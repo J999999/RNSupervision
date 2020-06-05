@@ -131,12 +131,13 @@ android {
         applicationId "com.jqsupervision"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.2"
+        versionCode 7
+        versionName "1.4.7"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        flavorDimensions "versionCode"
      }
     splits {
         abi {
@@ -164,6 +165,19 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    productFlavors {
+        master {
+
+        }
+
+        beta {
+            applicationId "com.jqsupervision.beta"
+            versionCode 6
+            versionName "1.4.6"
+        }
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->

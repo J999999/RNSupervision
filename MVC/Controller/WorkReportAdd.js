@@ -390,9 +390,7 @@ class WorkReportAdd  extends React.Component {
                                       onPress={()=>{ this.showPicker(this.state.timeNodes,'reportNode')
                                       }}/>
 
-                    <TextInputWidget  defaultValue={ this.workReport!=null ? this.workReport.reportTitle :'' }  title='汇报标题：'  placeholder='请输入' onChangeText={(text)=>{
-                        this.workReport.reportTitle = text;
-                    }}/>
+
 
                     <TextInputWidget    keyboardType ='numeric'   value={ this.state.percentage }  title='完成百分比'  placeholder='请输入0~100之间的数值' onChangeText={(text)=>{
 
@@ -405,6 +403,11 @@ class WorkReportAdd  extends React.Component {
                         }
                         this.setState({percentage : xx  })
                     }}/>
+
+                    <TextInputWidget  defaultValue={ this.workReport!=null ? this.workReport.reportTitle :'' }  title='汇报标题：'  placeholder='请输入' onChangeText={(text)=>{
+                        this.workReport.reportTitle = text;
+                    }}/>
+
 
                     <TextInputMultWidget  defaultValue={ this.workReport!=null ? this.workReport.reportContent :'' }  title='汇报内容：'  placeholder='请输入' onChangeText={(text)=>{
                         this.workReport.reportContent = text;
