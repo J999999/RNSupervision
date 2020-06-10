@@ -78,7 +78,6 @@ export default class Login extends React.Component {
             "keyboardDidHide",
             this.keyboardDidHideHandler.bind(this)
         );
-
         this.getData()
     }
     componentWillUnmount(): void {
@@ -94,11 +93,16 @@ export default class Login extends React.Component {
         let info = await AsyncStorage.getItem('loginData');
         if (info != null) {
             let loginData = JSON.parse(info);
+            const credentials = await Keychain.getGenericPassword();
+            if (credentials) {
+                this.setState({imsi: credentials.username});
+            }
             this.setState({
                 userName: loginData.userName,
-                passWord: loginData.passWord
+                passWord: loginData.passWord,
             })
         }
+        this.loginAction();
     };
 
     //键盘弹出事件响应
@@ -166,7 +170,7 @@ export default class Login extends React.Component {
             if (credentials) {
                 this.setState({imsi: credentials.username});
             } else {
-                await Keychain.setGenericPassword(getGuid(), '111', {});
+                await Keychain.setGenericPassword(getGuid(), '111');
                 const xx = await Keychain.getGenericPassword();
                 this.setState({imsi: xx.userName});
             }
@@ -175,7 +179,6 @@ export default class Login extends React.Component {
         }
     }
     loginAction () {
-        console.log(this.state.imsi);
         //this.props.navigation.navigate('Home');
 
         if (!this.state.userName){

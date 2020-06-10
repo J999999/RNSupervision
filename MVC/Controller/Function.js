@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import {View, Text, TouchableOpacity, Image, default as Toast} from 'react-native';
-import ExpandableList from 'react-native-expandable-section-flatlist';
+import {View, Text, TouchableOpacity, Image, FlatList, default as Toast} from 'react-native';
 import {RRCAlert, RRCToast} from "react-native-overlayer/src";
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
 import AsyncStorage from '@react-native-community/async-storage'
@@ -14,6 +13,7 @@ export default class Function extends React.Component {
     constructor(){
         super();
         this.internal = ''//是否内部角色 1=是 、0=否
+        this.roleLevel = '',
         this.state = {
             data:[],
         };
@@ -27,6 +27,7 @@ export default class Function extends React.Component {
         HttpPost(URLS.LoginUser,{},'').then((response)=>{
             if (response.result == 1){
                 this.internal = response.data.internal
+                this.roleLevel = response.data.role.level
                 AsyncStorage.setItem('internal', response.data.internal); //是否内部角色 1=是 、0=否
                 AsyncStorage.setItem('roleLevel', response.data.role.level); //角色级别1，2，3，4，5
             }
@@ -44,85 +45,130 @@ export default class Function extends React.Component {
                        functions.push(func);
                     }
                 }
+                for (let i=0; i<functions.length; i++) {
+                    functions[i]['isSelect'] = false;
+                    for (let j=0; j<functions[i].children.length; j++) {
+                        if (functions[i].id === 1) {
+                            functions[i].children[j]['level'] = 2;
+                        }
+                        functions[i].children[j]['isSelect'] = false;
+                        for (let k=0; k<functions[i].children[j].children.length; k++) {
+                            functions[i].children[j].children[k]['isSelect'] = false;
+                            functions[i].children[j].children[k]['level'] = 3;
+                        }
+                    }
+                }
                 this.setState({
                     data: functions,
                 })
             }
         });
     }
-
-    _renderRow = (rowItem, rowId, sectionId) => (
-        <TouchableOpacity key={rowId}
-                          onPress={() => {
-
-                              let func = undefined
-                              if(rowItem.id){
-                                  func = FunctionEnum.actionMap[rowItem.id]
-                              }
-
-                              if(!func){
-                                  Toast.show("功能未开发");
-                                  return
-                              }
-
-                              let icon = undefined
-                              if(rowItem.icon){
-                                  icon = FunctionEnum.iconMap[rowItem.id]
-                              }
-
-                              if(!icon){
-                                  icon = FunctionEnum.iconMap[FunctionEnum.defaultIcon]
-                              }
-                              console.log(func + '   '+icon)
-
-                              this.props.navigation.navigate(func,{'internal':this.internal,'children':rowItem.children,'title':rowItem.name,'id':rowItem.id});
-
-                          }}>
-            <View>
-                <View style={{flexDirection:'row', alignItems: 'center',padding:10*unitWidth}}>
-                    <Image source={
-                        FunctionEnum.iconMap[rowItem.id]
-                    }
-                           style={{width: 30*unitWidth, height: 30*unitWidth, marginLeft: 50*unitWidth}}/>
-                    <Text style={{marginLeft: 15*unitWidth, fontSize: 16*unitWidth}}>{rowItem.name}</Text>
-                </View>
-                <View style={{height: unitHeight, marginLeft: 100*unitWidth, backgroundColor:'#F4F4F4'}}/>
-            </View>
-        </TouchableOpacity>
-    );
-    _renderSection = (section, sectionId)  => {
-
-        let sec = this.state.data[sectionId]
-
-        return (
-            <View style={{borderBottomWidth: unitHeight, flexDirection:'row',
-                alignItems: 'center', borderBottomColor: '#F4F4F4', justifyContent: 'space-between'}}>
-                <View style={{flexDirection: 'row', alignItems: 'center',padding:10*unitWidth}}>
-                    <Image source={
-                        FunctionEnum.iconMap[sec.id]?FunctionEnum.iconMap[sec.id] : FunctionEnum.iconMap[FunctionEnum.defaultIcon]
-                    }
-                           style={{width: 40*unitWidth, height: 40*unitWidth, marginLeft: 10*unitWidth}}/>
-                    <Text style={{marginLeft: 15*unitWidth, fontSize: 17*unitWidth}}>{section}</Text>
-                </View>
-                <Image source={require('../Images/goRight.png')}
-                       style={{width: 10*unitWidth, height: 10*unitWidth, marginRight: 10*unitWidth}}/>
-            </View>
-        );
-    };
-    render() {
+    render(): React.ReactNode {
         return (
             <View style={{flex: 1}}>
-                <ExpandableList
-                    dataSource={this.state.data}
-                    ref={instance => this.ExpandableList = instance}
-                    headerKey={'name'}
-                    memberKey={'children'}
-                    renderRow={this._renderRow}
-                    renderSectionHeaderX={this._renderSection}
-                    openOptions={[0]}
-                    rowNumberCloseMode={0}
+                <FlatList
+                    data={this.state.data}
+                    extraData={this.state}
+                    keyExtractor={(item,index)=>index.toString()}
+                    renderItem={this._renderItemAction.bind(this)}
+                    ItemSeparatorComponent={this._itemSeparatorComponent.bind(this)}
                 />
             </View>
-        );
+        )
+    }
+
+    _renderItemAction({item, index}) {
+        return (
+            <TouchableOpacity onPress={()=>{this._clickItemAction(item)}}>
+                <View style={{
+                    flexDirection: 'row', height: 64*unitWidth, alignItems: 'center', padding: 10*unitWidth,
+                    marginLeft: (item.level - 1) * 50 *unitWidth, justifyContent: 'space-between'
+                }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Image source={
+                            FunctionEnum.iconMap[item.id]
+                        }
+                               style={{width: 40*unitWidth, height: 40*unitWidth, marginLeft: 10*unitWidth}}/>
+                        <Text style={{fontSize: 14*unitWidth, marginLeft: 20*unitWidth}}>{item.name}</Text>
+                    </View>
+
+                    {
+                        item.children.length !== 0 ?
+                            <Image source={require('../Images/goRight.png')}
+                                                  style={{width: 10*unitWidth, height: 10*unitWidth, marginRight: 10*unitWidth}}/>:null
+                    }
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    _itemSeparatorComponent = () => {
+        return (
+            <View style={{height: unitHeight, backgroundColor: '#DCDCDC'}}>
+
+            </View>
+        )
+    };
+    _clickItemAction(item) {
+        if (item.children.length === 0) {
+            console.log('this.internal = ', this.internal);
+            console.log('this.roleLevel = ', this.roleLevel);
+            if (this.internal === 0) {
+                if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
+                    if (item.id === 82) {
+                        this.props.navigation.navigate('DetailedList');
+                        return;
+                    } else if (item.id === 83) {
+                        this.props.navigation.navigate('PracticableList', {deptId: ''});
+                        return;
+                    }
+                    if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                        this.props.navigation.navigate('StatisticsCharts',{bean : item})
+                    } else {
+                        let func = FunctionEnum.actionMap[item.id];
+                        this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+                    }
+                }else {
+                    if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                        this.props.navigation.navigate('StatisticsCharts',{bean : item})
+                    } else {
+                        let func = FunctionEnum.actionMap[item.id];
+                        this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+                    }
+                }
+            } else {
+                if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                    this.props.navigation.navigate('StatisticsCharts',{bean : item})
+                } else {
+                    let func = FunctionEnum.actionMap[item.id];
+                    this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+                }
+            }
+        }
+        if (item.isSelect === false) {
+            item.isSelect = true;
+            let arr1 = [];
+            let arr2 = [];
+            arr1 = arr1.concat(this.state.data);
+            arr2 = arr2.concat(item.children);
+            let loc = arr1.indexOf(item) + 1;
+            arr2.unshift(loc, 0);
+            Array.prototype.splice.apply(arr1, arr2);
+            this.setState({ data: arr1 })
+        } else {
+            item.isSelect = false;
+            let arr1 = [];
+            let arr2 = [];
+            arr1 = arr1.concat(this.state.data);
+            arr2 = arr2.concat(item.children);
+            for (let i=0; i<arr1.length; i++) {
+                for (let j=0; j<arr2.length; j++) {
+                    if (arr1[i].id === arr2[j].id) {
+                        arr1.splice(i, 1);
+                    }
+                }
+            }
+            this.setState({ data: arr1 })
+        }
     }
 }

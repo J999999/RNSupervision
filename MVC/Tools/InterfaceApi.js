@@ -1,9 +1,9 @@
 //const HOST = 'http://192.168.2.40:8081/'; //岳毅
 // const HOST = 'http://192.168.2.48:8081/'; //小好
-export const FILE_HOST = 'http://221.13.156.198:10008';
-const HOST = 'http://221.13.156.198:10008/api/';
-// export const FILE_HOST = 'http://47.105.25.238/';
-// const HOST = 'http://47.105.25.238/api';
+// export const FILE_HOST = 'http://221.13.156.198:10008';
+// const HOST = 'http://221.13.156.198:10008/api/';
+export const FILE_HOST = 'http://47.105.25.238/';
+const HOST = 'http://47.105.25.238/api/';
 
 const URLS = {
     FileHost: FILE_HOST,

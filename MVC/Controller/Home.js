@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Text, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from 'react-navigation';
+// import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import HomePage from '../Controller/HomePage'
-//import MailList from '../Controller/MailList'
 import Function from '../Controller/Function'
 import Mine from '../Controller/Mine'
 import {unitHeight, unitWidth} from "../Tools/ScreenAdaptation";
@@ -75,6 +75,7 @@ const RootTabs = createMaterialTopTabNavigator({
     lazy: true,
     tabBarPosition: 'bottom',
     backBehavior:"none",
+    swipeEnabled: false,
     tabBarOptions:{
         activeTintColor:'#38ADFF',
         inactiveTintColor: '#646464',
