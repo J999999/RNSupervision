@@ -19,7 +19,6 @@ export default class ZYTreeSelect extends React.Component{
     }
 
     _ClickHeaderRightAction = () => {
-        console.log('最终数据: ', this.state.iTableArr);
         let arr = [].concat(this.state.iTableArr);
         let ids = [];
         let names = [];

@@ -39,15 +39,45 @@ export default class HomePage extends React.Component {
                 if(response.data==null || response.data.length <1){
                     this.setState({hasData:false})
                 }else{
-                    //待办事项，去掉客户端没有的数据
-                    response.data.map((item)=>{
-                        if(item.todoType!==1 && item.todoType!==9 && item.todoType!==10&& item.todoType!==11){
-                            return item
+                    let stateArr = [];
+                    if(this.id == 51 ){
+                        for (let i=0; i<response.data.length; i++) {
+                            let itemm = response.data[i];
+                            //1,9,10,11,13,14
+                            switch (itemm.todoType) {
+                                case 2:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 3:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 4:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 6:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 7:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 8:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 12:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 101:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 111:
+                                    stateArr.push(itemm);
+                                    break;
+                            }
                         }
-                    });
+                    }
                     let num = 0;
-                    for (let i=0; i<response.data.length; i++){
-                        let model = response.data[i];
+                    for (let i=0; i<stateArr.length; i++){
+                        let model = stateArr[i];
                         num += model['num'];
                     }
                     this.setState({ DBNum: num })
@@ -130,14 +160,14 @@ export default class HomePage extends React.Component {
 
     render() {
         return (
-            <ScrollView>
+            <ScrollView scrollEnabled={this.state.scrollEnabled}>
                 <View style={styles.container}>
                     <DragSortableView
                         dataSource={this.state.data}
                         parentWidth={parentWidth}
                         childrenWidth= {childrenWidth}
                         childrenHeight={childrenHeight}
-                        onDragStart={(startIndex,endIndex)=>{
+                        onDragStart={(startIndex, endIndex)=>{
                             if (!this.state.isEnterEdit) {
                                 this.setState({
                                     isEnterEdit: true,
@@ -332,22 +362,36 @@ export default class HomePage extends React.Component {
      94: '', //其他工作统计
      */
     _ClickItemAction(item){
-        if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
-            this.props.navigation.navigate('StatisticsCharts',{bean : item})
-        }
         if (this.internal === 0) {
             if (this.roleLevel === 3 || this.roleLevel === 4 || this.roleLevel === 5) {
                 if (item.id === 82) {
-                    this.props.navigation.navigate('DetailedList')
+                    this.props.navigation.navigate('DetailedList');
+                    return;
                 } else if (item.id === 83) {
-                    this.props.navigation.navigate('PracticableList', {deptId: ''})
+                    this.props.navigation.navigate('PracticableList', {deptId: ''});
+                    return;
+                }
+                if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                    this.props.navigation.navigate('StatisticsCharts',{bean : item});
+                } else {
+                    let func = FunctionEnum.actionMap[item.id];
+                    this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+                }
+            }else {
+                if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                    this.props.navigation.navigate('StatisticsCharts',{bean : item});
+                } else {
+                    let func = FunctionEnum.actionMap[item.id];
+                    this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
                 }
             }
-            let func = FunctionEnum.actionMap[item.id];
-            this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
         } else {
-            let func = FunctionEnum.actionMap[item.id];
-            this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+            if (item.id === 86 || item.id === 87 || item.id === 88 || item.id === 89 || item.id === 90 || item.id === 91 || item.id === 92 || item.id === 93 || item.id === 94) {
+                this.props.navigation.navigate('StatisticsCharts',{bean : item})
+            } else {
+                let func = FunctionEnum.actionMap[item.id];
+                this.props.navigation.navigate(func,{'internal':this.internal,'children':item.children,'title':item.name,'id':item.id});
+            }
         }
     }
 }

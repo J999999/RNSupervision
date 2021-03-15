@@ -131,8 +131,8 @@ android {
         applicationId "com.jqsupervision"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.4.7"
+        versionCode 8
+        versionName "1.4.8"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -173,8 +173,8 @@ android {
 
         beta {
             applicationId "com.jqsupervision.beta"
-            versionCode 6
-            versionName "1.4.6"
+            versionCode 8
+            versionName "1.4.8"
         }
     }
 
@@ -208,18 +208,13 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-doc-viewer')
-    implementation project(':react-native-picker')
-    implementation project(':react-native-gesture-handler')
-    implementation project(':@react-native-community_async-storage')
     implementation 'com.nbsp:library:1.8'
-    implementation project(':rn-fetch-blob')
-    implementation project(':react-native-image-picker')
-    implementation project(':react-native-keychain')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.android.support:support-compat:28.0.0-alpha1"
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    implementation 'com.android.support:support-v4:22.2.0'
+    implementation 'com.android.support:support-annotations:22.0.0'
 
     if (enableHermes) {
       def hermesPath = "../../node_modules/hermesvm/android/";

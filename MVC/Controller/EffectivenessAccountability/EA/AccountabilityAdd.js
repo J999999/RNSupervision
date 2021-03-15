@@ -127,7 +127,7 @@ export default class AccountabilityAdd extends React.Component{
                         {j === 0 ? '问责单位:' : ''}
                     </Text>
                     <View style={{width: 245*unitWidth}}>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', height: 44*unitWidth}}>
                             <Text style={{fontSize: 15*unitWidth, color: '#333'}}>单位:</Text>
                             <TextInput numberOfLines={1}
                                        underlineColorAndroid='transparent'
@@ -155,12 +155,12 @@ export default class AccountabilityAdd extends React.Component{
         for (let j=0; j<this.state.interviewList.length; j++) {
 
             let inter = (
-                <View style={{flexDirection: 'row', height: 54*unitWidth, alignItems: 'center', borderBottomWidth: unitWidth , borderColor: '#F4F4F4'}}>
+                <View style={{flexDirection: 'row', height: 94*unitWidth, alignItems: 'center', borderBottomWidth: unitWidth , borderColor: '#F4F4F4'}}>
                     <Text style={{width: 80*unitWidth, fontSize: 15*unitWidth, color: '#333', marginLeft: 15*unitWidth}}>
                         {j === 0 ? '问责对象:' : ''}
                     </Text>
                     <View style={{width: 245*unitWidth}}>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', height: 44*unitWidth}}>
                             <Text style={{fontSize: 15*unitWidth, color: '#333'}}>单位:</Text>
                             <TextInput numberOfLines={1}
                                        underlineColorAndroid='transparent'
@@ -171,7 +171,7 @@ export default class AccountabilityAdd extends React.Component{
                                                    {...item, ['deptName'] : text} : item)
                                        })}}/>
                         </View>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', height: 44*unitWidth}}>
                             <Text style={{fontSize: 15*unitWidth, color: '#333'}}>职务:</Text>
                             <TextInput numberOfLines={1}
                                        underlineColorAndroid='transparent'

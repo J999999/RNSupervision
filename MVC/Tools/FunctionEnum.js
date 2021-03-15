@@ -119,6 +119,8 @@ const  FunctionEnum = {
 
         44:require('../Images/ziliaoyunpan.png'),//资料云盘
         100:require('../Images/ziliaoyunpan.png'),//资料云盘
+        101:require('../Images/wodeguanzhu.png'),
+        102:require('../Images/gongzuoshenhe.png'),
         112: require('../Images/wodeyijianjianyi.png'),
      }
 

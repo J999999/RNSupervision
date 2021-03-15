@@ -71,14 +71,44 @@ export default class WorkBanchList extends React.Component {
                     this.setState({hasData:false})
                 }else{
                     //待办事项，去掉客户端没有的数据
+                    let stateArr = [];
                     if(this.id == 51 ){
-                        response.data.map((item)=>{
-                            if(item.todoType!=1 && item.todoType!=9 && item.todoType!=10&& item.todoType!=11){
-                                return item
+                        console.log('response = ', response);
+                        for (let i=0; i<response.data.length; i++) {
+                            let itemm = response.data[i];
+                            //1,9,10,11,13,14
+                            switch (itemm.todoType) {
+                                case 2:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 3:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 4:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 6:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 7:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 8:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 12:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 101:
+                                    stateArr.push(itemm);
+                                    break;
+                                case 111:
+                                    stateArr.push(itemm);
+                                    break;
                             }
-                        })
+                        }
                     }
-                    this.setState({data:response.data,hasData:true})
+                    this.setState({data:stateArr,hasData:true})
                 }
             }else{
                 alert(response.msg);
@@ -101,9 +131,11 @@ export default class WorkBanchList extends React.Component {
     }
 
     _gotoNext(item){
-        //待办事项
-        //待办事项类型（1-承办待接收事项 2-临期待汇报事项 3-转办待接收事项 4-主体责任待审批事项 6-约谈待实施
-        // 7-立项交办审批 8-约谈问责发布审批 9-延期申请审批 10-约谈申请审批 11-问责申请审批 12-问责待实施）
+        //待办事项类型
+        //1-承办待接收事项 2-临期待汇报事项 3-转办待接收事项 4-主体责任待审批事项 6-约谈待实施 7-立项交办审批
+        // 8-约谈问责发布审批 9-延期申请审批 10-约谈申请审批 11-问责申请审批
+        // 12-问责待实施 13-市长热线待接收 14-工作汇报待审核 101-约谈提请审批 111-问责提请审批
+
         if(this.id == 51){
             // switch (12) {
             switch (item.todoType) {
@@ -145,6 +177,14 @@ export default class WorkBanchList extends React.Component {
                     navigation.navigate('AccountabilityList',{
                         states:[1]
                     });
+                    break;
+                case 101://
+                    //InterMentionAuditList
+                    navigation.navigate('InterMentionAuditList');
+                    break;
+                case 111:
+                    //AccMentionAuditList
+                    navigation.navigate('AccMentionAuditList');
                     break;
             }
         }else{

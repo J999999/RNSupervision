@@ -33,6 +33,9 @@ export default class ApprovalWorkList extends React.Component{
 
     componentDidMount(): void {
         drop = false;
+        this.refreshSubScription = DeviceEventEmitter.addListener('ZTZRrefresh', ()=>{
+            this._onHeaderRefresh();
+        });
         this._onHeaderRefresh();
     }
     _onHeaderRefresh = () => {
@@ -188,9 +191,6 @@ export default class ApprovalWorkList extends React.Component{
         )
     };
     _clickCellAction = (item) => {
-        this.refreshSubScription = DeviceEventEmitter.addListener('ZTZRrefresh', ()=>{
-            this._onHeaderRefresh();
-        });
         let hasButton = false;
         item.approveState === 1 ? hasButton = true : hasButton = false;
         switch (item.approveType) {

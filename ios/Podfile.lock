@@ -94,18 +94,18 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.6.1):
     - React
-  - RNGestureHandler (1.3.0):
+  - RNGestureHandler (1.6.1):
     - React
   - RNImageCropPicker (0.25.2):
     - QBImagePickerController
     - React-Core
     - React-RCTImage
     - RSKImageCropper
-  - RNKeychain (3.1.3):
+  - RNKeychain (6.0.0):
     - React
   - RNReactNativeDocViewer (1.0.0):
     - React
-  - RNReanimated (1.2.0):
+  - RNReanimated (1.9.0):
     - React
   - RSKImageCropper (2.2.3)
   - yoga (0.60.4.React)
@@ -145,7 +145,7 @@ DEPENDENCIES:
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - boost-for-react-native
     - QBImagePickerController
     - RSKImageCropper
@@ -221,38 +221,38 @@ SPEC CHECKSUMS:
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  Picker: 67a2566d9ff6b141d505d88b9177f905aaa5f1a6
+  Picker: 37554355aef82a532ea95b71b6eeba66bc86182b
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
-  React: c438ccc7e14e86d4702bb92d7e262f549ffaa995
-  React-ART: 672146dfd612d95be4e51d2e26179245dc925bce
-  React-Core: c76495f5c14e73c0f803b89c3fa83f804da61bd6
-  React-cxxreact: f64bc64cf4682d6ea5a064f6017da72482858682
-  React-DevSupport: 30336bca00f72681eac995d21a31b963e7d5cfec
-  React-fishhook: 73dc8058ca42828cc92e8fbba6cd9571100e10ca
-  React-jsi: 40f467ff088c811c6630acccb4aea57ea7ccb1b5
-  React-jsiexecutor: e4b4717060a0cd8d0270323b5655a68c95432efd
-  React-jsinspector: 044105eea064aec81adc5e4d777a8f6589e7d094
-  react-native-image-picker: 97e6c8436b3a4e83f56b57ff5ab68cdc6834ee00
-  React-RCTActionSheet: 08864c609d9f959abf3d51fdd93f8bc6e91f21eb
-  React-RCTAnimation: a4547e9fac2627ded3df9d302f5558b475faf819
-  React-RCTBlob: 62d5c263a2adb8f7a2cafd601beba18a2d99cbbb
-  React-RCTImage: 963859de2b05d2037d1b7842cdbddc8d7f3a2f3b
-  React-RCTLinking: 5998a7db9a6156ed112b006d01f76b2d1cc83d98
-  React-RCTNetwork: 0b676e8194f3f893db813007d37e37e9820173a3
-  React-RCTSettings: fdd7606f1b6050eced69fc6046d5db6768aefd57
-  React-RCTText: 36c0532feb5521cb295ba80e7e44b70cf1c36fc7
-  React-RCTVibration: dabb8d59bb47e1d9124b3f77bfdc1b33d42b0a74
-  React-RCTWebSocket: f32b93e0953d7c07fd5dd45305406282cfdc95cf
-  rn-fetch-blob: 6aa7c5b59f442fbfcdcc847edbc062119f6af66c
-  RNCAsyncStorage: e99188b8a89ea0edddc82d8831cd5142f4550fdc
-  RNGestureHandler: 7ccf2f3f60458e084f9ada01fbaf610f6fef073c
-  RNImageCropPicker: c406db73f02f11bf3a887f856ff04ee50af173f4
-  RNKeychain: 5381e340056c23de103d73ae59cbddc6ffc21d97
-  RNReactNativeDocViewer: 1ff418afb9b3d1a1050ab2ee9fee882ed6bfe6a6
-  RNReanimated: 9f7976535c5cde50189acd84751871f5414190b9
+  React: ff7ee2ae5ee1c1d9ae2183b4111045b25294bb01
+  React-ART: 87b6e9d975551e6177c660dd212529f73ed03681
+  React-Core: 8e0ea421cae5609d2562850f98421b15030476fa
+  React-cxxreact: 326880209990151a7182a813311054e9772ba510
+  React-DevSupport: e9f10e6721e78e87622fc985db695c0c0168db8a
+  React-fishhook: 1f0e5b08449403fa75c3fb3881a0beefbada14af
+  React-jsi: 21d3153b1153fbf6510a92b6b11e33e725cb7432
+  React-jsiexecutor: 7549641e48bafae7bfee3f3ea19bf4901639c5de
+  React-jsinspector: 73f24a02fa684ed6a2b828ba116874a2191ded88
+  react-native-image-picker: 5c15ac0251475ae0b9f21e17d08d7c28db847abc
+  React-RCTActionSheet: 9f71d7ae3e8fb10e08d162cbf14c621349dbfab3
+  React-RCTAnimation: 981d8c95b0e30918a9832ccac32af83562a27fae
+  React-RCTBlob: 21e73d1020a302a75fed30dbaee9f15287b80baa
+  React-RCTImage: c0bc6ac0926517b6fb7e4c279b04843113e99d1d
+  React-RCTLinking: 1af3f3c59114bed3deec0107c62e7efad0932ee5
+  React-RCTNetwork: 35df9de46e19cda5c56380be1a7759b9b8cb2fcd
+  React-RCTSettings: f580504c2cd1f44e25add10fb9ed3954f67f8ac5
+  React-RCTText: e0f224898b13af9aa036ea7cb3d438daa68c1044
+  React-RCTVibration: 0bea40cd51bd089bd591a8f74c86e91fdf2666c5
+  React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
+  rn-fetch-blob: 651b8d076b43d0d7aa294a3d9ec16c00aab8bef9
+  RNCAsyncStorage: 2e2e3feb9bdadc752a026703d8c4065ca912e75a
+  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNImageCropPicker: f675353bbe18f66113a39b319c0aeb36655a6e4c
+  RNKeychain: bf2d7e9a0ae7a073c07770dd2aa6d11c67581733
+  RNReactNativeDocViewer: 571c6ac38483531b8fb521d02a6ba54652ed10a7
+  RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
-  yoga: 88c514f310aff89b94a14c5fbf44b95735af0cb7
+  yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: fae69111e1d31f06e032539820897c5b7790d4ee
+PODFILE CHECKSUM: bad697dac23e94af4c7561d988b74464fd1ebcdc
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.4
