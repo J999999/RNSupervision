@@ -25,7 +25,7 @@
     "react-native-keychain": "^6.0.0",
     "react-native-overlayer": "^0.2.0",
     "react-native-picker": "^4.3.7",
-    "react-native-reanimated": "^1.9.0",
+    "react-native-reanimated": "^2.10.0",
     "react-navigation": "^3.11.1",
     "rn-fetch-blob": "^0.10.16"
   },
